@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<!--
+  Wildfire 스터디 — 기술 레퍼런스
+  v1.0, 2026-05-13
+  소스: study/wildfire-poc/
+  빌드: 단일 HTML, CDN 2개 (Tailwind, Noto Sans KR)
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wildfire 스터디 — 기술 레퍼런스</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Noto Sans KR', sans-serif; }
+  code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+  html { scroll-behavior: smooth; }
+  body { scroll-padding-top: 4rem; }
+
+  .code-box {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.825rem;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .kw { color: #f472b6; }
+  .str { color: #a7f3d0; }
+  .com { color: #94a3b8; font-style: italic; }
+  .num { color: #fde68a; }
+  .typ { color: #93c5fd; }
+
+  /* TOC */
+  .toc-link {
+    display: block;
+    padding: 0.3rem 0.85rem 0.3rem 1rem;
+    color: #475569;
+    font-size: 0.85rem;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    line-height: 1.35;
+  }
+  .toc-link:hover { background: #f1f5f9; color: #0f172a; }
+  .toc-link.active {
+    border-left-color: #6366f1;
+    color: #4338ca;
+    font-weight: 600;
+    background: #eef2ff;
+  }
+  .toc-link.l1 { font-weight: 600; color: #0f172a; margin-top: 0.5rem; }
+  .toc-link.l2 { padding-left: 1.75rem; }
+  .toc-link.l3 { padding-left: 2.5rem; font-size: 0.78rem; color: #64748b; }
+
+  /* 박스 */
+  .ref-box {
+    background: #f1f5f9;
+    border-left: 4px solid #94a3b8;
+    padding: 0.9rem 1.1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+    font-size: 0.92rem;
+  }
+  .warn-box {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 0.9rem 1.1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+    font-size: 0.92rem;
+  }
+  .interactive-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    margin: 2rem 0;
+    position: relative;
+  }
+  .interactive-box::before {
+    content: "🔧 인터랙티브";
+    position: absolute;
+    top: 0.65rem;
+    right: 0.85rem;
+    font-size: 0.65rem;
+    color: #64748b;
+    background: white;
+    padding: 0.15rem 0.6rem;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    letter-spacing: 0.04em;
+  }
+
+  /* 본문 헤더 위계 */
+  main h1 { font-size: 1.9rem; font-weight: 700; color: #0f172a; margin-top: 3rem; margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+  main h2 { font-size: 1.4rem; font-weight: 700; color: #1e293b; margin-top: 2.25rem; margin-bottom: 0.85rem; }
+  main h3 { font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-top: 1.75rem; margin-bottom: 0.6rem; }
+  main h4 { font-size: 0.98rem; font-weight: 600; color: #334155; margin-top: 1.25rem; margin-bottom: 0.45rem; }
+  main p, main li { color: #334155; }
+  main p { margin-bottom: 0.85rem; }
+  main ul, main ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+  main ul { list-style: disc; }
+  main ol { list-style: decimal; }
+  main ul li, main ol li { margin-bottom: 0.35rem; }
+  main strong { color: #0f172a; }
+  main a { color: #4f46e5; text-decoration: underline; text-decoration-color: #c7d2fe; }
+  main table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  main table th { background: #f1f5f9; padding: 0.5rem 0.75rem; text-align: left; border-bottom: 2px solid #cbd5e1; font-weight: 600; color: #1e293b; }
+  main table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  main table tr:hover td { background: #f8fafc; }
+  main code:not(pre code) { background: #f1f5f9; padding: 0.1rem 0.4rem; border-radius: 0.25rem; font-size: 0.85em; color: #be185d; }
+
+  /* 인쇄 모드 */
+  body.print-mode aside { display: none; }
+  body.print-mode header { display: none; }
+  body.print-mode main { max-width: none; margin: 0; padding: 2rem 4rem; }
+  body.print-mode .interactive-box { background: white; page-break-inside: avoid; }
+  body.print-mode .flex.max-w-7xl { max-width: none; }
+
+  @media print {
+    aside, header { display: none !important; }
+    main { max-width: none !important; padding: 0 !important; }
+    .interactive-box { background: white !important; page-break-inside: avoid; }
+    h1, h2 { page-break-after: avoid; }
+    .no-print { display: none !important; }
+  }
+
+  aside::-webkit-scrollbar { width: 6px; }
+  aside::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+
+  /* 평가셋 카드 */
+  .qna-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.85rem;
+  }
+  .qna-card:hover {
+    border-color: #94a3b8;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+  .qna-card.hallucination-guard {
+    border-color: #ef4444;
+    border-width: 2px;
+  }
+
+  .result-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .badge-success { background: #d1fae5; color: #065f46; }
+  .badge-retry { background: #fef3c7; color: #92400e; }
+  .badge-fallback { background: #e2e8f0; color: #334155; }
+  .badge-failure { background: #fee2e2; color: #991b1b; }
+
+  .filter-chip {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    margin: 0.2rem 0.2rem 0.2rem 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: white;
+    color: #475569;
+    transition: all 0.1s;
+  }
+  .filter-chip:hover { background: #f1f5f9; }
+  .filter-chip.active {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+  }
+
+  /* v1/v2 토글 */
+  .policy-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    transition: all 0.2s;
+  }
+  .policy-card.active {
+    border-color: #4f46e5;
+    background: #eef2ff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  .seg-row {
+    transition: background 0.3s;
+  }
+  .seg-row.escalated td {
+    background: #fef3c7 !important;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body class="bg-white text-slate-800">
+
+<!-- ─────────────── 상단 헤더 ─────────────── -->
+<header class="border-b border-slate-200 bg-white sticky top-0 z-30 no-print">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div>
+      <h1 class="text-base font-bold text-slate-900">🔥 Wildfire 스터디 — 기술 레퍼런스</h1>
+      <p class="text-xs text-slate-500">광주·전남 산불 예비주수 의사결정 시스템 · <code class="text-xs bg-slate-100 px-1 rounded">study/wildfire-poc/</code></p>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-xs text-slate-400">v1.0 · 2026-05-13</span>
+      <button id="print-toggle" class="text-xs px-3 py-1.5 border border-slate-300 rounded hover:bg-slate-50">📄 인쇄 친화 모드</button>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────────── 사이드바 + 본문 ─────────────── -->
+<div class="flex max-w-7xl mx-auto">
+
+  <!-- 사이드바 -->
+  <aside class="w-64 shrink-0 sticky top-[3.6rem] self-start h-[calc(100vh-3.6rem)] overflow-y-auto bg-slate-50 border-r border-slate-200 py-5 no-print">
+    <nav id="toc">
+      <a href="#section-1" class="toc-link l1">§ 1. 개요 + 아키텍처</a>
+
+      <a href="#section-2" class="toc-link l1">§ 2. DB 계층</a>
+      <a href="#section-2-1" class="toc-link l2">2.1 TypeDB 스키마</a>
+      <a href="#section-2-2" class="toc-link l2">2.2 fun 함수 5종</a>
+      <a href="#section-2-3" class="toc-link l2">2.3 TypeDB 추론 기법</a>
+      <a href="#section-2-3-1" class="toc-link l3">2.3.1 선언적 추론</a>
+      <a href="#section-2-3-2" class="toc-link l3">2.3.2 재귀 호출</a>
+      <a href="#section-2-3-3" class="toc-link l3">2.3.3 중첩 호출</a>
+      <a href="#section-2-3-4" class="toc-link l3">2.3.4 부정 표현</a>
+      <a href="#section-2-4" class="toc-link l2">2.4 정책 외부화</a>
+      <a href="#section-2-4-1" class="toc-link l3">2.4.1 threshold-set</a>
+      <a href="#section-2-4-2" class="toc-link l3">2.4.2 weight-set</a>
+      <a href="#section-2-4-3" class="toc-link l3">2.4.3 적재 코드</a>
+      <a href="#section-2-5" class="toc-link l2">2.5 fun + 외부화 결합</a>
+
+      <a href="#section-3" class="toc-link l1">§ 3. 추론 계층</a>
+      <a href="#section-3-1" class="toc-link l2">3.1 Python 추론</a>
+      <a href="#section-3-2" class="toc-link l2">3.2 fun 추론</a>
+      <a href="#section-3-3" class="toc-link l2">3.3 회귀 검증</a>
+      <a href="#section-3-4" class="toc-link l2">3.4 동적 조회 사례</a>
+      <a href="#section-3-5" class="toc-link l2">3.5 write-back</a>
+
+      <a href="#section-4" class="toc-link l1">§ 4. LLM 계층</a>
+      <a href="#section-4-1" class="toc-link l2">4.1 2-Pass 아키텍처</a>
+      <a href="#section-4-2" class="toc-link l2">4.2 LLM #1 — Text-to-TypeQL</a>
+      <a href="#section-4-2-1" class="toc-link l3">4.2.1 호출 파라미터</a>
+      <a href="#section-4-2-2" class="toc-link l3">4.2.2 SCHEMA_SUMMARY</a>
+      <a href="#section-4-2-3" class="toc-link l3">4.2.3 출력 후처리</a>
+      <a href="#section-4-2-4" class="toc-link l3">4.2.4 실행 함수</a>
+      <a href="#section-4-3" class="toc-link l2">4.3 Self-correcting</a>
+      <a href="#section-4-3-1" class="toc-link l3">4.3.1 성공 판정</a>
+      <a href="#section-4-3-2" class="toc-link l3">4.3.2 재시도 prompt</a>
+      <a href="#section-4-3-3" class="toc-link l3">4.3.3 4가지 분기</a>
+      <a href="#section-4-4" class="toc-link l2">4.4 Fallback</a>
+      <a href="#section-4-5" class="toc-link l2">4.5 LLM #2 — 자연어 정제</a>
+      <a href="#section-4-6" class="toc-link l2">4.6 환각 방지</a>
+
+      <a href="#section-5" class="toc-link l1">§ 5. 평가 계층</a>
+      <a href="#section-5-1" class="toc-link l2">5.1 평가셋 정의</a>
+      <a href="#section-5-2" class="toc-link l2">5.2 15건 그리드 뷰</a>
+      <a href="#section-5-3" class="toc-link l2">5.3 환각 방지 케이스 3-4</a>
+      <a href="#section-5-4" class="toc-link l2">5.4 실행 — run_eval.py</a>
+      <a href="#section-5-4-1" class="toc-link l3">5.4.1 호출 명령</a>
+      <a href="#section-5-4-2" class="toc-link l3">5.4.2 출력 형식</a>
+      <a href="#section-5-5" class="toc-link l2">5.5 통과 목표</a>
+
+      <a href="#appendix-a" class="toc-link l1">부록 A. 6대 학습 요점</a>
+      <a href="#appendix-b" class="toc-link l1">부록 B. 시연 시나리오</a>
+      <a href="#appendix-c" class="toc-link l1">부록 C. 운영 체크리스트</a>
+    </nav>
+  </aside>
+
+  <!-- 본문 -->
+  <main class="flex-1 max-w-4xl mx-auto px-8 pt-4 pb-20 leading-relaxed">
+
+<!-- ═══════════════ § 1. 개요 ═══════════════ -->
+<section id="section-1">
+<h1>§ 1. 개요 + 시스템 아키텍처</h1>
+
+<ul>
+  <li><strong>시스템</strong>: 광주·전남 산불 예비주수(豫備注水) 의사결정 시스템. 자연어 질의 → 그래프 추론 → 자연어 응답.</li>
+  <li><strong>소스 위치</strong>: <code>study/wildfire-poc/</code></li>
+  <li><strong>5주차 발표 3 스터디 자료</strong>: <code>docs/study/w05/</code></li>
+</ul>
+
+<h3>3-계층 아키텍처</h3>
+
+<div class="code-box">┌────────────────────────────────────────────────────────────┐
+│ <span class="kw">DB 계층</span> (TypeDB 3.x, localhost:1729)                       │
+│  ├─ schema_v2.tql            엔티티·어트리뷰트 정의        │
+│  ├─ functions.tql            fun 5종 — 그래프 자족 추론    │
+│  └─ seed_params.py           threshold-set·weight-set 적재 │
+├────────────────────────────────────────────────────────────┤
+│ <span class="kw">추론 계층</span> (Python)                                         │
+│  ├─ formulas.py              점수 산식                     │
+│  ├─ graph_inference.py       Python 추론                   │
+│  └─ graph_inference_fun.py   fun 추론                      │
+├────────────────────────────────────────────────────────────┤
+│ <span class="kw">LLM 계층</span> (Gemini 2.5 Flash)                                │
+│  ├─ text_to_typeql.py        자연어 → TypeQL + 재시도      │
+│  ├─ chat.py                  대화 + advisory 부착          │
+│  └─ eval/run_eval.py         평가셋 15건 자동 실행         │
+└────────────────────────────────────────────────────────────┘</div>
+
+<h3>데이터 흐름 (실행 순)</h3>
+
+<ol>
+  <li><code>seed_params.py</code> → threshold-set v1 + weight-set v1 적재</li>
+  <li><code>load_sources.py</code> → source 29건 적재 (REAL 18 / MOCK 6 / EXCLUDE 5)</li>
+  <li><code>load_segments.py</code> → segment 5건 적재</li>
+  <li><code>run_inference_demo.py</code> → 점수·State 산출 → 그래프에 write-back</li>
+  <li><code>chat.py</code> 또는 <code>run_eval.py</code> → 자연어 질의 → 2-Pass → 응답</li>
+</ol>
+</section>
+
+<!-- ═══════════════ § 2. DB 계층 ═══════════════ -->
+<section id="section-2">
+<h1>§ 2. DB 계층</h1>
+
+<section id="section-2-1">
+<h2>§ 2.1 TypeDB 스키마</h2>
+
+<p>출처: <code>text_to_typeql.py:43-67</code>의 <code>SCHEMA_SUMMARY</code> 상수.</p>
+
+<h3>entity 타입 5종</h3>
+
+<table>
+<thead>
+<tr><th>entity</th><th>키 attribute</th><th>핵심 attribute</th></tr>
+</thead>
+<tbody>
+<tr><td><code>segment</code></td><td><code>segment-id</code> (string)</td><td><code>segment-name</code>, <code>admin-region</code>, <code>risk-grade</code>, <code>alert-level</code>, <code>residential-population</code>, <code>forest-distance-m</code>, <code>wind-speed</code>, <code>safety-class</code>, <code>risk-grade-score</code>, <code>alert-score</code>, <code>s-priority</code>, <code>base-state</code>, <code>state</code>, <code>state-override-reason</code></td></tr>
+<tr><td><code>run-context</code></td><td><code>run-context-id</code></td><td><code>reference-time</code> (datetime), <code>started-at</code>, <code>status</code></td></tr>
+<tr><td><code>source</code></td><td><code>source-id</code></td><td><code>source-name</code>, <code>availability-status</code> (<code>REAL</code>/<code>MOCK</code>/<code>EXCLUDE</code>), <code>readiness</code>, <code>source-owner</code></td></tr>
+<tr><td><code>threshold-set</code></td><td><code>threshold-set-id</code></td><td><code>metric-name</code>, <code>config-version</code>, <code>th-low</code>, <code>th-mid-low</code>, <code>th-mid-high</code>, <code>th-high</code></td></tr>
+<tr><td><code>weight-set</code></td><td><code>weight-set-id</code></td><td><code>formula-id</code>, <code>config-version</code>, <code>w-official</code>, <code>w-exposure</code>, <code>w-spread</code>, <code>w-action</code>, <code>w-time</code></td></tr>
+</tbody>
+</table>
+
+<h3>relation</h3>
+<p><code>segment-of-run (segment, run)</code> — segment가 어느 추론 실행에 속하는지 연결.</p>
+
+<h3>state 6종</h3>
+<p><code>GeneralManagement</code>, <code>EnhancedMonitoring</code>, <code>ReviewPreWatering</code>, <code>PriorityPreWatering</code>, <code>ImmediatePreWatering</code>, <code>NotActionable</code></p>
+</section>
+
+<!-- § 2.2 fun -->
+<section id="section-2-2">
+<h2>§ 2.2 fun 함수 5종 (functions.tql)</h2>
+
+<p><strong>파일</strong>: <code>study/wildfire-poc/db/functions.tql</code> (146줄)</p>
+
+<ul>
+  <li><strong>정의</strong>: TypeDB 3.x에서 도입된 사용자 정의 함수. TypeQL 쿼리 안에서 호출 가능.</li>
+  <li><strong>rule과의 차이</strong>: 3.x에서 rule이 폐기되고 fun으로 대체. rule은 백그라운드 자동 추론, fun은 명시적 호출 — 호출 위치·시점 추적이 명확.</li>
+</ul>
+
+<h3>5종 시그니처</h3>
+
+<table>
+<thead>
+<tr><th>#</th><th>fun 이름</th><th>시그니처</th><th>줄번호</th><th>역할</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><code>sources_by_status_v2</code></td><td><code>($status_filter: string) -> { source }</code></td><td>22~26</td><td>source를 availability-status로 필터</td></tr>
+<tr><td>2</td><td><code>grade_to_score</code></td><td><code>($grade_in: string) -> { double }</code></td><td>34~52</td><td>risk-grade를 점수로 매핑</td></tr>
+<tr><td>3</td><td><code>alert_to_score</code></td><td><code>($alert_in: string) -> { double }</code></td><td>59~71</td><td>alert-level을 점수로 매핑</td></tr>
+<tr><td>4</td><td><code>s_priority_to_state_v2</code> ⭐</td><td><code>($sp_in: double, $version_in: string) -> { string }</code></td><td>81~106</td><td>s_priority + 정책 버전 → State 5단계. <strong>threshold-set 노드 동적 조회</strong></td></tr>
+<tr><td>5</td><td><code>resolve_state_v2</code></td><td><code>($base, $safety, $alert: string) -> { string }</code></td><td>114~146</td><td>State Override (hazard_gate 1순위, alert_경보 6순위)</td></tr>
+</tbody>
+</table>
+
+<h3>설계 원칙 (functions.tql:3-13)</h3>
+
+<ol>
+  <li>임계값·가중치 하드코딩 금지 — 그래프의 threshold-set·weight-set 노드 조회</li>
+  <li>매개변수와 attribute 매칭 분리 (REP1 회피) — <code>has X $internal; $internal == $param;</code></li>
+  <li>lookup·분기는 OR 절 + let 변수</li>
+  <li>기존 Python 추론(<code>graph_inference.py</code>)과 병존 — fun이 같은 결과 보장 (<code>test_python_vs_fun.py</code>로 검증)</li>
+</ol>
+
+<h3>예시 — grade_to_score 전체 코드 (functions.tql:34-52)</h3>
+
+<div class="code-box"><span class="kw">fun</span> grade_to_score($grade_in: <span class="typ">string</span>) -&gt; { <span class="typ">double</span> }:
+  <span class="kw">match</span>
+    {
+      $grade_in == <span class="str">"정상"</span>;
+      <span class="kw">let</span> $score = <span class="num">0.00</span>;
+    } <span class="kw">or</span> {
+      $grade_in == <span class="str">"낮음"</span>;
+      <span class="kw">let</span> $score = <span class="num">0.20</span>;
+    } <span class="kw">or</span> {
+      $grade_in == <span class="str">"다소높음"</span>;
+      <span class="kw">let</span> $score = <span class="num">0.55</span>;
+    } <span class="kw">or</span> {
+      $grade_in == <span class="str">"높음"</span>;
+      <span class="kw">let</span> $score = <span class="num">0.75</span>;
+    } <span class="kw">or</span> {
+      $grade_in == <span class="str">"매우높음"</span>;
+      <span class="kw">let</span> $score = <span class="num">1.00</span>;
+    };
+  <span class="kw">return</span> { $score };</div>
+
+<p>TypeQL의 OR 절을 lookup 테이블로 사용. 입력 문자열에 대응하는 점수를 <code>let $score = ...</code>로 바인딩 후 반환. 원자료 산식 GRADE_SCORE 매핑을 그래프 안에 직접 구현.</p>
+</section>
+
+<!-- § 2.3 추론 기법 -->
+<section id="section-2-3">
+<h2>§ 2.3 TypeDB 추론엔진의 4가지 추론 기법</h2>
+
+<p><code>docs/study/w04/TypeDB_추론엔진_이해/</code>의 4가지 핵심 기법. fun이 이들을 지원하므로 그래프 안에서 복잡한 추론이 가능하다.</p>
+
+<section id="section-2-3-1">
+<h3>§ 2.3.1 선언적 추론 (Declarative Reasoning)</h3>
+
+<ul>
+  <li>"어떻게 찾는지"가 아니라 "무엇이 참인지"만 적는다.</li>
+  <li>fun 본문은 절차문이 아닌 <strong>조건 명세</strong>. 실행 순서는 TypeDB 엔진이 결정.</li>
+  <li>위 <code>grade_to_score</code>(§ 2.2)는 "정상이면 0.00"이라고 적을 뿐, 어느 조건을 먼저 검사할지 명시하지 않는다.</li>
+</ul>
+
+<div class="ref-box">📎 <strong>참고</strong>: 절차적 표현이면 <code>if grade == "정상": return 0.00; elif ...</code> 식으로 평가 순서가 코드에 박힌다. 선언적 표현은 평가 순서를 엔진에 위임 — 최적화·병렬화 여지가 생긴다.</div>
+</section>
+
+<section id="section-2-3-2">
+<h3>§ 2.3.2 재귀 호출 (Recursive Function)</h3>
+
+<ul>
+  <li>함수가 자기 자신을 호출하여 단계 수가 가변적인 탐색 수행.</li>
+  <li>그래프 도달 가능성 분석에 유용 (예: 발화지점에서 N단계 인접 zone 모두 추적).</li>
+  <li>본 시스템 <code>functions.tql</code>에는 재귀가 없으나, 산불 확산 시뮬레이션 같은 후속 기능에서 사용 예정.</li>
+</ul>
+
+<h4>예시 — w04 자료의 산불 확산 추론</h4>
+
+<div class="code-box"><span class="kw">fun</span> all_reachable($from: <span class="typ">forest-zone</span>) -&gt; { <span class="typ">forest-zone</span> }:
+  <span class="kw">match</span>
+    {
+      (zone-a: $from, zone-b: $next) <span class="kw">isa</span> zone-adjacent-to-zone;
+    } <span class="kw">or</span> {
+      <span class="kw">let</span> $mid <span class="kw">in</span> all_reachable($from);  <span class="com"># 자기 자신 호출</span>
+      (zone-a: $mid, zone-b: $next) <span class="kw">isa</span> zone-adjacent-to-zone;
+    };
+  <span class="kw">return</span> { $next };</div>
+
+<p>발화지점 <code>$from</code>에서 직접 인접한 zone + 그 인접한 zone의 인접한 zone ... 까지 N단계 추적. 단계 수가 가변적이므로 재귀가 필수.</p>
+</section>
+
+<section id="section-2-3-3">
+<h3>§ 2.3.3 중첩 호출 (Nested Function)</h3>
+
+<ul>
+  <li>함수 안에서 다른 함수를 호출하여 작은 블록을 조립.</li>
+  <li>본 시스템에선 추론 계층(<code>graph_inference_fun.py</code>)이 <code>grade_to_score</code>, <code>alert_to_score</code>, <code>s_priority_to_state_v2</code>, <code>resolve_state_v2</code>를 순서대로 호출하는 형태.</li>
+  <li>직접적인 fun 안의 fun 호출은 <code>let $score in alert_to_score(...)</code> 패턴으로 표현.</li>
+</ul>
+</section>
+
+<section id="section-2-3-4">
+<h3>§ 2.3.4 부정 표현 (Negation)</h3>
+
+<ul>
+  <li>"X가 없는 경우"를 조건으로 삼아 누락·예외를 검출.</li>
+  <li>본 시스템에선 <code>resolve_state_v2</code>의 <code>$safety_in != "작업 불가"</code> 처럼 부등호로 부정을 표현 (<code>functions.tql:122, 134</code>).</li>
+  <li>향후 "보고서가 없는 종료 사건" 같은 감사 기능 구현 시 <code>not { ... }</code> 블록으로 확장 예정.</li>
+</ul>
+</section>
+</section>
+
+<!-- § 2.4 외부화 -->
+<section id="section-2-4">
+<h2>§ 2.4 threshold-set / weight-set — 정책 외부화</h2>
+
+<p><strong>정의</strong>: 의사결정 임계값·가중치를 코드가 아닌 <strong>그래프 노드 attribute</strong>로 저장.</p>
+
+<section id="section-2-4-1">
+<h3>§ 2.4.1 threshold-set — s_priority → state 매핑</h3>
+
+<table>
+<thead>
+<tr><th>config-version</th><th>th-low</th><th>th-mid-low</th><th>th-mid-high</th><th>th-high</th><th>성격</th></tr>
+</thead>
+<tbody>
+<tr><td>v1 (현행)</td><td>0.20</td><td>0.40</td><td>0.60</td><td>0.80</td><td>표준</td></tr>
+<tr><td>v2 (보수적)</td><td>0.15</td><td>0.30</td><td>0.50</td><td>0.70</td><td>사전 격상 시뮬레이션</td></tr>
+</tbody>
+</table>
+
+<h4>경계 의미 (functions.tql:81-106의 s_priority_to_state_v2)</h4>
+
+<div class="code-box">$sp &lt; th-low                       → GeneralManagement
+th-low      &lt;= $sp &lt; th-mid-low    → EnhancedMonitoring
+th-mid-low  &lt;= $sp &lt; th-mid-high   → ReviewPreWatering
+th-mid-high &lt;= $sp &lt; th-high       → PriorityPreWatering
+$sp &gt;= th-high                      → ImmediatePreWatering</div>
+</section>
+
+<section id="section-2-4-2">
+<h3>§ 2.4.2 weight-set — s_priority 산식 가중치</h3>
+
+<p><code>seed_params.py:37-50</code> 인용:</p>
+
+<table>
+<thead>
+<tr><th>config-version</th><th>w-official</th><th>w-exposure</th><th>w-spread</th><th>w-action</th><th>w-time</th><th>합</th></tr>
+</thead>
+<tbody>
+<tr><td>v1</td><td>0.20</td><td>0.25</td><td>0.20</td><td>0.20</td><td>0.15</td><td>1.00</td></tr>
+</tbody>
+</table>
+
+<p>s_priority 산식:</p>
+
+<div class="code-box">s_priority = w-official × score_official
+           + w-exposure × score_exposure
+           + w-spread   × score_spread
+           + w-action   × score_action
+           + w-time     × score_time</div>
+</section>
+
+<section id="section-2-4-3">
+<h3>§ 2.4.3 적재 코드 — seed_params.py:22-50</h3>
+
+<div class="code-box">tx.query(<span class="str">"""
+    insert
+      $t isa threshold-set,
+        has threshold-set-id "TS_S_PRIORITY_V1",
+        has metric-name "S_priority_to_state",
+        has config-version "v1",
+        has th-low 0.20,
+        has th-mid-low 0.40,
+        has th-mid-high 0.60,
+        has th-high 0.80;
+"""</span>).resolve()
+
+tx.query(<span class="str">"""
+    insert
+      $w isa weight-set,
+        has weight-set-id "WS_S_PRIORITY_V1",
+        has formula-id "S_priority",
+        has config-version "v1",
+        has w-official 0.20,
+        has w-exposure 0.25,
+        has w-spread 0.20,
+        has w-action 0.20,
+        has w-time 0.15;
+"""</span>).resolve()</div>
+
+<p>Python 변수·상수가 아닌 <strong>그래프 INSERT 문</strong>으로 임계값 등록. Python 추론 계층과 fun 추론 계층 모두 이 노드를 조회해서 사용.</p>
+</section>
+</section>
+
+<!-- § 2.5 결합 -->
+<section id="section-2-5">
+<h2>§ 2.5 fun + 외부화 결합 — INSERT 한 줄로 정책 변경</h2>
+
+<p><code>s_priority_to_state_v2</code>의 핵심 메커니즘 (<code>functions.tql:81-106</code> 전체):</p>
+
+<div class="code-box"><span class="kw">fun</span> s_priority_to_state_v2($sp_in: <span class="typ">double</span>, $version_in: <span class="typ">string</span>) -&gt; { <span class="typ">string</span> }:
+  <span class="kw">match</span>
+    $t <span class="kw">isa</span> threshold-set,
+      <span class="kw">has</span> config-version $cv,
+      <span class="kw">has</span> th-low $lo,
+      <span class="kw">has</span> th-mid-low $ml,
+      <span class="kw">has</span> th-mid-high $mh,
+      <span class="kw">has</span> th-high $hi;
+    $cv == $version_in;    <span class="com"># ← 동적 조회의 핵심</span>
+    {
+      $sp_in &lt; $lo;
+      <span class="kw">let</span> $state = <span class="str">"GeneralManagement"</span>;
+    } <span class="kw">or</span> {
+      $sp_in &gt;= $lo; $sp_in &lt; $ml;
+      <span class="kw">let</span> $state = <span class="str">"EnhancedMonitoring"</span>;
+    } <span class="kw">or</span> {
+      $sp_in &gt;= $ml; $sp_in &lt; $mh;
+      <span class="kw">let</span> $state = <span class="str">"ReviewPreWatering"</span>;
+    } <span class="kw">or</span> {
+      $sp_in &gt;= $mh; $sp_in &lt; $hi;
+      <span class="kw">let</span> $state = <span class="str">"PriorityPreWatering"</span>;
+    } <span class="kw">or</span> {
+      $sp_in &gt;= $hi;
+      <span class="kw">let</span> $state = <span class="str">"ImmediatePreWatering"</span>;
+    };
+  <span class="kw">return</span> { $state };</div>
+
+<h3>동작 흐름</h3>
+
+<ol>
+  <li>fun 호출 시 두 인자 <code>$sp_in</code>, <code>$version_in</code> 전달 (예: <code>0.315, "v1"</code>)</li>
+  <li><code>match</code> 절에서 모든 <code>threshold-set</code> 노드를 후보로 가져옴</li>
+  <li><code>$cv == $version_in</code> 조건으로 정책 버전 필터 → v1 카드 1개만 남음</li>
+  <li>그 카드의 4개 임계값을 <code>$lo</code>, <code>$ml</code>, <code>$mh</code>, <code>$hi</code>로 바인딩</li>
+  <li>OR 절로 입력 점수가 어느 구간에 속하는지 판정</li>
+  <li>해당 구간의 <code>let $state = "..."</code> 결과 반환</li>
+</ol>
+
+<h3>REP1 회피 패턴</h3>
+
+<div class="code-box"><span class="com"># 안 됨 (TypeDB 3.x 제약):</span>
+$t <span class="kw">has</span> config-version $version_in;
+
+<span class="com"># 됨 (functions.tql 채택):</span>
+$t <span class="kw">has</span> config-version $cv;
+$cv == $version_in;</div>
+
+<p>attribute 매칭과 매개변수 비교를 분리. <code>functions.tql:6-8</code> 주석에 명시.</p>
+
+<h3>정책 변경 시나리오 — INSERT 한 줄로 시뮬레이션</h3>
+
+<div class="code-box"><span class="com"># v2 정책 카드 추가 (Python 코드 0줄 수정)</span>
+<span class="kw">insert</span>
+  $t <span class="kw">isa</span> threshold-set,
+    <span class="kw">has</span> threshold-set-id <span class="str">"TS_S_PRIORITY_V2"</span>,
+    <span class="kw">has</span> metric-name <span class="str">"S_priority_to_state"</span>,
+    <span class="kw">has</span> config-version <span class="str">"v2"</span>,
+    <span class="kw">has</span> th-low <span class="num">0.15</span>,
+    <span class="kw">has</span> th-mid-low <span class="num">0.30</span>,
+    <span class="kw">has</span> th-mid-high <span class="num">0.50</span>,
+    <span class="kw">has</span> th-high <span class="num">0.70</span>;
+
+<span class="com"># 동일 점수 0.315에 대해 다른 결과</span>
+s_priority_to_state_v2(<span class="num">0.315</span>, <span class="str">"v1"</span>) → <span class="str">"EnhancedMonitoring"</span>
+s_priority_to_state_v2(<span class="num">0.315</span>, <span class="str">"v2"</span>) → <span class="str">"ReviewPreWatering"</span>  ⬆️</div>
+
+<p>fun 재작성 없이, 같은 함수가 정책 카드만 바꿔서 다른 결과를 산출.</p>
+
+<!-- ───── 인터랙티브 A: 정책 토글 ───── -->
+<div class="interactive-box" id="policy-toggle-widget">
+<h3 class="!mt-0">정책 카드 토글 — 5 segment 결과 비교</h3>
+<p class="text-sm text-slate-600 mb-4">정책을 v1 / v2 / v3(사용자 정의)로 전환하면 5 segment의 state가 자동으로 재계산됩니다. v3 모드에서는 슬라이더로 직접 임계값을 조정할 수 있습니다.</p>
+
+<div class="flex gap-2 mb-5" id="policy-tabs">
+  <button class="filter-chip active" data-policy="v1">v1 (현행)</button>
+  <button class="filter-chip" data-policy="v2">v2 (보수적)</button>
+  <button class="filter-chip" data-policy="v3">v3 (사용자 정의)</button>
+</div>
+
+<div class="grid grid-cols-3 gap-3 mb-6" id="policy-cards"></div>
+
+<div id="v3-sliders" class="hidden mb-6 p-4 bg-white rounded border border-slate-200">
+  <p class="text-xs text-slate-500 mb-3 font-semibold">v3 임계값 조정 (4개 슬라이더)</p>
+  <div class="space-y-2" id="slider-container"></div>
+</div>
+
+<table class="!mt-0">
+<thead>
+<tr><th>segment-id</th><th>s-priority</th><th>safety-class</th><th>state</th></tr>
+</thead>
+<tbody id="segment-tbody"></tbody>
+</table>
+<p class="text-xs text-slate-500 mt-2"><strong>⬆️</strong> 표시 = v1 대비 상위 state로 격상된 행. EMD_장흥_유치면은 <code>safety-class="작업 불가"</code>로 <code>resolve_state_v2</code>의 hazard_gate 1순위가 발동되어 정책과 무관하게 <code>NotActionable</code>.</p>
+</div>
+</section>
+</section>
+
+<!-- ═══════════════ § 3. 추론 계층 ═══════════════ -->
+<section id="section-3">
+<h1>§ 3. 추론 계층</h1>
+
+<section id="section-3-1">
+<h2>§ 3.1 Python 추론 — graph_inference.py</h2>
+
+<ul>
+  <li><strong>위치</strong>: <code>study/wildfire-poc/inference/graph_inference.py</code></li>
+  <li><strong>호출</strong>: <code>./run.sh inference/run_inference_demo.py</code></li>
+</ul>
+
+<h3>5단계 흐름</h3>
+
+<ol>
+  <li>TypeDB에서 segment·source·threshold-set·weight-set 조회 (READ 트랜잭션)</li>
+  <li><code>formulas.py</code>로 가중평균 s_priority 산출</li>
+  <li><code>s_priority_to_state</code> 임계값 비교로 base_state 결정</li>
+  <li>State Override 규칙 적용 (hazard_gate 1순위, alert_경보 6순위)</li>
+  <li>최종 state를 segment 노드에 write-back (WRITE 트랜잭션)</li>
+</ol>
+
+<div class="ref-box">📎 <strong>참고</strong>: Python 추론은 TypeDB 외부에서 산식을 수행. 그래프는 입력·출력 저장소 역할만 한다.</div>
+</section>
+
+<section id="section-3-2">
+<h2>§ 3.2 fun 추론 — graph_inference_fun.py</h2>
+
+<p>TypeQL 안에서 fun 5종을 순서대로 호출하여 그래프 내부에서 추론 수행.</p>
+
+<h3>호출 패턴 (의사 코드)</h3>
+
+<div class="code-box"><span class="kw">match</span>
+  $s <span class="kw">isa</span> segment, <span class="kw">has</span> segment-id <span class="str">"EMD_여수_상암동"</span>;
+  $s <span class="kw">has</span> risk-grade $rg;
+  $s <span class="kw">has</span> alert-level $al;
+  $s <span class="kw">has</span> safety-class $sc;
+
+  <span class="kw">let</span> $rg_score <span class="kw">in</span> grade_to_score($rg);
+  <span class="kw">let</span> $al_score <span class="kw">in</span> alert_to_score($al);
+  <span class="com"># ... 다른 score 계산 ...</span>
+
+  <span class="kw">let</span> $sp <span class="kw">in</span> compute_s_priority($rg_score, $al_score, ...);
+  <span class="kw">let</span> $base_state <span class="kw">in</span> s_priority_to_state_v2($sp, <span class="str">"v1"</span>);
+  <span class="kw">let</span> $final_state <span class="kw">in</span> resolve_state_v2($base_state, $sc, $al);
+
+<span class="kw">select</span> $sp, $base_state, $final_state;</div>
+
+<p>Python 호출 없이, TypeDB가 직접 5종 fun을 chaining 호출하여 최종 state 산출.</p>
+</section>
+
+<section id="section-3-3">
+<h2>§ 3.3 동일 결과 회귀 검증</h2>
+
+<ul>
+  <li><strong>파일</strong>: <code>tests/test_python_vs_fun.py</code></li>
+  <li><strong>검증 내용</strong>: 5 segment 모두에 대해 Python 결과(<code>graph_inference.py</code>)와 fun 결과(<code>graph_inference_fun.py</code>)가 일치하는지. v1 임계값 + v2 임계값 양쪽에서 검증.</li>
+  <li><strong>통과 기준</strong>: 5/5 일치 × 2 정책 = 10/10</li>
+</ul>
+
+<h3>출력 (시연 2 실측)</h3>
+
+<div class="code-box">회귀 검증 — Python ↔ fun 결과 일치
+[v1 임계값] 5/5 일치 ✅
+[v2 임계값] 5/5 일치 ✅
+→ 10/10 통과
+<span class="com">"추론을 fun으로 옮겨도 결과 동일"</span></div>
+
+<p>Python 추론과 fun 추론이 결정론적으로 동일 — Python 단계를 점진적으로 fun으로 이전 가능.</p>
+</section>
+
+<section id="section-3-4">
+<h2>§ 3.4 동적 조회 사례 — 5 segment 비교</h2>
+
+<p><code>발표 시나리오 - 화면별 가이드.md</code> 시연 2 실측치:</p>
+
+<table>
+<thead>
+<tr><th>segment-id</th><th>s-priority</th><th>v1 결과</th><th>v2 결과</th><th>변화</th></tr>
+</thead>
+<tbody>
+<tr><td>EMD_여수_상암동</td><td>0.534</td><td>PriorityPreWatering</td><td>PriorityPreWatering</td><td>—</td></tr>
+<tr><td>EMD_장흥_유치면</td><td>0.454</td><td>NotActionable</td><td>NotActionable</td><td>—</td></tr>
+<tr style="background:#fef3c7;"><td><strong>EMD_나주_봉황면</strong></td><td><strong>0.315</strong></td><td>EnhancedMonitoring</td><td><strong>ReviewPreWatering</strong></td><td>⬆️ 1단계 격상</td></tr>
+<tr style="background:#fef3c7;"><td><strong>EMD_무안_운남면</strong></td><td><strong>0.315</strong></td><td>EnhancedMonitoring</td><td><strong>ReviewPreWatering</strong></td><td>⬆️ 1단계 격상</td></tr>
+<tr><td>EMD_광주_동구</td><td>0.180</td><td>GeneralManagement</td><td>GeneralManagement</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h3>분석</h3>
+
+<ul>
+  <li><strong>0.534 (여수)</strong>: v1·v2 모두 th-mid-high(0.60/0.50) 미만 → <code>PriorityPreWatering</code> 동일</li>
+  <li><strong>0.454 (장흥)</strong>: <code>safety-class="작업 불가"</code> → <code>resolve_state_v2</code> 1순위 발동 → <code>NotActionable</code> (정책 무관)</li>
+  <li><strong>0.315 (나주·무안)</strong>: v1에선 th-low(0.20) ≤ 0.315 &lt; th-mid-low(0.40) → <code>EnhancedMonitoring</code>. v2에선 th-mid-low(0.30) ≤ 0.315 &lt; th-mid-high(0.50) → <code>ReviewPreWatering</code></li>
+  <li><strong>0.180 (광주)</strong>: v1·v2 모두 th-low 미만 → <code>GeneralManagement</code> 동일</li>
+</ul>
+
+<p>정책 카드 교체만으로 2건이 자동 격상. 코드·fun 무변경.</p>
+</section>
+
+<section id="section-3-5">
+<h2>§ 3.5 write-back 패턴</h2>
+
+<ul>
+  <li><strong>정의</strong>: 추론 결과를 segment 노드의 attribute(<code>s-priority</code>, <code>state</code>, <code>state-override-reason</code>, <code>risk-grade-score</code>, <code>alert-score</code> 등)로 INSERT/UPDATE하여 영속화.</li>
+</ul>
+
+<h3>효과</h3>
+
+<ul>
+  <li><strong>결정론 보존</strong> — 다음 호출 시 같은 결과 (재계산 X, 조회 O)</li>
+  <li><strong>후속 시연 의존</strong> — 시연 2/3/4가 저장된 segment를 조회. 매번 처음부터 산출하지 않음</li>
+  <li><strong>감사 추적</strong> — 결과의 산출 시점·정책 버전·입력을 함께 저장 가능</li>
+</ul>
+
+<h3>시연 1 실제 출력</h3>
+
+<div class="code-box">$ ./run.sh db/check.py
+[검증] source 적재: REAL 18 / MOCK 6 / EXCLUDE 5
+[검증] segment 적재: 5건
+
+$ ./run.sh inference/run_inference_demo.py
+[추론] 5 segment 점수+State 산출 → 그래프 write-back
+
+ EMD_여수_상암동   S=0.534   PriorityPreWatering
+ EMD_장흥_유치면   S=0.454   NotActionable
+ EMD_나주_봉황면   S=0.315   EnhancedMonitoring
+ EMD_무안_운남면   S=0.315   EnhancedMonitoring
+ EMD_광주_동구     S=0.180   GeneralManagement
+
+✅ 그래프에 저장 완료</div>
+</section>
+</section>
+
+<!-- ═══════════════ § 4. LLM 계층 ═══════════════ -->
+<section id="section-4">
+<h1>§ 4. LLM 계층</h1>
+
+<section id="section-4-1">
+<h2>§ 4.1 2-Pass 아키텍처</h2>
+
+<p>자연어 질의 → 응답 사이에 LLM 호출이 <strong>두 번</strong> 일어남. 사이에 결정론 그래프 추론이 위치.</p>
+
+<div class="code-box">사용자 질문 (자연어)
+    │
+    ▼  text_to_typeql.py:173
+┌─────────────────────────────────────────────────┐
+│  <span class="kw">LLM #1 — Text-to-TypeQL</span>                        │
+│  - gemini-2.5-flash, temperature=0.0            │
+│  - SCHEMA_SUMMARY를 system_instruction으로 주입 │
+│  - 실패 시 최대 3회 재시도                      │
+└─────────────────────────────────────────────────┘
+    │
+    │  생성된 TypeQL
+    ▼  text_to_typeql.py:142
+┌─────────────────────────────────────────────────┐
+│  <span class="kw">TypeDB + fun 실행</span>                              │
+│  - 결정론 추론                                  │
+│  - segment·source·threshold-set 조회            │
+│  - 결과: 0~N개 ConceptRow                       │
+└─────────────────────────────────────────────────┘
+    │
+    │  실행 결과 (JSON)
+    ▼  chat.py
+┌─────────────────────────────────────────────────┐
+│  <span class="kw">LLM #2 — 자연어 정제</span>                           │
+│  - 결과 JSON → 자연어 답변                      │
+│  - mock-dominant 항목에 advisory 접두 자동 부착 │
+└─────────────────────────────────────────────────┘
+    │
+    ▼
+사용자 답변 + 감사 정보</div>
+</section>
+
+<section id="section-4-2">
+<h2>§ 4.2 LLM #1 — Text-to-TypeQL 변환</h2>
+
+<section id="section-4-2-1">
+<h3>§ 4.2.1 호출 파라미터 (text_to_typeql.py:31-35, 131-139)</h3>
+
+<div class="code-box"><span class="kw">GEMINI_MODEL</span> = <span class="str">"gemini-2.5-flash"</span>
+<span class="kw">MAX_RETRIES</span> = <span class="num">3</span>
+
+_client = genai.Client(api_key=os.environ[<span class="str">"GEMINI_API_KEY"</span>])
+
+response = _client.models.generate_content(
+    model=GEMINI_MODEL,
+    contents=prompt,
+    config=types.GenerateContentConfig(
+        system_instruction=SCHEMA_SUMMARY,
+        temperature=<span class="num">0.0</span>,
+    ),
+)</div>
+
+<ul>
+  <li><code>temperature=0.0</code> → 결정론 보장 (같은 prompt에 같은 출력)</li>
+  <li><code>system_instruction=SCHEMA_SUMMARY</code> → 스키마·문법·select 규칙을 항상 시스템 컨텍스트로 주입</li>
+</ul>
+</section>
+
+<section id="section-4-2-2">
+<h3>§ 4.2.2 SCHEMA_SUMMARY 구성 (text_to_typeql.py:41-109)</h3>
+
+<p>LLM #1에 매 호출마다 주입되는 시스템 프롬프트, 약 70줄. 구성:</p>
+
+<ol>
+  <li>entity 5종의 attribute 목록</li>
+  <li>relation 정의</li>
+  <li>state 6종 enum</li>
+  <li>TypeQL 3.x 문법 핵심 (<code>match</code>, <code>select</code>, <code>reduce</code>, <code>sort</code>, <code>limit</code>, <code>or</code>)</li>
+  <li><strong>select 절 작성 규칙</strong> — entity 변수만 select 금지, 필요 attribute 명시</li>
+  <li><strong>질문 유형별 권장 select 패턴</strong> — 7가지 (위험도/등급/MOCK source/임계값/가중치/시점/State별 정렬)</li>
+  <li>출력 규칙 — 코드 펜스 없이 순수 TypeQL만</li>
+</ol>
+</section>
+
+<section id="section-4-2-3">
+<h3>§ 4.2.3 출력 후처리 — _strip_code_fence (text_to_typeql.py:112-119)</h3>
+
+<p>LLM이 종종 <code>```typeql ... ```</code> 형식으로 감싸므로 코드 펜스 제거 후 순수 쿼리만 추출.</p>
+</section>
+
+<section id="section-4-2-4">
+<h3>§ 4.2.4 실행 함수 — _execute_typeql (text_to_typeql.py:142-150)</h3>
+
+<div class="code-box"><span class="kw">def</span> _execute_typeql(typeql: <span class="typ">str</span>) -&gt; tuple[<span class="typ">bool</span>, <span class="typ">list</span> | <span class="typ">str</span>]:
+    <span class="kw">try</span>:
+        <span class="kw">with</span> make_driver() <span class="kw">as</span> driver, driver.transaction(DB_NAME, TransactionType.READ) <span class="kw">as</span> tx:
+            answer = tx.query(typeql).resolve()
+            rows = list(answer.as_concept_rows())
+            serialized = [_serialize_row(row) <span class="kw">for</span> row <span class="kw">in</span> rows]
+            <span class="kw">return</span> <span class="num">True</span>, serialized
+    <span class="kw">except</span> Exception <span class="kw">as</span> exc:
+        <span class="kw">return</span> <span class="num">False</span>, str(exc)</div>
+
+<ul>
+  <li>성공 → <code>(True, [serialized_rows])</code></li>
+  <li>실패 → <code>(False, "에러 메시지")</code> — 예외 문자열을 그대로 반환</li>
+</ul>
+</section>
+</section>
+
+<section id="section-4-3">
+<h2>§ 4.3 Self-correcting 재시도 로직</h2>
+
+<p><strong>파일</strong>: <code>study/wildfire-poc/llm/text_to_typeql.py:173-237</code>의 <code>query_with_self_correction()</code></p>
+
+<h3>핵심 루프 (text_to_typeql.py:184-211)</h3>
+
+<div class="code-box"><span class="kw">for</span> attempt <span class="kw">in</span> range(<span class="num">1</span>, max_retries + <span class="num">1</span>):
+    typeql = _generate_typeql(question, last_error)
+    ok, output = _execute_typeql(typeql)
+
+    <span class="kw">if</span> ok <span class="kw">and</span> len(output) &gt; <span class="num">0</span>:
+        <span class="kw">return</span> {
+            <span class="str">"status"</span>: <span class="str">"success"</span>,
+            <span class="str">"attempt"</span>: attempt,
+            <span class="str">"typeql"</span>: typeql,
+            <span class="str">"results"</span>: output,
+            <span class="str">"fallback_used"</span>: <span class="num">False</span>,
+        }
+
+    <span class="kw">if</span> <span class="kw">not</span> ok:
+        last_error = <span class="str">f"실행 에러: {output}"</span>
+    <span class="kw">else</span>:
+        last_error = <span class="str">"쿼리 성공했으나 결과 0건. 조건이 맞는지 확인하세요."</span></div>
+
+<section id="section-4-3-1">
+<h3>§ 4.3.1 성공 판정 기준 (2가지 동시 충족)</h3>
+
+<table>
+<thead>
+<tr><th>조건</th><th>검사 위치</th><th>의미</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ok == True</code></td><td><code>text_to_typeql.py:192</code></td><td>TypeDB가 쿼리를 예외 없이 실행 (문법·스키마 OK)</td></tr>
+<tr><td><code>len(output) > 0</code></td><td><code>text_to_typeql.py:193</code></td><td>결과 행이 1개 이상</td></tr>
+</tbody>
+</table>
+
+<p><strong>정답 비교 없음</strong>. 의미적 정합성은 검증되지 않음.</p>
+</section>
+
+<section id="section-4-3-2">
+<h3>§ 4.3.2 재시도 prompt에 에러 첨부 (text_to_typeql.py:127-129)</h3>
+
+<div class="code-box"><span class="kw">if</span> last_error:
+    prompt += <span class="str">f"\n\n⚠️ 직전 시도가 실패했습니다. 에러:\n{last_error}\n수정해서 다시 작성하세요."</span></div>
+
+<ul>
+  <li>첫 시도: 사용자 질문만 prompt에 포함</li>
+  <li>2~3차 시도: TypeDB가 던진 예외 또는 "결과 0건" 메시지가 prompt에 첨부됨</li>
+  <li>LLM이 에러 메시지를 보고 자체 수정 후 재생성</li>
+</ul>
+</section>
+
+<section id="section-4-3-3">
+<h3>§ 4.3.3 4가지 결과 분기</h3>
+
+<table>
+<thead>
+<tr><th>status</th><th>조건</th><th>run_eval.py 집계</th></tr>
+</thead>
+<tbody>
+<tr><td><code>success</code>, attempt=1</td><td>1차에서 성공</td><td><code>first_try</code></td></tr>
+<tr><td><code>success</code>, attempt=2 or 3</td><td>재시도에서 성공</td><td><code>retry</code></td></tr>
+<tr><td><code>fallback_success</code></td><td>3회 실패 후 golden_typeql 성공</td><td><code>fallback</code></td></tr>
+<tr><td><code>failure</code></td><td>3회 + golden 모두 실패 또는 0건</td><td><code>failure</code></td></tr>
+</tbody>
+</table>
+</section>
+</section>
+
+<section id="section-4-4">
+<h2>§ 4.4 Fallback — golden_typeql 대체</h2>
+
+<p><strong>위치</strong>: <code>text_to_typeql.py:213-228</code></p>
+
+<div class="code-box">case = GOLDEN_SET.get(case_id) <span class="kw">if</span> case_id <span class="kw">else</span> <span class="num">None</span>
+<span class="kw">if</span> case <span class="kw">and</span> <span class="str">"golden_typeql"</span> <span class="kw">in</span> case:
+    golden_q = case[<span class="str">"golden_typeql"</span>]
+    ok, output = _execute_typeql(golden_q)
+    <span class="kw">if</span> ok:
+        <span class="kw">return</span> {
+            <span class="str">"status"</span>: <span class="str">"fallback_success"</span>,
+            <span class="str">"attempt"</span>: max_retries,
+            <span class="str">"typeql"</span>: golden_q,
+            <span class="str">"results"</span>: output,
+            <span class="str">"fallback_used"</span>: <span class="num">True</span>,
+            <span class="str">"warning"</span>: <span class="str">"⚠️ Gemini가 쿼리 생성에 실패하여 사전 작성된 정답으로 대체했습니다."</span>,
+        }</div>
+
+<ul>
+  <li><code>golden_qna.json</code>의 각 케이스에 사전 작성된 <code>golden_typeql</code>이 보관됨.</li>
+  <li>3회 재시도 모두 실패해야만 발동.</li>
+  <li>응답에 <code>warning</code> 필드 자동 부착 — 사용자가 "AI가 못 푼 케이스, 사전 정답 사용" 인지 가능.</li>
+  <li><code>case_id</code>가 없으면 fallback 시도조차 안 함.</li>
+</ul>
+</section>
+
+<section id="section-4-5">
+<h2>§ 4.5 LLM #2 — 결과 자연어 정제</h2>
+
+<p><strong>파일</strong>: <code>study/wildfire-poc/llm/chat.py</code></p>
+
+<ul>
+  <li><strong>입력</strong>: LLM #1 단계의 <code>results</code> 리스트 (TypeDB ConceptRow 직렬화 결과)</li>
+  <li><strong>출력</strong>: 사용자가 읽을 자연어 답변</li>
+  <li><strong>부가 처리</strong>:
+    <ul>
+      <li>mock-dominant 판정 시 답변에 "[ADVISORY]" 또는 "⚠️ 일부 데이터는 추정값(MOCK)입니다." 자동 접두</li>
+      <li><code>state_override_reason</code> 필드가 있으면 격상 사유 명시</li>
+      <li>결과 0건 시 "해당 시점의 데이터가 존재하지 않습니다." 자동 응답</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>시연 3 실제 출력</h3>
+
+<div class="code-box">Q1: EMD_여수_상암동 위험도 알려줘
+💬 <span class="str">"여수 상암동은 현재 PriorityPreWatering(우선 예비주수) 상태입니다.
+    기상특보 발효로 인해 단계가 격상되었습니다."</span>
+
+Q2: MOCK source 모두 알려줘
+💬 <span class="str">"[리스트 나열]... ⚠️ 일부 데이터는 추정값(MOCK)입니다."</span>
+
+Q3: 1990년 1월 광주 동구 위험도?
+💬 <span class="str">"해당 시점의 데이터가 존재하지 않습니다. (실패 처리 — 추측하지 않음)"</span></div>
+</section>
+
+<section id="section-4-6">
+<h2>§ 4.6 환각 방지 메커니즘</h2>
+
+<p><strong>구조적 사실</strong>: 별도의 "환각 차단 로직"이 존재하지 않는다. 환각 방지는 다음 두 정책의 부산물이다.</p>
+
+<ol>
+  <li>성공 판정에 <code>len(output) > 0</code> 포함 (<code>text_to_typeql.py:193</code>)</li>
+  <li>LLM #2가 results 입력 없이 답변 생성하지 않음 (<code>chat.py</code> 구조)</li>
+</ol>
+
+<h3>시나리오 — "1990년 1월 광주 동구 위험도?" 처리 흐름</h3>
+
+<div class="code-box"><span class="num">1.</span> LLM #1: TypeQL 생성
+   match $r isa run-context, has reference-time $t;
+     $t &lt; 2021-01-01T00:00:00;
+   select $r;
+
+<span class="num">2.</span> TypeDB 실행
+   ok = True, output = []     <span class="com">← 결과 0건</span>
+
+<span class="num">3.</span> 성공 판정
+   ok=True AND len(output)&gt;0 → <span class="kw">False</span>
+   last_error = <span class="str">"쿼리 성공했으나 결과 0건..."</span>
+
+<span class="num">4.</span> 재시도 (2회): 동일하게 0건
+
+<span class="num">5.</span> Fallback (case_id=3-4, golden_typeql 실행)
+   golden_typeql도 1990년 데이터 없음 → 0건
+   → fallback_success 조건(<span class="str">if ok:</span>) 통과하나 results=[]
+
+<span class="num">6.</span> status=<span class="str">"failure"</span> 반환
+
+<span class="num">7.</span> LLM #2: results 입력 없음 → 정형 응답 생성
+   <span class="str">"해당 시점의 데이터가 존재하지 않습니다."</span></div>
+
+<p>LLM #2가 "1990년 광주는 추정컨대..." 같은 환각 답변을 만들 가능성 자체가 차단됨. <code>results</code>가 없으므로 LLM에 컨텍스트가 없다.</p>
+</section>
+</section>
+
+<!-- ═══════════════ § 5. 평가 계층 ═══════════════ -->
+<section id="section-5">
+<h1>§ 5. 평가 계층</h1>
+
+<section id="section-5-1">
+<h2>§ 5.1 평가셋 정의 — golden_qna.json</h2>
+
+<ul>
+  <li><strong>위치</strong>: <code>study/wildfire-poc/llm/eval/golden_qna.json</code></li>
+  <li><strong>건수</strong>: <strong>15건</strong> (단순 3 / 중간 6 / 복잡 6)</li>
+</ul>
+
+<h3>각 케이스 필드</h3>
+
+<table>
+<thead>
+<tr><th>필드</th><th>타입</th><th>의미</th><th>자동 검증</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>string</td><td>케이스 식별자 (1-1, 2-3, 3-5 등)</td><td>—</td></tr>
+<tr><td><code>difficulty</code></td><td>int (1~10)</td><td>수치 난이도</td><td>—</td></tr>
+<tr><td><code>category</code></td><td>string</td><td>단순/중간/복잡</td><td>—</td></tr>
+<tr><td><code>question</code></td><td>string</td><td>사용자 자연어 질문</td><td>LLM #1 입력</td></tr>
+<tr><td><code>expected_keywords</code></td><td>array</td><td>답변에 포함되어야 할 키워드</td><td><strong>현재 미사용</strong></td></tr>
+<tr><td><code>forbidden_keywords</code></td><td>array</td><td>답변에 들어가면 안 되는 키워드</td><td><strong>현재 미사용</strong></td></tr>
+<tr><td><code>ontology_path</code></td><td>string</td><td>의도된 그래프 경로 (사람용 메모)</td><td><strong>현재 미사용</strong></td></tr>
+<tr><td><code>golden_typeql</code></td><td>string</td><td>사전 작성된 정답 TypeQL</td><td>Fallback 시 사용</td></tr>
+</tbody>
+</table>
+
+<div class="warn-box">⚠️ <strong>참고</strong>: <code>expected_keywords</code>, <code>forbidden_keywords</code>, <code>ontology_path</code>는 <code>run_eval.py</code>가 현재 검사하지 않는 필드. 향후 자동 채점기 확장 시 사용 예정. LLM #2 답변 품질의 정답 라벨로 정의되어 있다.</div>
+
+<div class="warn-box">⚠️ <strong>건수 표기 주의</strong>: <code>발표 시나리오 - 화면별 가이드.md</code>는 "14건"으로 표기되어 있으나 <strong><code>golden_qna.json</code> 실제 건수는 15건</strong>. 본 문서는 15건으로 통일.</div>
+</section>
+
+<section id="section-5-2">
+<h2>§ 5.2 평가셋 15건 그리드 뷰</h2>
+
+<!-- ───── 인터랙티브 B: 15건 그리드 ───── -->
+<div class="interactive-box" id="qna-grid-widget">
+<h3 class="!mt-0">필터·검색·정렬</h3>
+
+<div class="mb-3">
+  <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">카테고리</span>
+  <div class="mt-1">
+    <button class="filter-chip active" data-filter-cat="all">전체 (15)</button>
+    <button class="filter-chip" data-filter-cat="단순">단순 (3)</button>
+    <button class="filter-chip" data-filter-cat="중간">중간 (6)</button>
+    <button class="filter-chip" data-filter-cat="복잡">복잡 (6)</button>
+  </div>
+</div>
+
+<div class="mb-3">
+  <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">처리 결과</span>
+  <div class="mt-1">
+    <button class="filter-chip active" data-filter-result="all">전체</button>
+    <button class="filter-chip" data-filter-result="success">1회 성공</button>
+    <button class="filter-chip" data-filter-result="retry">재시도</button>
+    <button class="filter-chip" data-filter-result="fallback">Fallback</button>
+    <button class="filter-chip" data-filter-result="failure">실패</button>
+  </div>
+</div>
+
+<div class="flex gap-3 items-center mb-4 flex-wrap">
+  <input type="text" id="qna-search" placeholder="🔍 질문 텍스트 검색..." class="flex-1 min-w-[200px] px-3 py-2 border border-slate-300 rounded text-sm">
+  <select id="qna-sort" class="px-3 py-2 border border-slate-300 rounded text-sm">
+    <option value="id">정렬: id 순</option>
+    <option value="difficulty">정렬: 난이도 순</option>
+    <option value="category">정렬: 카테고리 순</option>
+  </select>
+  <span class="text-xs text-slate-500" id="qna-count"></span>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="qna-grid"></div>
+
+<p class="text-xs text-slate-500 mt-4">카드 클릭 시 상세 정보 표시. 환각 방지 케이스(3-4)는 빨간 외곽선 + 🛡️ 아이콘.</p>
+</div>
+</section>
+
+<section id="section-5-3">
+<h2>§ 5.3 환각 방지 케이스 — 3-4</h2>
+
+<p><code>golden_qna.json</code> id=3-4 정확한 인용:</p>
+
+<table>
+<thead>
+<tr><th>항목</th><th>값</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td><code>"3-4"</code></td></tr>
+<tr><td><code>difficulty</code></td><td><code>9</code></td></tr>
+<tr><td><code>category</code></td><td><code>"복잡"</code></td></tr>
+<tr><td><code>question</code></td><td>"1990년 1월의 광주 동구 위험도 알려줘"</td></tr>
+<tr><td><code>ontology_path</code></td><td><code>"Decision[reference_time=1990-01] -> 0건"</code></td></tr>
+<tr><td><code>expected_keywords</code></td><td><code>["데이터 없음", "가용 범위"]</code></td></tr>
+<tr><td><code>forbidden_keywords</code></td><td><code>["1990년", "당시", "추정"]</code></td></tr>
+<tr><td><code>golden_typeql</code></td><td><code>match $r isa run-context, has reference-time $t; $t &lt; 2021-01-01T00:00:00; get $r;</code></td></tr>
+<tr><td>예상 처리 결과</td><td><code>failure</code> (정상 동작)</td></tr>
+</tbody>
+</table>
+
+<h3>의미 분석</h3>
+
+<ul>
+  <li><code>ontology_path</code>의 <code>-> 0건</code> 표기 = "정답 경로의 결과가 0건이어야 한다"는 설계자 메모</li>
+  <li><code>forbidden_keywords</code> <code>"1990년, 당시, 추정"</code> = 환각의 시그니처. 답변에 등장하면 환각 발생 증거</li>
+  <li>처리 결과 <code>failure</code>는 정상 — 시스템이 거짓말을 거부한 결과</li>
+</ul>
+</section>
+
+<section id="section-5-4">
+<h2>§ 5.4 실행 — run_eval.py</h2>
+
+<section id="section-5-4-1">
+<h3>§ 5.4.1 호출 명령</h3>
+
+<div class="code-box">$ ./run.sh llm/eval/run_eval.py</div>
+</section>
+
+<section id="section-5-4-2">
+<h3>§ 5.4.2 출력 형식 (run_eval.py:59-72)</h3>
+
+<div class="code-box">======================================================================
+5주차 발표 3 — 평가셋 15건 자동 실행
+======================================================================
+
+# [1-1] 난이도=1 (단순)
+  ✅ 1회 성공 — EMD_여수_상암동 위험도 알려줘
+
+# [1-2] 난이도=1 (단순)
+  ✅ 1회 성공 — EMD_나주_봉황면 상태가 어때?
+
+# [2-3] 난이도=5 (중간)
+  🔁 재시도 2회 성공 — 광주에서 ImmediatePreWatering 단계인 segment 있어?
+
+# [3-4] 난이도=9 (복잡)
+  ❌ 완전 실패 — 1990년 1월의 광주 동구 위험도 알려줘
+
+...
+
+======================================================================
+결과 요약
+======================================================================
+  전체:                15건
+  Gemini 1회 성공:     8건
+  Gemini 재시도 성공:  3건
+  Fallback 사용:       3건  (Gemini 직접 실패)
+  완전 실패:           1건
+
+  난이도별 Gemini 직접 성공률:
+    단순 : 3/3 (100%)
+    중간 : 5/6 (83%)
+    복잡 : 3/6 (50%)</div>
+
+<div class="warn-box">⚠️ 수치는 라이브 실행 시점·평가셋 수정 여부에 따라 변동.</div>
+</section>
+</section>
+
+<section id="section-5-5">
+<h2>§ 5.5 통과 목표</h2>
+
+<p><code>docs/study/w05/03-평가셋-질의응답10건.md</code> 섹션 6 기준:</p>
+
+<table>
+<thead>
+<tr><th>난이도</th><th>Gemini 직접 성공 목표</th><th>의미</th></tr>
+</thead>
+<tbody>
+<tr><td>단순 (1~3)</td><td>100% (3/3)</td><td>단일 entity 조회는 무조건 성공</td></tr>
+<tr><td>중간 (4~7)</td><td>67%+ (4/6)</td><td>여러 attribute 결합 + 조건 필터</td></tr>
+<tr><td>복잡 (8~10)</td><td>50%+ (3/6)</td><td>정렬·집계·다중 entity — Flash 한계점</td></tr>
+</tbody>
+</table>
+
+<p>Gemini Flash로 폐쇄망 운영 가능성 확인용. 통과 목표 충족 시 본 시스템은 Flash 단독으로 운영 가능.</p>
+</section>
+</section>
+
+<!-- ═══════════════ 부록 ═══════════════ -->
+<section id="appendix-a">
+<h1>부록 A. 6대 학습 요점 매핑</h1>
+
+<table>
+<thead>
+<tr><th>#</th><th>학습 요점</th><th>해당 섹션</th><th>코드 위치</th></tr>
+</thead>
+<tbody>
+<tr><td>①</td><td>추론 결과가 다시 데이터가 된다 (write-back)</td><td>§ 3.5</td><td><code>inference/run_inference_demo.py</code></td></tr>
+<tr><td>②</td><td>정책 변경 = INSERT 한 줄, 코드 0줄</td><td>§ 2.4, § 2.5</td><td><code>db/seed_params.py</code></td></tr>
+<tr><td>③</td><td>감사 정보가 자연어에 묻어 나온다 (advisory)</td><td>§ 4.5</td><td><code>llm/chat.py</code></td></tr>
+<tr><td>④</td><td>DB에 없으면 LLM도 답을 만들지 않는다 (환각 방지)</td><td>§ 4.6, § 5.3</td><td><code>text_to_typeql.py:193, 209-211</code></td></tr>
+<tr><td>⑤</td><td>자가 수정 + 정량 측정 (Self-correcting)</td><td>§ 4.3, § 5.4</td><td><code>text_to_typeql.py:173-237</code></td></tr>
+<tr><td>⑥</td><td>그래프가 직접 추론할 수 있다 (자족 추론)</td><td>§ 2.2, § 3.2</td><td><code>db/functions.tql</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="appendix-b">
+<h1>부록 B. 시연 시나리오</h1>
+
+<table>
+<thead>
+<tr><th>시연</th><th>보여주는 것</th><th>명령어</th></tr>
+</thead>
+<tbody>
+<tr><td>시연 1</td><td>5 segment write-back</td><td><code>./run.sh inference/run_inference_demo.py</code></td></tr>
+<tr><td>시연 2</td><td>v1/v2 정책 비교 + Python ↔ fun 회귀</td><td><code>./run.sh tests/test_param_externalization.py</code><br><code>./run.sh tests/test_python_vs_fun.py</code></td></tr>
+<tr><td>시연 3</td><td>chat.py 3건 (정상 / advisory / 환각 방지)</td><td><code>./run.sh llm/chat.py</code></td></tr>
+<tr><td>시연 4</td><td>평가셋 15건 라이브 + 카운트</td><td><code>./run.sh llm/eval/run_eval.py</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="appendix-c">
+<h1>부록 C. 운영 체크리스트</h1>
+
+<div class="code-box">[ ] TypeDB 컨테이너 실행 중 (localhost:1729, admin/password)
+[ ] GEMINI_API_KEY 환경변수 설정
+[ ] 의존 패키지 설치 (uv sync)
+[ ] 스키마·fun 적재 완료 (apply_schema_v2.py, apply_functions.py)
+[ ] seed_params.py로 threshold-set·weight-set 적재
+[ ] source 29건, segment 5건 적재
+[ ] golden_qna.json 무결성 (15건)</div>
+</section>
+
+  </main>
+</div>
+
+<!-- ─────────────── 모달 (카드 클릭 시) ─────────────── -->
+<div id="qna-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+    <button id="modal-close" class="absolute top-3 right-3 text-slate-400 hover:text-slate-800 text-2xl leading-none">&times;</button>
+
+    <div class="flex items-center gap-2 mb-3" id="modal-header">
+      <span class="px-2 py-0.5 text-xs font-bold rounded text-white" id="modal-cat-badge"></span>
+      <span class="text-xs font-semibold text-slate-500" id="modal-id-badge"></span>
+      <span class="text-xs text-slate-400" id="modal-diff-badge"></span>
+      <span class="result-badge" id="modal-result-badge"></span>
+    </div>
+
+    <h3 class="text-xl font-bold text-slate-900 mb-4" id="modal-question"></h3>
+
+    <div class="space-y-3 text-sm">
+      <div class="p-3 bg-slate-50 rounded">
+        <div class="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">ontology_path</div>
+        <code class="text-slate-700" id="modal-ontology"></code>
+      </div>
+
+      <div class="p-3 bg-emerald-50 rounded">
+        <div class="text-xs text-emerald-600 font-semibold uppercase tracking-wider mb-1">expected_keywords</div>
+        <span class="text-emerald-800" id="modal-expected"></span>
+      </div>
+
+      <div class="p-3 bg-red-50 rounded">
+        <div class="text-xs text-red-600 font-semibold uppercase tracking-wider mb-1">forbidden_keywords</div>
+        <span class="text-red-800 line-through decoration-red-400" id="modal-forbidden"></span>
+      </div>
+
+      <div>
+        <div class="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">golden_typeql (Fallback 시 사용)</div>
+        <div class="code-box text-xs" id="modal-typeql"></div>
+      </div>
+
+      <div id="modal-hallucination" class="hidden p-3 bg-red-100 border border-red-300 rounded">
+        <strong class="text-red-800">🛡️ 환각 방지 케이스</strong><br>
+        <span class="text-red-700 text-sm">이 케이스는 데이터가 의도적으로 없는 질의. <code>failure</code> 결과가 정상 동작.</span>
+      </div>
+    </div>
+
+    <div class="flex justify-between mt-5 pt-4 border-t border-slate-200">
+      <button id="modal-prev" class="px-3 py-1.5 text-sm border border-slate-300 rounded hover:bg-slate-50">← 이전</button>
+      <button id="modal-next" class="px-3 py-1.5 text-sm border border-slate-300 rounded hover:bg-slate-50">다음 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════ 데이터 ═══════════════
+
+const SEGMENTS = [
+  {id: "EMD_여수_상암동",  sp: 0.534, safety: "정상"},
+  {id: "EMD_장흥_유치면",  sp: 0.454, safety: "작업 불가"},
+  {id: "EMD_나주_봉황면",  sp: 0.315, safety: "정상"},
+  {id: "EMD_무안_운남면",  sp: 0.315, safety: "정상"},
+  {id: "EMD_광주_동구",    sp: 0.180, safety: "정상"},
+];
+
+const POLICIES = {
+  v1: {low: 0.20, midLow: 0.40, midHigh: 0.60, high: 0.80},
+  v2: {low: 0.15, midLow: 0.30, midHigh: 0.50, high: 0.70},
+  v3: {low: 0.20, midLow: 0.40, midHigh: 0.60, high: 0.80},
+};
+
+const GOLDEN_QNA = [
+  {id: "1-1", difficulty: 1, category: "단순",
+   question: "EMD_여수_상암동 위험도 알려줘",
+   expected_keywords: ["여수", "상암동", "PriorityPreWatering"],
+   forbidden_keywords: ["아마도", "추정", "정확하지 않"],
+   ontology_path: "Segment -> Decision (state, s-priority)",
+   golden_typeql: "match $s isa segment, has segment-id 'EMD_여수_상암동', has s-priority $sp, has state $st, has state-override-reason $r; get $sp, $st, $r;",
+   result: "success", attempt: 1},
+  {id: "1-2", difficulty: 1, category: "단순",
+   question: "EMD_나주_봉황면 상태가 어때?",
+   expected_keywords: ["나주", "봉황", "GeneralManagement|EnhancedMonitoring"],
+   forbidden_keywords: ["위험합니다", "걱정"],
+   ontology_path: "Segment -> Decision",
+   golden_typeql: "match $s isa segment, has segment-id 'EMD_나주_봉황면', has state $st, has s-priority $sp; get $st, $sp;",
+   result: "success", attempt: 1},
+  {id: "1-3", difficulty: 2, category: "단순",
+   question: "지금 추론 시점이 언제야?",
+   expected_keywords: ["2026", "reference"],
+   forbidden_keywords: ["지금 시각", "현재 시각"],
+   ontology_path: "RunContext (latest)",
+   golden_typeql: "match $r isa run-context, has reference-time $t, has status 'completed'; get $t; sort $t desc; limit 1;",
+   result: "success", attempt: 1},
+  {id: "2-1", difficulty: 4, category: "중간",
+   question: "여수 상암동이 왜 PriorityPreWatering으로 격상됐어?",
+   expected_keywords: ["경보", "격상", "alert"],
+   forbidden_keywords: ["그냥", "막연히"],
+   ontology_path: "Segment -> state-override-reason + 입력 attributes",
+   golden_typeql: "match $s isa segment, has segment-id 'EMD_여수_상암동', has state $st, has state-override-reason $reason, has alert-level $al, has risk-grade $rg; get $st, $reason, $al, $rg;",
+   result: "success", attempt: 1},
+  {id: "2-2", difficulty: 5, category: "중간",
+   question: "MOCK 상태인 source 모두 알려줘",
+   expected_keywords: ["MOCK", "SOURCE_"],
+   forbidden_keywords: ["아마도 mock", "추정컨대"],
+   ontology_path: "Source WHERE availability-status='MOCK' (mock-propagation rule 발동)",
+   golden_typeql: "match $s isa source, has availability-status 'MOCK', has source-id $id, has source-name $name; get $id, $name;",
+   result: "success", attempt: 1},
+  {id: "2-3", difficulty: 5, category: "중간",
+   question: "광주에서 ImmediatePreWatering 단계인 segment 있어?",
+   expected_keywords: ["광주", "ImmediatePreWatering"],
+   forbidden_keywords: ["ReviewPreWatering", "EnhancedMonitoring"],
+   ontology_path: "Segment WHERE admin-region LIKE '광주%' AND state='ImmediatePreWatering'",
+   golden_typeql: "match $s isa segment, has admin-region $r, has state 'ImmediatePreWatering', has segment-id $id; $r contains '광주'; get $id, $r;",
+   result: "retry", attempt: 2},
+  {id: "2-4", difficulty: 6, category: "중간",
+   question: "여수 상암동과 나주 봉황면 중 어디가 더 위험해?",
+   expected_keywords: ["여수", "나주", "s-priority"],
+   forbidden_keywords: ["비슷", "둘 다"],
+   ontology_path: "Segment[2] 비교",
+   golden_typeql: "match $s isa segment, has segment-id $id, has s-priority $sp, has state $st; { $id == 'EMD_여수_상암동'; } or { $id == 'EMD_나주_봉황면'; }; get $id, $sp, $st;",
+   result: "success", attempt: 1},
+  {id: "2-5", difficulty: 6, category: "중간",
+   question: "EMD_장흥_유치면이 작업 불가인 이유?",
+   expected_keywords: ["safety", "작업 불가", "hazard_gate"],
+   forbidden_keywords: ["점수가 낮아서"],
+   ontology_path: "Segment -> safety-class + state-override-reason",
+   golden_typeql: "match $s isa segment, has segment-id 'EMD_장흥_유치면', has safety-class $sc, has state $st, has state-override-reason $r; get $sc, $st, $r;",
+   result: "success", attempt: 1},
+  {id: "2-6", difficulty: 7, category: "중간",
+   question: "REAL 상태인 source는 몇 개야?",
+   expected_keywords: ["REAL", "18"],
+   forbidden_keywords: ["대략", "아마"],
+   ontology_path: "Source WHERE availability-status='REAL' COUNT",
+   golden_typeql: "match $s isa source, has availability-status 'REAL'; get $s; count;",
+   result: "success", attempt: 1},
+  {id: "3-1", difficulty: 8, category: "복잡",
+   question: "PriorityPreWatering 이상 상태인 segment를 점수 높은 순으로 알려줘",
+   expected_keywords: ["PriorityPreWatering", "점수", "정렬"],
+   forbidden_keywords: ["임의 순서"],
+   ontology_path: "Segment WHERE state IN (Priority, Immediate) ORDER BY s-priority DESC",
+   golden_typeql: "match $s isa segment, has state $st, has segment-id $id, has s-priority $sp; { $st == 'PriorityPreWatering'; } or { $st == 'ImmediatePreWatering'; }; get $id, $st, $sp; sort $sp desc;",
+   result: "retry", attempt: 2},
+  {id: "3-2", difficulty: 8, category: "복잡",
+   question: "현재 사용 중인 임계값(threshold) 설정 알려줘",
+   expected_keywords: ["threshold", "0.20", "0.40", "0.60", "0.80"],
+   forbidden_keywords: ["하드코딩", "코드에 박혀"],
+   ontology_path: "threshold-set WHERE config-version='v1'",
+   golden_typeql: "match $t isa threshold-set, has config-version 'v1', has metric-name $m, has th-low $low, has th-mid-low $ml, has th-mid-high $mh, has th-high $h; get $m, $low, $ml, $mh, $h;",
+   result: "retry", attempt: 2},
+  {id: "3-3", difficulty: 9, category: "복잡",
+   question: "현재 NotActionable인 segment와 그 사유를 모두 알려줘",
+   expected_keywords: ["NotActionable", "hazard_gate"],
+   forbidden_keywords: ["전부 작업 가능"],
+   ontology_path: "Segment WHERE state='NotActionable'",
+   golden_typeql: "match $s isa segment, has state 'NotActionable', has segment-id $id, has segment-name $name, has state-override-reason $reason, has safety-class $sc; get $id, $name, $reason, $sc;",
+   result: "fallback_success", attempt: 4},
+  {id: "3-4", difficulty: 9, category: "복잡",
+   question: "1990년 1월의 광주 동구 위험도 알려줘",
+   expected_keywords: ["데이터 없음", "가용 범위"],
+   forbidden_keywords: ["1990년", "당시", "추정"],
+   ontology_path: "Decision[reference_time=1990-01] -> 0건",
+   golden_typeql: "match $r isa run-context, has reference-time $t; $t < 2021-01-01T00:00:00; get $r;",
+   result: "failure", attempt: 4,
+   hallucination_guard: true},
+  {id: "3-5", difficulty: 10, category: "복잡",
+   question: "S_priority 가중치 설정과 현재 PriorityPreWatering segment 모두 보여줘",
+   expected_keywords: ["weight", "0.20", "0.25", "PriorityPreWatering"],
+   forbidden_keywords: ["짐작", "대충"],
+   ontology_path: "weight-set v1 + Segment WHERE state='Priority' (두 쿼리 통합)",
+   golden_typeql: "match $w isa weight-set, has config-version 'v1', has w-official $wo, has w-exposure $we, has w-spread $ws, has w-action $wa, has w-time $wt; $s isa segment, has state 'PriorityPreWatering', has segment-id $id, has s-priority $sp; get $wo, $we, $ws, $wa, $wt, $id, $sp;",
+   result: "fallback_success", attempt: 4},
+];
+
+// ═══════════════ 인터랙티브 A: 정책 토글 ═══════════════
+
+function spToState(sp, p) {
+  if (sp < p.low) return "GeneralManagement";
+  if (sp < p.midLow) return "EnhancedMonitoring";
+  if (sp < p.midHigh) return "ReviewPreWatering";
+  if (sp < p.high) return "PriorityPreWatering";
+  return "ImmediatePreWatering";
+}
+
+function resolveState(baseState, safety) {
+  // hazard_gate 1순위만 단순 구현
+  if (safety === "작업 불가") return "NotActionable";
+  return baseState;
+}
+
+let activePolicy = "v1";
+
+function renderPolicyCards() {
+  const c = document.getElementById("policy-cards");
+  c.innerHTML = "";
+  ["v1", "v2", "v3"].forEach(v => {
+    const p = POLICIES[v];
+    const isActive = v === activePolicy;
+    const labels = {v1: "v1 (현행)", v2: "v2 (보수적)", v3: "v3 (사용자 정의)"};
+    const div = document.createElement("div");
+    div.className = "policy-card " + (isActive ? "active" : "");
+    div.innerHTML = `
+      <div class="font-bold text-sm mb-2 text-slate-700">${labels[v]}</div>
+      <div class="text-xs text-slate-600 mono space-y-0.5">
+        <div>th-low      <span class="text-slate-900 font-semibold">${p.low.toFixed(2)}</span></div>
+        <div>th-mid-low  <span class="text-slate-900 font-semibold">${p.midLow.toFixed(2)}</span></div>
+        <div>th-mid-high <span class="text-slate-900 font-semibold">${p.midHigh.toFixed(2)}</span></div>
+        <div>th-high     <span class="text-slate-900 font-semibold">${p.high.toFixed(2)}</span></div>
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function renderSegmentTable() {
+  const p = POLICIES[activePolicy];
+  const v1p = POLICIES.v1;
+  const tbody = document.getElementById("segment-tbody");
+  tbody.innerHTML = "";
+
+  SEGMENTS.forEach(s => {
+    const baseV1 = spToState(s.sp, v1p);
+    const stateV1 = resolveState(baseV1, s.safety);
+    const baseCur = spToState(s.sp, p);
+    const stateCur = resolveState(baseCur, s.safety);
+    const escalated = activePolicy !== "v1" && stateV1 !== stateCur;
+    const tr = document.createElement("tr");
+    tr.className = "seg-row" + (escalated ? " escalated" : "");
+    tr.innerHTML = `
+      <td class="mono">${s.id}</td>
+      <td class="mono">${s.sp.toFixed(3)}</td>
+      <td>${s.safety}</td>
+      <td>
+        <span class="font-semibold">${stateCur}</span>
+        ${escalated ? '<span class="text-amber-600 ml-1">⬆️</span>' : ''}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderSliders() {
+  const c = document.getElementById("slider-container");
+  c.innerHTML = "";
+  const keys = [["low", "th-low"], ["midLow", "th-mid-low"], ["midHigh", "th-mid-high"], ["high", "th-high"]];
+  keys.forEach(([k, label]) => {
+    const div = document.createElement("div");
+    div.className = "flex items-center gap-3";
+    div.innerHTML = `
+      <label class="text-xs text-slate-600 mono w-24">${label}</label>
+      <input type="range" min="0" max="1" step="0.01" value="${POLICIES.v3[k]}" data-key="${k}" class="flex-1">
+      <span class="text-xs mono font-semibold text-slate-900 w-12 text-right" id="slider-val-${k}">${POLICIES.v3[k].toFixed(2)}</span>
+    `;
+    c.appendChild(div);
+  });
+  c.querySelectorAll('input[type="range"]').forEach(input => {
+    input.addEventListener("input", e => {
+      const k = e.target.dataset.key;
+      const v = parseFloat(e.target.value);
+      POLICIES.v3[k] = v;
+      document.getElementById(`slider-val-${k}`).textContent = v.toFixed(2);
+      renderPolicyCards();
+      renderSegmentTable();
+    });
+  });
+}
+
+document.querySelectorAll('#policy-tabs button').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('#policy-tabs button').forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activePolicy = btn.dataset.policy;
+    document.getElementById("v3-sliders").classList.toggle("hidden", activePolicy !== "v3");
+    renderPolicyCards();
+    renderSegmentTable();
+  });
+});
+
+renderPolicyCards();
+renderSegmentTable();
+renderSliders();
+
+// ═══════════════ 인터랙티브 B: 15건 그리드 ═══════════════
+
+let filterCat = "all";
+let filterResult = "all";
+let searchText = "";
+let sortKey = "id";
+
+function getResultBadge(result, attempt) {
+  if (result === "success" && attempt === 1) return {cls: "badge-success", text: "✅ 1회 성공"};
+  if (result === "retry" || (result === "success" && attempt > 1)) return {cls: "badge-retry", text: `🔁 재시도 ${attempt}회`};
+  if (result === "fallback_success") return {cls: "badge-fallback", text: "🔄 Fallback"};
+  if (result === "failure") return {cls: "badge-failure", text: "❌ 실패"};
+  return {cls: "badge-success", text: "✅"};
+}
+
+function getResultGroup(result, attempt) {
+  if (result === "success" && attempt === 1) return "success";
+  if (result === "retry" || (result === "success" && attempt > 1)) return "retry";
+  if (result === "fallback_success") return "fallback";
+  if (result === "failure") return "failure";
+  return "success";
+}
+
+function renderGrid() {
+  const grid = document.getElementById("qna-grid");
+  let filtered = GOLDEN_QNA.filter(q => {
+    if (filterCat !== "all" && q.category !== filterCat) return false;
+    if (filterResult !== "all" && getResultGroup(q.result, q.attempt) !== filterResult) return false;
+    if (searchText && !q.question.toLowerCase().includes(searchText.toLowerCase())) return false;
+    return true;
+  });
+
+  if (sortKey === "difficulty") filtered.sort((a, b) => a.difficulty - b.difficulty);
+  else if (sortKey === "category") {
+    const order = {"단순": 1, "중간": 2, "복잡": 3};
+    filtered.sort((a, b) => order[a.category] - order[b.category] || a.difficulty - b.difficulty);
+  } else filtered.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
+
+  grid.innerHTML = "";
+  filtered.forEach(q => {
+    const badge = getResultBadge(q.result, q.attempt);
+    const catColors = {"단순": "bg-sky-500", "중간": "bg-amber-500", "복잡": "bg-rose-500"};
+    const card = document.createElement("div");
+    card.className = "qna-card" + (q.hallucination_guard ? " hallucination-guard" : "");
+    card.dataset.id = q.id;
+    card.innerHTML = `
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class="${catColors[q.category]} text-white text-[10px] font-bold px-2 py-0.5 rounded">${q.category}</span>
+          <span class="text-xs font-mono text-slate-500">#${q.id}</span>
+          <span class="text-[10px] text-slate-400">난이도 ${q.difficulty}</span>
+          ${q.hallucination_guard ? '<span title="환각 방지 케이스">🛡️</span>' : ''}
+        </div>
+        <span class="result-badge ${badge.cls}">${badge.text}</span>
+      </div>
+      <div class="text-slate-800 leading-snug">${q.question}</div>
+    `;
+    card.addEventListener("click", () => openModal(q.id));
+    grid.appendChild(card);
+  });
+
+  document.getElementById("qna-count").textContent = `${filtered.length} / 15건`;
+}
+
+document.querySelectorAll('[data-filter-cat]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('[data-filter-cat]').forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filterCat = btn.dataset.filterCat;
+    renderGrid();
+  });
+});
+
+document.querySelectorAll('[data-filter-result]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('[data-filter-result]').forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filterResult = btn.dataset.filterResult;
+    renderGrid();
+  });
+});
+
+document.getElementById("qna-search").addEventListener("input", e => {
+  searchText = e.target.value;
+  renderGrid();
+});
+
+document.getElementById("qna-sort").addEventListener("change", e => {
+  sortKey = e.target.value;
+  renderGrid();
+});
+
+renderGrid();
+
+// ═══════════════ 모달 ═══════════════
+
+let currentModalId = null;
+
+function openModal(id) {
+  const q = GOLDEN_QNA.find(x => x.id === id);
+  if (!q) return;
+  currentModalId = id;
+
+  const catColors = {"단순": "bg-sky-500", "중간": "bg-amber-500", "복잡": "bg-rose-500"};
+  const catEl = document.getElementById("modal-cat-badge");
+  catEl.className = "px-2 py-0.5 text-xs font-bold rounded text-white " + catColors[q.category];
+  catEl.textContent = q.category;
+  document.getElementById("modal-id-badge").textContent = `#${q.id}`;
+  document.getElementById("modal-diff-badge").textContent = `난이도 ${q.difficulty}`;
+
+  const badge = getResultBadge(q.result, q.attempt);
+  const rb = document.getElementById("modal-result-badge");
+  rb.className = "result-badge " + badge.cls;
+  rb.textContent = badge.text;
+
+  document.getElementById("modal-question").textContent = q.question;
+  document.getElementById("modal-ontology").textContent = q.ontology_path;
+  document.getElementById("modal-expected").textContent = q.expected_keywords.join(", ");
+  document.getElementById("modal-forbidden").textContent = q.forbidden_keywords.join(", ");
+  document.getElementById("modal-typeql").textContent = q.golden_typeql;
+  document.getElementById("modal-hallucination").classList.toggle("hidden", !q.hallucination_guard);
+
+  const modal = document.getElementById("qna-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeModal() {
+  const modal = document.getElementById("qna-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  currentModalId = null;
+}
+
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("qna-modal").addEventListener("click", e => {
+  if (e.target.id === "qna-modal") closeModal();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && currentModalId) closeModal();
+});
+
+document.getElementById("modal-prev").addEventListener("click", () => {
+  const idx = GOLDEN_QNA.findIndex(x => x.id === currentModalId);
+  if (idx > 0) openModal(GOLDEN_QNA[idx - 1].id);
+});
+document.getElementById("modal-next").addEventListener("click", () => {
+  const idx = GOLDEN_QNA.findIndex(x => x.id === currentModalId);
+  if (idx < GOLDEN_QNA.length - 1) openModal(GOLDEN_QNA[idx + 1].id);
+});
+
+// ═══════════════ 인터랙티브 C: 사이드바 active + 인쇄 모드 ═══════════════
+
+const sections = document.querySelectorAll("section[id]");
+const tocLinks = document.querySelectorAll(".toc-link");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      tocLinks.forEach(l => l.classList.toggle("active", l.getAttribute("href") === `#${id}`));
+    }
+  });
+}, {rootMargin: "-30% 0px -65% 0px"});
+
+sections.forEach(s => observer.observe(s));
+
+document.getElementById("print-toggle").addEventListener("click", () => {
+  document.body.classList.toggle("print-mode");
+  const btn = document.getElementById("print-toggle");
+  btn.textContent = document.body.classList.contains("print-mode") ? "↩️ 일반 모드" : "📄 인쇄 친화 모드";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+# S2: 매개변수 받기 (string) — 변수명 안전화 ($st → $status_filter)
+define
+
+fun sources_by_status($status_filter: string) -> { source }:
+  match
+    $s isa source, has availability-status $status_filter;
+  return { $s };

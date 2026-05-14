@@ -1,0 +1,193 @@
+# =====================================================================
+# baseline 산식의 rule 표현 (5주차 발표 1)
+#
+# 핵심 설계 원칙:
+# 1. 하드코딩 금지: 임계값·가중치는 별도 노드(threshold-set, weight-set)에서 읽음
+# 2. rule로 표현 가능한 건 모두 rule (lookup, 분기, 전파)
+# 3. 수치 연산(가중평균, 정규화)만 Python에서 계산 후 write-back
+# =====================================================================
+
+define
+
+# =====================================================================
+# Rule 1: 산림청 5단계 등급 → 점수 (0~1)
+# =====================================================================
+# baseline 산식: risk_grade_score(g) = lookup(g, {정상:0.00, 낮음:0.20, ...})
+# 향후 lookup-table 노드로 더 동적화 가능
+
+rule grade-score-정상:
+  when {
+    $s isa segment, has risk-grade "정상";
+  } then {
+    $s has risk-grade-score 0.00;
+  };
+
+rule grade-score-낮음:
+  when {
+    $s isa segment, has risk-grade "낮음";
+  } then {
+    $s has risk-grade-score 0.20;
+  };
+
+rule grade-score-다소높음:
+  when {
+    $s isa segment, has risk-grade "다소높음";
+  } then {
+    $s has risk-grade-score 0.55;
+  };
+
+rule grade-score-높음:
+  when {
+    $s isa segment, has risk-grade "높음";
+  } then {
+    $s has risk-grade-score 0.75;
+  };
+
+rule grade-score-매우높음:
+  when {
+    $s isa segment, has risk-grade "매우높음";
+  } then {
+    $s has risk-grade-score 1.00;
+  };
+
+
+# =====================================================================
+# Rule 2: 대형산불 경보 → 점수
+# =====================================================================
+# baseline 산식: F_official_alert = lookup(level, {없음:0.0, 주의보:0.6, 경보:1.0})
+
+rule alert-score-없음:
+  when {
+    $s isa segment, has alert-level "없음";
+  } then {
+    $s has alert-score 0.00;
+  };
+
+rule alert-score-주의보:
+  when {
+    $s isa segment, has alert-level "주의보";
+  } then {
+    $s has alert-score 0.60;
+  };
+
+rule alert-score-경보:
+  when {
+    $s isa segment, has alert-level "경보";
+  } then {
+    $s has alert-score 1.00;
+  };
+
+
+# =====================================================================
+# Rule 3: S_priority 점수 → base-state (5단계)
+# =====================================================================
+# 원자료 §State Transition 표 그대로
+# 임계값은 threshold-set 노드의 attribute에서 읽음 (하드코딩 X)
+
+rule base-state-general:
+  when {
+    $s isa segment, has s-priority $sp;
+    $t isa threshold-set, has config-version "v1",
+      has metric-name "S_priority_to_state",
+      has th-low $low;
+    $sp < $low;
+  } then {
+    $s has base-state "GeneralManagement";
+  };
+
+rule base-state-monitoring:
+  when {
+    $s isa segment, has s-priority $sp;
+    $t isa threshold-set, has config-version "v1",
+      has metric-name "S_priority_to_state",
+      has th-low $low, has th-mid-low $mid_low;
+    $sp >= $low; $sp < $mid_low;
+  } then {
+    $s has base-state "EnhancedMonitoring";
+  };
+
+rule base-state-review:
+  when {
+    $s isa segment, has s-priority $sp;
+    $t isa threshold-set, has config-version "v1",
+      has metric-name "S_priority_to_state",
+      has th-mid-low $mid_low, has th-mid-high $mid_high;
+    $sp >= $mid_low; $sp < $mid_high;
+  } then {
+    $s has base-state "ReviewPreWatering";
+  };
+
+rule base-state-priority:
+  when {
+    $s isa segment, has s-priority $sp;
+    $t isa threshold-set, has config-version "v1",
+      has metric-name "S_priority_to_state",
+      has th-mid-high $mid_high, has th-high $high;
+    $sp >= $mid_high; $sp < $high;
+  } then {
+    $s has base-state "PriorityPreWatering";
+  };
+
+rule base-state-immediate:
+  when {
+    $s isa segment, has s-priority $sp;
+    $t isa threshold-set, has config-version "v1",
+      has metric-name "S_priority_to_state",
+      has th-high $high;
+    $sp >= $high;
+  } then {
+    $s has base-state "ImmediatePreWatering";
+  };
+
+
+# =====================================================================
+# Rule 4: State Override (점수 무관 우선 적용)
+# =====================================================================
+# 원자료 §State Override 우선순위 표 (단순화 — 1순위, 6순위만)
+
+# 1순위: 안전 위험 → NotActionable
+rule override-not-actionable:
+  when {
+    $s isa segment, has safety-class "작업 불가";
+  } then {
+    $s has state "NotActionable";
+    $s has state-override-reason "hazard_gate_priority_1";
+  };
+
+# 6순위: 경보 발령 → 최소 PriorityPreWatering 격상
+# (1순위 발동 시엔 적용 안 함)
+rule override-alert-경보:
+  when {
+    $s isa segment, has alert-level "경보";
+    not { $s has safety-class "작업 불가"; };
+  } then {
+    $s has state "PriorityPreWatering";
+    $s has state-override-reason "alert_경보_priority_6";
+  };
+
+# Override 없는 경우: base-state를 state로
+rule state-from-base:
+  when {
+    $s isa segment, has base-state $bs;
+    not { $s has safety-class "작업 불가"; };
+    not { $s has alert-level "경보"; };
+  } then {
+    $s has state $bs;
+    $s has state-override-reason "default_no_override";
+  };
+
+
+# =====================================================================
+# Rule 5: Mock 전파 (원자료 Mock Contract)
+# =====================================================================
+# Source가 MOCK이면, 그 source를 입력으로 쓰는 Feature까지 mock-input=true 전파
+# OR 전파 (입력 중 하나라도 mock이면 결과도 mock)
+
+rule mock-propagation-source-to-feature:
+  when {
+    $src isa source, has availability-status "MOCK";
+    (upstream: $src, downstream: $f) isa feeds;
+    $f isa feature;
+  } then {
+    $f has mock-input true;
+  };

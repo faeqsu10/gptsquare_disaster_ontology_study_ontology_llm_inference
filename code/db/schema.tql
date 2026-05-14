@@ -1,0 +1,63 @@
+# =====================================================================
+# TypeDB 3.x 스키마 — 광주·전남 산불 예비주수 시스템 (4주차 발표 1)
+#
+# 핵심 3개념:
+# - entity: 사물 1건 (SQL 테이블 행과 비슷)
+# - relation: 사물 사이 관계 (SQL의 JOIN을 객체화)
+# - attribute: 속성 값 (SQL 컬럼 값)
+# =====================================================================
+
+define
+
+  # ===== Attribute 타입 정의 (TypeDB 3.x는 attribute를 먼저 선언) =====
+  attribute source-id, value string;
+  attribute source-name, value string;
+  attribute availability-status, value string;    # REAL | MOCK | EXCLUDE
+  attribute readiness, value string;
+  attribute source-owner, value string;
+
+  attribute access-option-id, value string;
+  attribute option-status, value string;          # SELECTED | FALLBACK | REJECTED
+  attribute endpoint, value string;
+
+  attribute feature-id, value string;
+  attribute mock-input, value boolean;
+
+
+  # ===== Entity 타입 정의 =====
+
+  # source = "데이터 소스 1건"
+  entity source,
+    owns source-id @key,
+    owns source-name,
+    owns availability-status,
+    owns readiness,
+    owns source-owner,
+    plays feeds:upstream,
+    plays has-option:source;
+
+  # access-option = "이 source를 어떻게 가져오는지"
+  entity access-option,
+    owns access-option-id @key,
+    owns option-status,
+    owns endpoint,
+    plays has-option:option;
+
+  # feature = "산식 입력 1건"
+  entity feature,
+    owns feature-id @key,
+    owns mock-input,
+    plays feeds:downstream;
+
+
+  # ===== Relation 타입 정의 =====
+
+  # feeds: A가 B로 데이터 흐름 ("source → feature" 표현)
+  relation feeds,
+    relates upstream,
+    relates downstream;
+
+  # has-option: source에 access-option이 달림
+  relation has-option,
+    relates source,
+    relates option;

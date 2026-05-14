@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시연 ③ 자연어로 그래프에 묻기</title>
+  <link rel="stylesheet" href="/static/style.css?v=demo3-flow" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>시연 ③ 자연어로 그래프에 묻기</h1>
+        <p>AI가 자연어를 TypeQL로 바꿔 실행하고, 결과를 다시 자연어로 풀어 답합니다</p>
+      </div>
+    </a>
+    <div class="topbar-meta">
+      <a class="back-link" href="/">← 시연 목록</a>
+    </div>
+  </header>
+
+  <main class="demo3-main">
+    <section class="demo3-panel" aria-label="질문 입력">
+      <h2>질문</h2>
+      <p class="demo3-panel-hint">예시 칩을 클릭하거나, 직접 입력해 보세요.</p>
+
+      <div class="preset-row" id="preset-row">
+        <!-- JS가 동적으로 채움 -->
+      </div>
+
+      <form class="ask-form" id="ask-form">
+        <label class="sr-only" for="ask-input">자연어 질문</label>
+        <input id="ask-input" type="text" name="query" placeholder="예: EMD_여수_상암동 위험도 알려줘" autocomplete="off" maxlength="300" />
+        <button type="submit" id="ask-submit">물어보기</button>
+      </form>
+    </section>
+
+    <!-- 4단계 흐름 다이어그램 (항상 표시) -->
+    <section class="demo3-panel flow-panel" aria-label="4단계 흐름">
+      <h2>어떻게 동작하나요? — 4단계 흐름</h2>
+      <p class="demo3-panel-hint">질문을 입력하면 아래 4단계가 순서대로 펼쳐집니다.</p>
+      <ol class="flow-diagram">
+        <li class="flow-step step-1">
+          <span class="flow-num">①</span>
+          <span class="flow-label">자연어 질문</span>
+          <span class="flow-example">"EMD_여수_상암동 위험도 알려줘"</span>
+        </li>
+        <li class="flow-arrow" aria-hidden="true">→</li>
+        <li class="flow-step step-2">
+          <span class="flow-num">②</span>
+          <span class="flow-label">LLM이 TypeQL 생성</span>
+          <span class="flow-example">match $s isa segment, has segment-id "..."; select $sn, $st, $sp;</span>
+        </li>
+        <li class="flow-arrow" aria-hidden="true">→</li>
+        <li class="flow-step step-3">
+          <span class="flow-num">③</span>
+          <span class="flow-label">TypeDB 실행 → JSON</span>
+          <span class="flow-example">[{ "sn":"여수 상암동", "st":"PriorityPreWatering", ... }]</span>
+        </li>
+        <li class="flow-arrow" aria-hidden="true">→</li>
+        <li class="flow-step step-4">
+          <span class="flow-num">④</span>
+          <span class="flow-label">JSON → 자연어 답변</span>
+          <span class="flow-example">"여수 상암동의 산불 위험도는 '매우높음'이며..."</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="demo3-panel" aria-label="AI 응답 흐름">
+      <h2>AI 응답 흐름</h2>
+      <p class="demo3-panel-hint">단계가 위에서 아래로 한 칸씩 펼쳐집니다. 자가 수정(🔁)이 발생하면 시도 카드가 추가됩니다.</p>
+      <div class="trace-list" id="trace-list">
+        <div style="color: var(--text-muted); padding: 16px;">아직 질문하지 않았습니다. 위에서 질문을 입력하거나 예시 칩을 클릭해주세요.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>재난 온톨로지 스터디 — 산불 PoC · 5주차 스터디</span>
+    <span>v0.4 · prd-demo3 v0.2 (4단계 흐름도)</span>
+  </footer>
+
+  <script src="/static/demo3.js?v=demo3-flow" defer></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시연 ② 정책 한 줄만 바꿔보기</title>
+  <link rel="stylesheet" href="/static/style.css?v=demo2-v04" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>시연 ② 정책 한 줄만 바꿔보기</h1>
+        <p>임계값(정책)이 그래프에 외부화되어 있으면, INSERT 한 줄로 새 정책을 추가할 수도 있습니다</p>
+      </div>
+    </a>
+    <div class="topbar-meta">
+      <a class="back-link" href="/">← 시연 목록</a>
+    </div>
+  </header>
+
+  <main class="demo2-main">
+    <!-- 임계값 컨트롤 -->
+    <section class="demo2-panel" aria-label="임계값 컨트롤">
+      <h2>임계값 (threshold-set) — 그래프에 적재된 버전</h2>
+      <p class="demo2-panel-hint">버튼으로 그래프에 저장된 버전을 즉시 비교하거나, 슬라이더로 임의 값을 시험한 뒤 새 버전으로 저장할 수 있습니다.</p>
+
+      <div class="toggle-row" id="version-toggle-row">
+        <!-- JS가 동적 생성: v1, v2, v3, ... + "+ 새 버전 저장" 버튼 -->
+      </div>
+
+      <div class="source-row">
+        <span class="source-pill" id="source-pill">버전 로딩 중…</span>
+        <span class="edit-pill" id="edit-pill" hidden>슬라이더 편집 중 (저장 안 됨)</span>
+      </div>
+
+      <!-- 컬러바 -->
+      <div class="colorbar-wrap">
+        <div class="colorbar" id="colorbar" style="--w1:0.2;--w2:0.2;--w3:0.2;--w4:0.2;--w5:0.2;">
+          <span class="colorbar-band band-1">일반</span>
+          <span class="colorbar-band band-2">감시</span>
+          <span class="colorbar-band band-3">검토</span>
+          <span class="colorbar-band band-4">우선</span>
+          <span class="colorbar-band band-5">즉시</span>
+        </div>
+      </div>
+
+      <!-- 슬라이더 4개 -->
+      <div class="slider-grid">
+        <div class="slider-cell">
+          <div class="slider-cell-label"><span>low</span><span class="slider-cell-value" data-value="low">0.20</span></div>
+          <input type="range" class="threshold-slider" data-th="low" min="0.05" max="0.95" step="0.01" value="0.20" />
+        </div>
+        <div class="slider-cell">
+          <div class="slider-cell-label"><span>mid_low</span><span class="slider-cell-value" data-value="mid_low">0.40</span></div>
+          <input type="range" class="threshold-slider" data-th="mid_low" min="0.05" max="0.95" step="0.01" value="0.40" />
+        </div>
+        <div class="slider-cell">
+          <div class="slider-cell-label"><span>mid_high</span><span class="slider-cell-value" data-value="mid_high">0.60</span></div>
+          <input type="range" class="threshold-slider" data-th="mid_high" min="0.05" max="0.95" step="0.01" value="0.60" />
+        </div>
+        <div class="slider-cell">
+          <div class="slider-cell-label"><span>high</span><span class="slider-cell-value" data-value="high">0.80</span></div>
+          <input type="range" class="threshold-slider" data-th="high" min="0.05" max="0.95" step="0.01" value="0.80" />
+        </div>
+      </div>
+
+      <!-- 라이브 INSERT TypeQL — 슬라이더 값에 따라 4개 숫자가 실시간 반영 -->
+      <div class="insert-typeql-wrap" aria-label="그래프 저장 TypeQL">
+        <div class="insert-typeql-head">
+          <span class="insert-typeql-title">📥 그래프에 저장될 TypeQL</span>
+          <span class="insert-typeql-hint" id="insert-typeql-hint">슬라이더를 움직이면 아래 숫자가 함께 바뀝니다</span>
+        </div>
+        <pre class="insert-typeql"><code>insert
+  $t isa threshold-set,
+    has threshold-set-id "<span class="ins-token id" data-ins="set-id">TS_S_PRIORITY_V1</span>",
+    has metric-name      "S_priority_to_state",
+    has config-version   "<span class="ins-token ver" data-ins="version">v1</span>",
+    has th-low      <span class="ins-token num" data-ins="low">0.20</span>,
+    has th-mid-low  <span class="ins-token num" data-ins="mid_low">0.40</span>,
+    has th-mid-high <span class="ins-token num" data-ins="mid_high">0.60</span>,
+    has th-high     <span class="ins-token num" data-ins="high">0.80</span>;</code></pre>
+      </div>
+    </section>
+
+    <!-- 5건 매핑 결과 -->
+    <section class="demo2-panel" aria-label="매핑 결과">
+      <h2>5건 매핑 결과</h2>
+      <p class="demo2-panel-hint">v1 기준으로 매핑을 비교합니다. 격상은 빨강(↑), 하강은 파랑(↓).</p>
+
+      <div id="missing-banner" hidden></div>
+
+      <table class="mapping-table">
+        <thead>
+          <tr>
+            <th>segment</th>
+            <th class="num">s_priority</th>
+            <th>현재 단계</th>
+            <th>v1 대비 변화</th>
+          </tr>
+        </thead>
+        <tbody id="mapping-rows">
+          <!-- JS -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>재난 온톨로지 스터디 — 산불 PoC · 5주차 스터디</span>
+    <span>v0.4 · prd-demo2 v0.2 (라이브 INSERT 박스)</span>
+  </footer>
+
+  <script src="/static/demo2.js?v=demo2-v04" defer></script>
+</body>
+</html>

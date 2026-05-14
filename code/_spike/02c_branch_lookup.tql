@@ -1,0 +1,23 @@
+# S4: 분기 multiple return — 등급→점수 lookup
+# 변수명: $g → $grade_in (attribute risk-grade와 충돌 회피)
+define
+
+fun grade_to_score($grade_in: string) -> { double }:
+  match
+    {
+      $grade_in == "정상";
+      let $score = 0.00;
+    } or {
+      $grade_in == "낮음";
+      let $score = 0.20;
+    } or {
+      $grade_in == "다소높음";
+      let $score = 0.55;
+    } or {
+      $grade_in == "높음";
+      let $score = 0.75;
+    } or {
+      $grade_in == "매우높음";
+      let $score = 1.00;
+    };
+  return { $score };

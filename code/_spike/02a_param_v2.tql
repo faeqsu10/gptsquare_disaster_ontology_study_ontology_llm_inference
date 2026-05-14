@@ -1,0 +1,9 @@
+# S2 v2: 매개변수와 attribute 매칭 분리 (REP1 회피)
+# 가설: has X $internal_var; $internal_var == $param; 패턴이면 통과
+define
+
+fun sources_by_status_v2($status_filter: string) -> { source }:
+  match
+    $s isa source, has availability-status $av;
+    $av == $status_filter;
+  return { $s };

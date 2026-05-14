@@ -1,0 +1,108 @@
+# =====================================================================
+# TypeDB 3.x 스키마 v2 — 5주차 발표 1
+#
+# 4주차 schema.tql 위에 추가:
+# - Segment (의사결정 단위)
+# - RunContext (실행 시점 마스터)
+# - threshold-set, weight-set (파라미터 외부화)
+# =====================================================================
+
+define
+
+  # ===== 새 attribute 타입 =====
+  attribute segment-id, value string;
+  attribute segment-name, value string;
+  attribute admin-region, value string;
+
+  # 입력값
+  attribute risk-grade, value string;
+  attribute alert-level, value string;
+  attribute residential-population, value integer;
+  attribute forest-distance-m, value integer;
+  attribute wind-speed, value double;
+  attribute safety-class, value string;
+
+  # rule이 채울 결과값
+  attribute risk-grade-score, value double;
+  attribute alert-score, value double;
+  attribute s-priority, value double;
+  attribute base-state, value string;
+  attribute state, value string;
+  attribute state-override-reason, value string;
+
+  # RunContext
+  attribute run-context-id, value string;
+  attribute reference-time, value datetime;
+  attribute started-at, value datetime;
+  attribute status, value string;
+
+  # 파라미터 외부화 (하드코딩 금지)
+  attribute threshold-set-id, value string;
+  attribute metric-name, value string;
+  attribute config-version, value string;
+  attribute th-low, value double;
+  attribute th-mid-low, value double;
+  attribute th-mid-high, value double;
+  attribute th-high, value double;
+
+  attribute weight-set-id, value string;
+  attribute formula-id, value string;
+  attribute w-official, value double;
+  attribute w-exposure, value double;
+  attribute w-spread, value double;
+  attribute w-action, value double;
+  attribute w-time, value double;
+
+
+  # ===== Entity =====
+
+  entity segment,
+    owns segment-id @key,
+    owns segment-name,
+    owns admin-region,
+    owns risk-grade,
+    owns alert-level,
+    owns residential-population,
+    owns forest-distance-m,
+    owns wind-speed,
+    owns safety-class,
+    owns risk-grade-score,
+    owns alert-score,
+    owns s-priority,
+    owns base-state,
+    owns state,
+    owns state-override-reason,
+    plays segment-of-run:segment;
+
+  entity run-context,
+    owns run-context-id @key,
+    owns reference-time,
+    owns started-at,
+    owns status,
+    plays segment-of-run:run;
+
+  entity threshold-set,
+    owns threshold-set-id @key,
+    owns metric-name,
+    owns config-version,
+    owns th-low,
+    owns th-mid-low,
+    owns th-mid-high,
+    owns th-high;
+
+  entity weight-set,
+    owns weight-set-id @key,
+    owns formula-id,
+    owns config-version,
+    owns w-official,
+    owns w-exposure,
+    owns w-spread,
+    owns w-action,
+    owns w-time;
+
+
+  # ===== Relation =====
+
+  relation segment-of-run,
+    relates segment,
+    relates run;

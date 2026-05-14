@@ -1,0 +1,8 @@
+# S3 v2: scalar count signature 조정
+# 가설 1: integer (집합 표시 없이) 사용 가능?
+define
+
+fun mock_count_v2() -> integer:
+  match
+    $s isa source, has availability-status "MOCK";
+  return count;

@@ -1,0 +1,72 @@
+# SPIKE 2~4 묶음: 매개변수 / scalar 반환 / 분기 / 그래프 노드 조회
+# 각 fun을 하나씩 정의 시도.
+
+define
+
+# S2: 매개변수 받기 (string)
+fun sources_by_status($st: string) -> { source }:
+  match
+    $s isa source, has availability-status $st;
+  return { $s };
+
+# S3-a: scalar 반환 — 단일 값 (count)
+fun mock_count() -> { integer }:
+  match
+    $s isa source, has availability-status "MOCK";
+  return count;
+
+# S3-b: scalar 반환 — 매개변수로 입력받은 string에 따라 결과 갯수 다름
+fun status_count($st: string) -> { integer }:
+  match
+    $s isa source, has availability-status $st;
+  return count;
+
+# S4: scalar 매개변수 + 분기 multiple return — 등급→점수 lookup
+# 핵심 가설: OR 절 안에서 다른 단일 값 반환 가능한가
+fun grade_to_score($g: string) -> { double }:
+  match
+    {
+      $g == "정상";
+      let $score = 0.00;
+    } or {
+      $g == "낮음";
+      let $score = 0.20;
+    } or {
+      $g == "다소높음";
+      let $score = 0.55;
+    } or {
+      $g == "높음";
+      let $score = 0.75;
+    } or {
+      $g == "매우높음";
+      let $score = 1.00;
+    };
+  return { $score };
+
+# S5: fun 안에서 threshold-set 노드 조회 → 임계값 비교 → 분기 반환
+# 가장 핵심. 임계값 외부화 + fun 결합의 진짜 모습
+fun s_priority_to_state($sp: double, $version: string) -> { string }:
+  match
+    $t isa threshold-set,
+      has config-version $version,
+      has th-low $lo,
+      has th-mid-low $ml,
+      has th-mid-high $mh,
+      has th-high $hi;
+    {
+      $sp < $lo;
+      let $state = "GeneralManagement";
+    } or {
+      $sp >= $lo; $sp < $ml;
+      let $state = "EnhancedMonitoring";
+    } or {
+      $sp >= $ml; $sp < $mh;
+      let $state = "ReviewPreWatering";
+    } or {
+      $sp >= $mh; $sp < $hi;
+      let $state = "PriorityPreWatering";
+    } or {
+      $sp >= $hi;
+      let $state = "ImmediatePreWatering";
+    };
+  return { $state };

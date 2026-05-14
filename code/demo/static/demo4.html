@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시연 ④ 14건 정답 ↔ LLM 비교</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>시연 ④ 14건 정답 ↔ LLM 비교</h1>
+        <p>왼쪽에서 질문을 골라 실행하면, 오른쪽에 정답·LLM 생성·그래프 근거가 나란히 표시됩니다.</p>
+      </div>
+    </a>
+    <div class="topbar-meta">
+      <a class="back-link" href="/">← 시연 목록</a>
+    </div>
+  </header>
+
+  <main class="demo4-main demo4-split">
+    <!-- 좌측: 14건 목록 -->
+    <aside class="demo4-side" aria-label="14건 평가셋 목록">
+      <div class="side-head">
+        <h2>평가셋 14건</h2>
+        <p class="side-hint">질문을 골라 ▶ 실행을 누르세요</p>
+      </div>
+      <ol class="case-list" id="case-list"><!-- JS --></ol>
+      <div class="side-actions">
+        <button type="button" class="btn-primary" id="run-one-btn" disabled>▶ 선택한 1건 실행</button>
+        <button type="button" class="btn-secondary" id="run-all-btn">⏵ 14건 전체 실행</button>
+      </div>
+      <div class="side-summary" id="side-summary" hidden>
+        <h3>전체 요약</h3>
+        <div class="summary-line">
+          <span>키워드:</span>
+          <span><strong id="kw-pass">0</strong> ✓ / <strong id="kw-partial">0</strong> ⚠ / <strong id="kw-fail">0</strong> ✗</span>
+        </div>
+        <div class="summary-line">
+          <span>실행:</span>
+          <span><strong id="ex-first">0</strong> 1회 / <strong id="ex-retry">0</strong> 재시도 / <strong id="ex-fallback">0</strong> 예비 / <strong id="ex-failure">0</strong> 실패</span>
+        </div>
+        <div class="summary-progress">
+          <div class="bar"><div class="fill" id="mini-fill"></div></div>
+          <span id="mini-label">0/14</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 우측: 선택된 질문 카드 -->
+    <section class="demo4-detail" aria-label="선택된 질문 상세">
+      <article class="compare-card" id="detail-card">
+        <div class="detail-placeholder" id="detail-placeholder">
+          <h2>👈 왼쪽에서 질문을 선택해주세요</h2>
+          <p>각 질문에는 정답 TypeQL과 기대 키워드가 미리 등록되어 있습니다.</p>
+          <p>질문을 고른 뒤 <strong>▶ 선택한 1건 실행</strong>을 누르면, AI가 그래프에 질의하고 답변까지 만들어 비교 결과를 보여줍니다.</p>
+        </div>
+        <div class="detail-body" id="detail-body" hidden><!-- JS --></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>재난 온톨로지 스터디 — 산불 PoC · 5주차 스터디</span>
+    <span>v0.6 · prd-demo4 v0.4 (그래프 시각화 모달)</span>
+  </footer>
+
+  <!-- 그래프 시각화 모달 (B안) — JS가 채움 -->
+  <div class="graph-modal" id="graph-modal" hidden role="dialog" aria-modal="true" aria-labelledby="graph-modal-title">
+    <div class="graph-modal-backdrop" data-role="modal-close"></div>
+    <div class="graph-modal-card" role="document">
+      <header class="graph-modal-head">
+        <div class="graph-modal-title-wrap">
+          <h2 id="graph-modal-title">🔎 그래프에서 보기</h2>
+          <span class="graph-modal-sub" id="graph-modal-sub"></span>
+        </div>
+        <button type="button" class="graph-modal-close" data-role="modal-close" aria-label="닫기">×</button>
+      </header>
+      <div class="graph-modal-body" id="graph-modal-body"><!-- JS --></div>
+    </div>
+  </div>
+
+  <script src="/static/demo4.js" defer></script>
+</body>
+</html>

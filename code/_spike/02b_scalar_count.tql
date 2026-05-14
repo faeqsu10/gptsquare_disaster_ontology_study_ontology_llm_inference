@@ -1,0 +1,12 @@
+# S3: scalar 반환 — count
+define
+
+fun mock_count() -> { integer }:
+  match
+    $s isa source, has availability-status "MOCK";
+  return count;
+
+fun status_count($status_filter: string) -> { integer }:
+  match
+    $s isa source, has availability-status $status_filter;
+  return count;

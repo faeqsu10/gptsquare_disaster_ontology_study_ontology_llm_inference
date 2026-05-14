@@ -1,0 +1,146 @@
+# =====================================================================
+# TypeDB 3.x functions — 산불 예비주수 추론을 그래프 안에서 실행
+#
+# 설계 원칙:
+# 1. 임계값·가중치 하드코딩 금지 — 그래프의 threshold-set·weight-set 노드 조회
+# 2. 매개변수와 attribute 매칭 분리 (REP1 회피)
+#    안 됨: has X $param;
+#    됨:    has X $internal; $internal == $param;
+# 3. lookup·분기는 OR 절 + let 변수
+# 4. 기존 Python 추론(graph_inference.py)과 병존 — fun이 같은 결과 보장 (test_python_vs_fun.py로 검증)
+#
+# 검증 이력: _spike/findings.md 참조 (2026-05-09)
+# =====================================================================
+
+define
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 1. 데이터 조회 fun (status별 source)
+# ─────────────────────────────────────────────────────────────────────
+
+fun sources_by_status_v2($status_filter: string) -> { source }:
+  match
+    $s isa source, has availability-status $av;
+    $av == $status_filter;
+  return { $s };
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 2. lookup fun (등급 → 점수)
+# baseline 산식 GRADE_SCORE = {정상:0.00, 낮음:0.20, 다소높음:0.55, 높음:0.75, 매우높음:1.00}
+# ─────────────────────────────────────────────────────────────────────
+
+fun grade_to_score($grade_in: string) -> { double }:
+  match
+    {
+      $grade_in == "정상";
+      let $score = 0.00;
+    } or {
+      $grade_in == "낮음";
+      let $score = 0.20;
+    } or {
+      $grade_in == "다소높음";
+      let $score = 0.55;
+    } or {
+      $grade_in == "높음";
+      let $score = 0.75;
+    } or {
+      $grade_in == "매우높음";
+      let $score = 1.00;
+    };
+  return { $score };
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 3. lookup fun (경보 → 점수)
+# ─────────────────────────────────────────────────────────────────────
+
+fun alert_to_score($alert_in: string) -> { double }:
+  match
+    {
+      $alert_in == "없음";
+      let $score = 0.0;
+    } or {
+      $alert_in == "주의보";
+      let $score = 0.6;
+    } or {
+      $alert_in == "경보";
+      let $score = 1.0;
+    };
+  return { $score };
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 4. ★ 핵심: 임계값 외부화 + fun 결합
+# s_priority + config-version → State (그래프 노드를 동적 조회)
+# v1 임계값: 0.20/0.40/0.60/0.80 (현재 운영)
+# v2 임계값: 0.15/0.30/0.50/0.70 (보수적 시뮬레이션)
+# ─────────────────────────────────────────────────────────────────────
+
+fun s_priority_to_state_v2($sp_in: double, $version_in: string) -> { string }:
+  match
+    $t isa threshold-set,
+      has config-version $cv,
+      has th-low $lo,
+      has th-mid-low $ml,
+      has th-mid-high $mh,
+      has th-high $hi;
+    $cv == $version_in;
+    {
+      $sp_in < $lo;
+      let $state = "GeneralManagement";
+    } or {
+      $sp_in >= $lo; $sp_in < $ml;
+      let $state = "EnhancedMonitoring";
+    } or {
+      $sp_in >= $ml; $sp_in < $mh;
+      let $state = "ReviewPreWatering";
+    } or {
+      $sp_in >= $mh; $sp_in < $hi;
+      let $state = "PriorityPreWatering";
+    } or {
+      $sp_in >= $hi;
+      let $state = "ImmediatePreWatering";
+    };
+  return { $state };
+
+
+# ─────────────────────────────────────────────────────────────────────
+# 5. State Override (hazard_gate 1순위, alert_경보 6순위)
+# Python의 resolve_state()를 fun으로 표현
+# ─────────────────────────────────────────────────────────────────────
+
+fun resolve_state_v2($base_state_in: string, $safety_in: string, $alert_in: string) -> { string }:
+  match
+    {
+      # 1순위: hazard_gate
+      $safety_in == "작업 불가";
+      let $state = "NotActionable";
+    } or {
+      # 6순위: alert 경보 격상 (단, base_state가 medium 이하일 때만)
+      $safety_in != "작업 불가";
+      $alert_in == "경보";
+      {
+        $base_state_in == "GeneralManagement";
+      } or {
+        $base_state_in == "EnhancedMonitoring";
+      } or {
+        $base_state_in == "ReviewPreWatering";
+      };
+      let $state = "PriorityPreWatering";
+    } or {
+      # default: base_state 그대로
+      $safety_in != "작업 불가";
+      {
+        $alert_in != "경보";
+      } or {
+        $alert_in == "경보";
+        $base_state_in == "PriorityPreWatering";
+      } or {
+        $alert_in == "경보";
+        $base_state_in == "ImmediatePreWatering";
+      };
+      let $state = $base_state_in;
+    };
+  return { $state };

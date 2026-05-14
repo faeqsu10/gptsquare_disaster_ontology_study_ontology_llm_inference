@@ -1,0 +1,29 @@
+# S5: 핵심 — fun 안에서 threshold-set 노드 조회 + 비교 분기
+# 변수명: $version → $version_in (attribute config-version과 다름이지만 안전화)
+define
+
+fun s_priority_to_state($sp_in: double, $version_in: string) -> { string }:
+  match
+    $t isa threshold-set,
+      has config-version $version_in,
+      has th-low $lo,
+      has th-mid-low $ml,
+      has th-mid-high $mh,
+      has th-high $hi;
+    {
+      $sp_in < $lo;
+      let $state = "GeneralManagement";
+    } or {
+      $sp_in >= $lo; $sp_in < $ml;
+      let $state = "EnhancedMonitoring";
+    } or {
+      $sp_in >= $ml; $sp_in < $mh;
+      let $state = "ReviewPreWatering";
+    } or {
+      $sp_in >= $mh; $sp_in < $hi;
+      let $state = "PriorityPreWatering";
+    } or {
+      $sp_in >= $hi;
+      let $state = "ImmediatePreWatering";
+    };
+  return { $state };

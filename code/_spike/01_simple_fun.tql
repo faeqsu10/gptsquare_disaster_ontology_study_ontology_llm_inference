@@ -1,0 +1,9 @@
+# SPIKE 1: 가장 단순한 fun (길기상 패턴) — 매개변수 X, entity 집합 반환
+# 검증 가설: 우리 schema(source)에서도 fun 정의·호출 가능한가?
+
+define
+
+fun mock_sources() -> { source }:
+  match
+    $s isa source, has availability-status "MOCK";
+  return { $s };

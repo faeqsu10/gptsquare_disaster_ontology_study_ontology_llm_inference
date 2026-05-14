@@ -1,0 +1,31 @@
+# env
+.env
+.env.local
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.python-version
+*.egg-info/
+
+# ML artifacts (학습된 모델)
+*.pkl
+*.joblib
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# 시연 녹화
+recordings/
+
+# 임시
+*.log
+*.tmp
+.cache/
