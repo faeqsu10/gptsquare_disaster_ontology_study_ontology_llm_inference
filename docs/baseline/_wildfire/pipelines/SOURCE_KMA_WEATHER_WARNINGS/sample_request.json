@@ -1,0 +1,24 @@
+{
+  "source_id": "SOURCE_KMA_WEATHER_WARNINGS",
+  "access_option_id": "ACCESS_KMA_WEATHER_WARNINGS_WARNING_AREA",
+  "captured_at": "2026-04-30T11:48:31.129161Z",
+  "method": "GET",
+  "endpoint": "https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php",
+  "query_params": {
+    "reg": "0",
+    "tmfc1": "202604150000",
+    "tmfc2": "202604212359",
+    "disp": "0",
+    "help": "1",
+    "authKey": "<KMA_APIHUB_AUTH_KEY>"
+  },
+  "request_url": "https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php?reg=0&tmfc1=202604150000&tmfc2=202604212359&disp=0&help=1&authKey=%3CKMA_APIHUB_AUTH_KEY%3E",
+  "poc_request_url": "https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php?reg=L1050100&tmfc1=202604150000&tmfc2=202604212359&disp=0&help=1&authKey=%3CKMA_APIHUB_AUTH_KEY%3E",
+  "auth": {
+    "required": "public_api_key",
+    "env_vars": [
+      "KMA_APIHUB_AUTH_KEY",
+      "APIHUB_AUTH_KEY"
+    ]
+  }
+}

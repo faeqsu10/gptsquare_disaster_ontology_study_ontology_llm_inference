@@ -1,0 +1,7 @@
+{
+  "source_id": "source_id",
+  "access_option_id": "access_option_id",
+  "captured_at": "",
+  "raw_response_path": "",
+  "notes": "For large responses, store the raw file separately and point to it here."
+}

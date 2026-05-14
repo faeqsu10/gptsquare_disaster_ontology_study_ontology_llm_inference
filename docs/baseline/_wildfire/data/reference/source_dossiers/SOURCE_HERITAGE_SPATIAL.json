@@ -1,0 +1,35 @@
+{
+  "source_id": "SOURCE_HERITAGE_SPATIAL",
+  "selected_access_option_id": "ACCESS_HERITAGE_SPATIAL_FEATURESERVER_BBOX",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_HERITAGE_SPATIAL/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_HERITAGE_SPATIAL/",
+  "raw_fields_observed": [
+    "geometry",
+    "fid",
+    "국가유산명",
+    "면적",
+    "시군구명",
+    "시군구코드",
+    "시도명",
+    "시도코드",
+    "유산코드",
+    "종목명",
+    "종목코드",
+    "SHAPE__Length",
+    "SHAPE__Area",
+    "_layer_id",
+    "_layer_name"
+  ],
+  "time_key_field": "sample_response.metadata.service_metadata_updated",
+  "time_parse_result": "pass",
+  "space_key_field": "geometry",
+  "space_validation_result": "pass",
+  "native_crs": "Feature service native EPSG:5179 preserved in sample_response_arcgis_native.json; convenience GeoJSON requested outSR=EPSG:4326",
+  "native_time_format": "YYYY.MM service metadata; captured_at ISO-8601",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "Full 광주·전남 FeatureServer snapshot saved under full_gwangju_jeonnam_20260430 with 1,214 native ArcGIS features.",
+    "Integration review should decide whether the FeatureServer mirror can be primary long-term or only a PoC acquisition bridge."
+  ]
+}

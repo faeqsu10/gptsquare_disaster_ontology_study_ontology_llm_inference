@@ -4,7 +4,7 @@
 발표 직전 또는 회차 사이에 실행해 그래프 오염을 막는다.
 
 실행 방법:
-    ./study/wildfire-poc/run.sh study/wildfire-poc/scripts/reset_thresholds.py
+    ./code/run.sh code/scripts/reset_thresholds.py
 """
 
 import sys

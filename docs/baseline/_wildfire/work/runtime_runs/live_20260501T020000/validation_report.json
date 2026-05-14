@@ -1,0 +1,286 @@
+{
+  "run_id": "live_20260501T020000",
+  "reference_time": "2026-05-01T02:22:04+09:00",
+  "live_fire_driver_status": "ok",
+  "live_fire_row_count": 27,
+  "source_cycle_status_subset": [
+    {
+      "source_id": "SOURCE_FIRE_STATION_CENTERS",
+      "lifecycle_class": "static_anchor",
+      "refresh_cycle": "annual or registry refresh",
+      "time_key_semantics": "registry_updated_at",
+      "runtime_role": "station master anchor",
+      "required_env_vars": [],
+      "reference_time": "2026-05-01T02:22:04+09:00",
+      "env_ready": false,
+      "current_cycle_hint": {}
+    },
+    {
+      "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+      "lifecycle_class": "runtime_mock_overlay",
+      "refresh_cycle": "recomputed per run_context and shift window",
+      "time_key_semantics": "valid_from / valid_to",
+      "runtime_role": "runtime overlay",
+      "required_env_vars": [],
+      "reference_time": "2026-05-01T02:22:04+09:00",
+      "env_ready": false,
+      "current_cycle_hint": {}
+    },
+    {
+      "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+      "lifecycle_class": "runtime_mock_overlay",
+      "refresh_cycle": "recomputed per run_context",
+      "time_key_semantics": "scenario_time / valid window",
+      "runtime_role": "runtime overlay",
+      "required_env_vars": [],
+      "reference_time": "2026-05-01T02:22:04+09:00",
+      "env_ready": false,
+      "current_cycle_hint": {}
+    },
+    {
+      "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+      "lifecycle_class": "runtime_mock_overlay",
+      "refresh_cycle": "recomputed per run_context with regional profile",
+      "time_key_semantics": "scenario_time / valid window",
+      "runtime_role": "runtime overlay",
+      "required_env_vars": [],
+      "reference_time": "2026-05-01T02:22:04+09:00",
+      "env_ready": false,
+      "current_cycle_hint": {}
+    },
+    {
+      "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+      "lifecycle_class": "runtime_mock_overlay",
+      "refresh_cycle": "recomputed per run_context with live risk pressure",
+      "time_key_semantics": "scenario_time / valid window",
+      "runtime_role": "runtime overlay",
+      "required_env_vars": [],
+      "reference_time": "2026-05-01T02:22:04+09:00",
+      "env_ready": false,
+      "current_cycle_hint": {}
+    }
+  ],
+  "all_sources_raw_role_ready": true,
+  "results": [
+    {
+      "source_id": "SOURCE_FIRE_STATION_CENTERS",
+      "lifecycle_class": "static_anchor",
+      "grain": "station_id",
+      "check_count": 6,
+      "checks": [
+        {
+          "name": "raw_columns_present",
+          "ok": true
+        },
+        {
+          "name": "master_columns_present",
+          "ok": true
+        },
+        {
+          "name": "station_id_unique",
+          "ok": true
+        },
+        {
+          "name": "registry_updated_at_populated",
+          "ok": true
+        },
+        {
+          "name": "address_preserved_without_geocoding",
+          "ok": true
+        },
+        {
+          "name": "region_scope_rows",
+          "ok": true
+        }
+      ],
+      "failures": [],
+      "raw_role_ready": true,
+      "notes": [
+        "raw_snapshot_rows=1144",
+        "station_master_rows=95",
+        "address_only_match_rows=14"
+      ]
+    },
+    {
+      "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+      "lifecycle_class": "runtime_mock_overlay",
+      "grain": "station_id x shift_window",
+      "check_count": 7,
+      "checks": [
+        {
+          "name": "columns_present",
+          "ok": true
+        },
+        {
+          "name": "row_count_matches_station_shift",
+          "ok": true
+        },
+        {
+          "name": "all_station_ids_joinable",
+          "ok": true
+        },
+        {
+          "name": "valid_window_ordered",
+          "ok": true
+        },
+        {
+          "name": "single_reference_time",
+          "ok": true
+        },
+        {
+          "name": "single_run_context",
+          "ok": true
+        },
+        {
+          "name": "enum_domain_ok",
+          "ok": true
+        }
+      ],
+      "failures": [],
+      "raw_role_ready": true,
+      "notes": [
+        "row_count=950",
+        "unique_station_ids=95",
+        "unique_shift_windows=10",
+        "expected_shift_windows=10"
+      ]
+    },
+    {
+      "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+      "lifecycle_class": "runtime_mock_overlay",
+      "grain": "station_id x equipment_type",
+      "check_count": 6,
+      "checks": [
+        {
+          "name": "columns_present",
+          "ok": true
+        },
+        {
+          "name": "equipment_id_unique",
+          "ok": true
+        },
+        {
+          "name": "all_station_ids_joinable",
+          "ok": true
+        },
+        {
+          "name": "valid_window_ordered",
+          "ok": true
+        },
+        {
+          "name": "single_reference_time",
+          "ok": true
+        },
+        {
+          "name": "nonzero_capacity_fields",
+          "ok": true
+        }
+      ],
+      "failures": [],
+      "raw_role_ready": true,
+      "notes": [
+        "row_count=312",
+        "unique_station_ids=95",
+        "equipment_types=['engine', 'portable_pump', 'small_vehicle', 'water_tanker']"
+      ]
+    },
+    {
+      "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+      "lifecycle_class": "runtime_mock_overlay",
+      "grain": "region_code x segment_id",
+      "check_count": 7,
+      "checks": [
+        {
+          "name": "columns_present",
+          "ok": true
+        },
+        {
+          "name": "row_count_matches_context",
+          "ok": true
+        },
+        {
+          "name": "segment_id_unique",
+          "ok": true
+        },
+        {
+          "name": "all_region_codes_joinable",
+          "ok": true
+        },
+        {
+          "name": "polygon_geometry_present",
+          "ok": true
+        },
+        {
+          "name": "single_reference_time",
+          "ok": true
+        },
+        {
+          "name": "enum_domain_ok",
+          "ok": true
+        }
+      ],
+      "failures": [],
+      "raw_role_ready": true,
+      "notes": [
+        "row_count=623",
+        "unique_region_codes=623",
+        "surface_fuel_types=['conifer_understory', 'dry_grass', 'leaf_litter', 'roadside_fuel', 'shrub']"
+      ]
+    },
+    {
+      "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+      "lifecycle_class": "runtime_mock_overlay",
+      "grain": "region_code x segment_id",
+      "check_count": 8,
+      "checks": [
+        {
+          "name": "columns_present",
+          "ok": true
+        },
+        {
+          "name": "row_count_matches_context",
+          "ok": true
+        },
+        {
+          "name": "segment_id_unique",
+          "ok": true
+        },
+        {
+          "name": "all_region_codes_joinable",
+          "ok": true
+        },
+        {
+          "name": "point_geometry_present",
+          "ok": true
+        },
+        {
+          "name": "valid_window_ordered",
+          "ok": true
+        },
+        {
+          "name": "single_reference_time",
+          "ok": true
+        },
+        {
+          "name": "enum_domain_ok",
+          "ok": true
+        }
+      ],
+      "failures": [],
+      "raw_role_ready": true,
+      "notes": [
+        "row_count=623",
+        "unique_region_codes=623",
+        "hazard_severity_values=['low', 'medium']"
+      ]
+    }
+  ],
+  "deletable_paths": [
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/work/runtime_runs/live_20260501T020000",
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/data/mock/SOURCE_FIRE_RESOURCE_AVAILABILITY/runs/live_20260501T020000",
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/data/mock/SOURCE_PREWATERING_EQUIPMENT_CAPACITY/runs/live_20260501T020000",
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/data/mock/SOURCE_SURFACE_FUEL_CONDITION/runs/live_20260501T020000",
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/data/mock/SOURCE_WORKSITE_HAZARD_CONDITIONS/runs/live_20260501T020000",
+    "/Users/presence/dev/disasterOntology/projects/_wildfire/data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/live_live_20260501T020000"
+  ]
+}

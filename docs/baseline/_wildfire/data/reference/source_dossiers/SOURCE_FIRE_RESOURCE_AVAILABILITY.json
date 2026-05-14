@@ -1,0 +1,39 @@
+{
+  "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+  "selected_access_option_id": "ACCESS_FIRE_RESOURCE_AVAILABILITY_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_FIRE_RESOURCE_AVAILABILITY/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_FIRE_RESOURCE_AVAILABILITY/",
+  "raw_fields_observed": [
+    "mock_id",
+    "region_code",
+    "region_name",
+    "segment_id",
+    "valid_from",
+    "valid_to",
+    "station_id",
+    "station_name",
+    "fire_station_name",
+    "station_address",
+    "available_staff",
+    "available_engines",
+    "available_water_tankers",
+    "available_portable_pumps",
+    "resource_status",
+    "scenario_name",
+    "mock_seed",
+    "mock_generated_at",
+    "mock_reason"
+  ],
+  "time_key_field": "valid_from, valid_to",
+  "time_parse_result": "pass",
+  "space_key_field": "station_id",
+  "space_validation_result": "pass",
+  "native_crs": "not_applicable; mock table keyed by station_id with station_address",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "synthetic mock baseline이며 운영 데이터가 아니다.",
+    "station_id는 SOURCE_FIRE_STATION_CENTERS raw 순번을 기반으로 한 PoC mock id로 canonical station master key가 아니다."
+  ]
+}

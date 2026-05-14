@@ -1,0 +1,28 @@
+{
+  "source_id": "SOURCE_FIRE_STATION_CENTERS",
+  "selected_access_option_id": "ACCESS_FIRE_STATION_CENTERS_PRIMARY",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_FIRE_STATION_CENTERS/snapshots/full/",
+  "pipeline_path": "pipelines/SOURCE_FIRE_STATION_CENTERS/",
+  "raw_fields_observed": [
+    "순번",
+    "시도본부",
+    "소방서명",
+    "119안전센터명",
+    "주소",
+    "전화번호",
+    "팩스번호"
+  ],
+  "time_key_field": "registry_updated_at",
+  "time_parse_result": "pass",
+  "space_key_field": "순번, 주소",
+  "space_validation_result": "pass",
+  "native_crs": "not_applicable; source provides address only and no coordinate fields",
+  "native_time_format": "YYYY-MM-DD metadata date",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "원본에는 위도/경도 좌표 컬럼이 없어 주소 native field를 보존해야 한다.",
+    "원본에는 읍면동별 119안전센터 관할구역 컬럼이 없어, 행정동 단위 관할센터를 raw 단계에서 확정하지 않는다.",
+    "OpenAPI fallback은 공공데이터포털 활용신청/API key가 필요해 이번 transaction에서는 파일 다운로드 option을 선택했다."
+  ]
+}

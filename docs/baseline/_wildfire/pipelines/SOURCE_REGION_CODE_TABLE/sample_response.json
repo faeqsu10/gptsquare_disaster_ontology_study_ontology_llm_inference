@@ -1,0 +1,7 @@
+{
+  "source_id": "SOURCE_REGION_CODE_TABLE",
+  "access_option_id": "ACCESS_REGION_CODE_TABLE_ADMIN_CODE",
+  "captured_at": "2026-04-30T10:33:48.012568+00:00",
+  "raw_response_path": "data/raw/SOURCE_REGION_CODE_TABLE/snapshots/full/",
+  "notes": "metadata.json in the snapshot directory records file paths, source headers, full row counts, 광주·전남 clip counts, raw fields, and PoC coverage checks."
+}

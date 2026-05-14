@@ -9,7 +9,7 @@
 - 차후 ML이 안정되면 비중 조정 가능
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/inference/formulas_v2.py
+    ./code/run.sh code/inference/formulas_v2.py
 """
 
 from formulas import compute_s_priority, s_priority_to_state

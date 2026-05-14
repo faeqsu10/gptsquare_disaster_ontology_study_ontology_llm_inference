@@ -1,0 +1,19 @@
+{
+  "source_id": "SOURCE_LARGE_FIRE_RISK_FORECAST",
+  "access_option_id": "ACCESS_LARGE_FIRE_RISK_FORECAST_EUPMYEONDONG",
+  "method": "GET",
+  "endpoint_or_layer": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003631149&fileDetailSn=1&insertDataPrcus=N",
+  "query_params": {},
+  "optional_odcloud_endpoint": "https://api.odcloud.kr/api/15092027/v1/uddi:5958ff6b-46cc-4a46-9415-bc34926647cb",
+  "optional_odcloud_query_params": {
+    "page": "1",
+    "perPage": "100",
+    "returnType": "JSON",
+    "serviceKey": "${DATA_GO_KR_SERVICE_KEY}"
+  },
+  "notes": [
+    "The official file page exposes columns 예보일시, 시도명, 시군구명, 읍면동명, 실효습도, 풍속, 등급.",
+    "Direct CSV download is reproducible without login.",
+    "ODCloud API requires a service key."
+  ]
+}

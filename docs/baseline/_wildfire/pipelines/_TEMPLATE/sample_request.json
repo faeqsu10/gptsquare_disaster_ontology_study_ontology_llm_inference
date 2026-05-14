@@ -1,0 +1,7 @@
+{
+  "source_id": "source_id",
+  "access_option_id": "access_option_id",
+  "endpoint_or_layer": "",
+  "query_params": {},
+  "notes": "Record the exact representative sample request here. Do not normalize or transform response values in Raw phase."
+}

@@ -1,0 +1,15 @@
+{
+  "status": "ok",
+  "captured_at": "2026-04-30T11:44:24.197734Z",
+  "native_format": "XML",
+  "response_files": [
+    "sample_response_20260415.xml",
+    "sample_response_20260416.xml",
+    "sample_response_20260417.xml",
+    "sample_response_20260418.xml",
+    "sample_response_20260419.xml",
+    "sample_response_20260420.xml",
+    "sample_response_20260421.xml"
+  ],
+  "error_files": []
+}

@@ -3,7 +3,7 @@ TypeDB 적재 검증 — MOCK source 6건이 정확히 조회되는지 확인.
 
 실행 방법:
     LD_LIBRARY_PATH=$PYTHON_LIB \
-    uv run python _workspace/study-poc/db/check.py
+    uv run python code/db/check.py
 """
 
 from typedb.driver import Credentials, DriverOptions, TransactionType, TypeDB

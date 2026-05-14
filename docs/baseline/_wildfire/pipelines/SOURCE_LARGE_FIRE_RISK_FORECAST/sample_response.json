@@ -1,0 +1,40 @@
+{
+  "source_id": "SOURCE_LARGE_FIRE_RISK_FORECAST",
+  "access_option_id": "ACCESS_LARGE_FIRE_RISK_FORECAST_EUPMYEONDONG",
+  "captured_at": "2026-04-30",
+  "raw_response_path": "data/raw/SOURCE_LARGE_FIRE_RISK_FORECAST/snapshots/sample_20260430/large_fire_risk_forecast_20260331.csv",
+  "actual_format": "CSV",
+  "raw_encoding": "cp949",
+  "odcloud_response_path": "data/raw/SOURCE_LARGE_FIRE_RISK_FORECAST/snapshots/sample_20260430_odcloud/odcloud_response.json",
+  "odcloud_status": {
+    "http_status": 200,
+    "currentCount": 5,
+    "matchCount": 48192,
+    "totalCount": 48192
+  },
+  "row_count_excluding_header": 48192,
+  "raw_fields_observed": [
+    "예보일시",
+    "시도명",
+    "시군구명",
+    "읍면동명",
+    "실효습도",
+    "풍속",
+    "등급"
+  ],
+  "sample_records_decoded_for_inspection": [
+    {
+      "예보일시": "2017-01-17 15:00",
+      "시도명": "강원도",
+      "시군구명": "인제군",
+      "읍면동명": "북면",
+      "실효습도": "34.6",
+      "풍속": "7.3",
+      "등급": "주의보"
+    }
+  ],
+  "coverage": {
+    "exact_region_time_rows": 0,
+    "reason": "The latest published file is 20260331 and contains no rows for the requested 2026-04-15 through 2026-04-21 window."
+  }
+}

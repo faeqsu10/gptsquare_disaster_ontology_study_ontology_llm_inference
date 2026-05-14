@@ -1,0 +1,86 @@
+{
+  "source_id": "SOURCE_SUN_EVENT_CALENDAR",
+  "access_option_id": "ACCESS_SUN_EVENT_CALENDAR_AREA",
+  "captured_at": "2026-04-30T11:43:37.777952Z",
+  "method": "GET",
+  "requests": [
+    {
+      "locdate": "20260415",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260415",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260415&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260416",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260416",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260416&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260417",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260417",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260417&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260418",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260418",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260418&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260419",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260419",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260419&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260420",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260420",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260420&location=%EA%B4%91%EC%A3%BC"
+    },
+    {
+      "locdate": "20260421",
+      "endpoint": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+      "query_params": {
+        "ServiceKey": "<KASI_SERVICE_KEY>",
+        "locdate": "20260421",
+        "location": "광주"
+      },
+      "request_url": "https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?ServiceKey=%3CKASI_SERVICE_KEY%3E&locdate=20260421&location=%EA%B4%91%EC%A3%BC"
+    }
+  ],
+  "auth": {
+    "required": "public_api_key",
+    "env_vars": [
+      "KASI_SERVICE_KEY",
+      "DATA_GO_KR_SERVICE_KEY",
+      "SERVICE_KEY"
+    ]
+  }
+}

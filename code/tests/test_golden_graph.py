@@ -4,7 +4,7 @@
 골든 케이스 3건의 기대 state·reason과 일치하는지 검증.
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/tests/test_golden_graph.py
+    ./code/run.sh code/tests/test_golden_graph.py
 """
 
 import sys

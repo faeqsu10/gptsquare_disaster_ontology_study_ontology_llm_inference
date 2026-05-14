@@ -1,0 +1,32 @@
+{
+  "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+  "selected_access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_PRIMARY",
+  "captured_at": "2026-04-30T00:00:00+09:00",
+  "metadata_observed": {
+    "title": "산림청_산불상황관제시스템_산불소화시설_20211231",
+    "file_format": "CSV",
+    "api_formats": [
+      "XML",
+      "JSON"
+    ],
+    "modified": "2025-08-13",
+    "provider": "산림청",
+    "total_rows": 187,
+    "update_cycle": "연간",
+    "next_registration_date": "2026-08-13"
+  },
+  "raw_fields_observed": [
+    "경도",
+    "위도",
+    "원격제어",
+    "관리기관1",
+    "관리기관2",
+    "설치위치",
+    "보호대상구분",
+    "보호대상물",
+    "설치년도"
+  ],
+  "sample_path": "data/raw/SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES/snapshots/sample_20260430/sample_preview.csv",
+  "raw_file_downloaded": false
+}
+

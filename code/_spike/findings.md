@@ -145,10 +145,10 @@ TypeQL: match let $st in s_priority_to_state_v2(0.30, "v2"); select $st;
 
 ## 6. 다음 단계 — 정식 모듈화
 
-- [ ] `study/wildfire-poc/db/functions.tql` 신설 (정식 schema)
-- [ ] `study/wildfire-poc/db/apply_functions.py` (schema 적용)
-- [ ] `study/wildfire-poc/inference/graph_inference_fun.py` (fun 호출 버전)
-- [ ] `study/wildfire-poc/tests/test_python_vs_fun.py` (회귀 검증)
+- [ ] `code/db/functions.tql` 신설 (정식 schema)
+- [ ] `code/db/apply_functions.py` (schema 적용)
+- [ ] `code/inference/graph_inference_fun.py` (fun 호출 버전)
+- [ ] `code/tests/test_python_vs_fun.py` (회귀 검증)
 - [ ] 발표 자료 outline 갱신 — 시연 2 듀얼 + takeaway 6번 추가
 
 ## 7. 결정

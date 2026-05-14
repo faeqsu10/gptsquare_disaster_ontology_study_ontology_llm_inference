@@ -1,0 +1,22 @@
+{
+  "source_id": "SOURCE_NATURAL_BARRIERS",
+  "access_option_id": "ACCESS_NATURAL_BARRIERS_PRIMARY",
+  "captured_at": "2026-04-30T00:00:00+09:00",
+  "metadata_observed": {
+    "title": "국토교통부 국토지리정보원_기본공간정보_20240924",
+    "format": "SHP",
+    "modified": "2025-06-23",
+    "provider": "국토교통부 국토지리정보원",
+    "provided_by": "기관자체에서 다운로드(제공데이터URL기재)",
+    "download_page": "http://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+    "barrier_relevant_feature_classes": [
+      "수계",
+      "지형",
+      "교통"
+    ]
+  },
+  "sample_path": "data/raw/SOURCE_NATURAL_BARRIERS/snapshots/sample_20260430/",
+  "raw_file_downloaded": false,
+  "blocked_by": "National Land Information Platform login and large-file transfer software flow not executed."
+}
+

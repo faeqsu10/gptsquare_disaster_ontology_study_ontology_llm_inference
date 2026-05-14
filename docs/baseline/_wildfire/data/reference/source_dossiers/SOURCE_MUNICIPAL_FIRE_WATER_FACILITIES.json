@@ -1,0 +1,34 @@
+{
+  "source_id": "SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES",
+  "selected_access_option_id": "ACCESS_MUNICIPAL_FIRE_WATER_FACILITIES_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES/",
+  "raw_fields_observed": [
+    "facility_id",
+    "facility_type",
+    "coverage_unit_id",
+    "coverage_unit_name",
+    "region_code",
+    "longitude",
+    "latitude",
+    "geometry_wkt",
+    "usable_status",
+    "supply_capacity_class",
+    "valid_from",
+    "valid_to",
+    "mock_generated_at",
+    "coverage_basis",
+    "code_match_status"
+  ],
+  "time_key_field": "scenario_time, valid_from, valid_to, mock_generated_at",
+  "time_parse_result": "pass",
+  "space_key_field": "facility_id, coverage_unit_id, longitude, latitude, geometry_wkt",
+  "space_validation_result": "pass",
+  "native_crs": "EPSG:4326",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept",
+  "open_issues": [
+    "Synthetic baseline must be propagated downstream as mock_input=true."
+  ]
+}

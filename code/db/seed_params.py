@@ -4,7 +4,7 @@
 TypeDB 노드로 보관. rule은 이 노드들의 attribute를 비교해서 작동.
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/db/seed_params.py
+    ./code/run.sh code/db/seed_params.py
 """
 
 from typedb.driver import Credentials, DriverOptions, TransactionType, TypeDB

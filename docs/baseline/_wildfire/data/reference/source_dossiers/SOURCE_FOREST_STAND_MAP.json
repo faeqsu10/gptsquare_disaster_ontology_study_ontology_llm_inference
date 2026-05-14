@@ -1,0 +1,42 @@
+{
+  "source_id": "SOURCE_FOREST_STAND_MAP",
+  "selected_access_option_id": "ACCESS_FOREST_STAND_MAP_PRIMARY",
+  "verification_status": "data_acquired",
+  "sample_path": "data/raw/SOURCE_FOREST_STAND_MAP/snapshots/regional_clip/",
+  "pipeline_path": "pipelines/SOURCE_FOREST_STAND_MAP/",
+  "raw_fields_observed": [
+    "STORUNST",
+    "OBJECTID",
+    "FROR_CD",
+    "FRTP_CD",
+    "KOFTR_GROU",
+    "DMCLS_CD",
+    "AGCLS_CD",
+    "DNST_CD",
+    "HEIGHT",
+    "LDMARK_STN",
+    "MAP_LABEL",
+    "갱신년도",
+    "ETC_PCMTT",
+    "FRTP_NM",
+    "KOFTR_NM",
+    "DMCLS_NM",
+    "AGCLS_NM",
+    "DNST_NM",
+    "HEIGHT_NM",
+    "Shape_Leng",
+    "Shape_Area"
+  ],
+  "time_key_field": "registry_updated_at",
+  "time_parse_result": "not_applicable",
+  "space_key_field": "geometry",
+  "space_validation_result": "pass",
+  "native_crs": "Korea 2000 / Unified CS, EPSG:5179, confirmed from downloaded 29.prj and 29.shp.xml",
+  "native_time_format": "static geospatial layer; no per-feature time observed before download",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "광주광역시 and 전라남도 target-region extracts have been acquired; nationwide full-source archives were not acquired.",
+    "Coverage is verified at administrative extract level; feature-level polygon intersection with subregions was not performed.",
+    "Forest road network is tracked in SOURCE_FOREST_ROAD_NETWORK."
+  ]
+}

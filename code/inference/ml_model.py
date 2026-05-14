@@ -4,7 +4,7 @@
 실제 운영에서는 data/processed/119_records_5y.csv 등 진짜 데이터로 교체.
 
 실행 방법 (학습 + 저장):
-    ./_workspace/study-poc/run.sh _workspace/study-poc/inference/ml_model.py
+    ./code/run.sh code/inference/ml_model.py
 """
 
 import pickle

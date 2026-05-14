@@ -6,7 +6,7 @@
   C: 경보 발령 → PriorityPreWatering (6순위 override)
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/inference/test_scenarios.py
+    ./code/run.sh code/inference/test_scenarios.py
     (또는 LD_LIBRARY_PATH 없이도 실행 가능 — 이 파일은 TypeDB 안 씀)
 """
 

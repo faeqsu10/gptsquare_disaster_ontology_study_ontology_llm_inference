@@ -1,0 +1,25 @@
+{
+  "source_id": "SOURCE_NATURAL_WATER_SOURCES",
+  "selected_access_option_id": "ACCESS_NATURAL_WATER_SOURCES_VWORLD_RIVER_NETWORK",
+  "verification_status": "api_tested",
+  "sample_path": "data/raw/SOURCE_NATURAL_WATER_SOURCES/snapshots/api_probe_20260430/",
+  "pipeline_path": "pipelines/SOURCE_NATURAL_WATER_SOURCES/",
+  "raw_fields_observed": [
+    "riv_nm",
+    "cat_nam",
+    "geometry",
+    "response.record",
+    "response.page"
+  ],
+  "time_key_field": "metadata.modified; dataset_time_range",
+  "time_parse_result": "pass",
+  "space_key_field": "geometry, riv_nm, cat_nam",
+  "space_validation_result": "pass",
+  "native_crs": "EPSG:4326 requested from VWorld API",
+  "native_time_format": "YYYY-MM-DD metadata modified date; YYYY년 M월 dataset time range",
+  "decision": "exclude",
+  "open_issues": [
+    "VWorld river-network API probe succeeded, but natural water source is excluded from this PoC decision path by user decision.",
+    "NGII basic spatial information fallback is rejected because the observed production year is 2015."
+  ]
+}

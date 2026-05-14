@@ -2,7 +2,7 @@
 
 5주차 스터디 발표(2026-05-13)에서 시연 1~4를 한 화면으로 보여주기 위한 미니 웹.
 
-기존 `study/wildfire-poc/` 백엔드를 그대로 호출만 합니다 (코드 무수정).
+기존 `code/` 백엔드를 그대로 호출만 합니다 (코드 무수정).
 
 ## 구성
 
@@ -19,11 +19,11 @@ demo/
 ## 기동
 
 ```bash
-./study/wildfire-poc/demo/run_demo.sh
+./code/demo/run_demo.sh
 # 브라우저에서 http://127.0.0.1:8765 열기
 ```
 
-포트 변경: `DEMO_PORT=9000 ./study/wildfire-poc/demo/run_demo.sh`
+포트 변경: `DEMO_PORT=9000 ./code/demo/run_demo.sh`
 
 ## 모드
 

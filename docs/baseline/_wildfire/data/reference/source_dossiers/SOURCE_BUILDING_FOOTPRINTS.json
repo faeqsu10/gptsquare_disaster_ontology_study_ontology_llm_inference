@@ -1,0 +1,27 @@
+{
+  "source_id": "SOURCE_BUILDING_FOOTPRINTS",
+  "selected_access_option_id": "ACCESS_BUILDING_FOOTPRINTS_BBOX_WFS",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_BUILDING_FOOTPRINTS/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_BUILDING_FOOTPRINTS/",
+  "raw_fields_observed": [
+    "ag_geom (documented)",
+    "src_objectid (documented)",
+    "gis_idntfc_no (documented)",
+    "pnu (documented)",
+    "ld_cpsg_code (documented)",
+    "buld_prpos_code (documented)",
+    "buld_idntfc_no (documented)",
+    "last_updt_dt (documented)",
+    "last_updt_dt",
+    "geometry"
+  ],
+  "time_key_field": "last_updt_dt",
+  "time_parse_result": "pass",
+  "space_key_field": "ag_geom or gis_idntfc_no or pnu",
+  "space_validation_result": "pass",
+  "native_crs": "VWorld WFS; srsName=EPSG:4326 requested for PoC sample",
+  "native_time_format": "YYYY-MM-DDTHH:mm:ss documented",
+  "decision": "accept",
+  "open_issues": []
+}

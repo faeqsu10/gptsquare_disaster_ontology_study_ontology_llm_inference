@@ -3,7 +3,7 @@
 기존 wildfire DB의 source 29건을 보존하면서 새 스키마(Segment, RunContext, 파라미터)만 추가.
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/db/apply_schema_v2.py
+    ./code/run.sh code/db/apply_schema_v2.py
 """
 
 from pathlib import Path

@@ -1,0 +1,9 @@
+{
+  "source_id": "SOURCE_ROAD_NETWORK",
+  "access_option_id": "ACCESS_ROAD_NETWORK_PRIMARY",
+  "acquisition_method": "manual_download",
+  "source_page": "https://www.data.go.kr/data/15025526/fileData.do",
+  "institution_download_page": "https://www.its.go.kr/nodelink/nodelinkRef",
+  "requested_snapshot_type": "full",
+  "notes": "File download option verified from official metadata only. Full SHP download was not executed in this transaction."
+}

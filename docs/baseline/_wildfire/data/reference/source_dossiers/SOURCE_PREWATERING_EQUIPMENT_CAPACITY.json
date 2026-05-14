@@ -1,0 +1,40 @@
+{
+  "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+  "selected_access_option_id": "ACCESS_PREWATERING_EQUIPMENT_CAPACITY_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_PREWATERING_EQUIPMENT_CAPACITY/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_PREWATERING_EQUIPMENT_CAPACITY/",
+  "raw_fields_observed": [
+    "mock_id",
+    "region_code",
+    "region_name",
+    "segment_id",
+    "valid_from",
+    "valid_to",
+    "scenario_time",
+    "station_id",
+    "station_name",
+    "equipment_id",
+    "equipment_type",
+    "watering_rate_lpm",
+    "setup_time_min",
+    "effective_width_m",
+    "mobility_class",
+    "geometry",
+    "scenario_name",
+    "mock_seed",
+    "mock_generated_at",
+    "mock_reason"
+  ],
+  "time_key_field": "scenario_time, valid_from, valid_to",
+  "time_parse_result": "pass",
+  "space_key_field": "station_id, equipment_id",
+  "space_validation_result": "pass",
+  "native_crs": "not_applicable; no_geometry",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "synthetic mock baseline이며 운영 데이터가 아니다.",
+    "watering_rate_lpm 등은 Feature score가 아니라 raw scenario parameter로만 사용해야 한다."
+  ]
+}

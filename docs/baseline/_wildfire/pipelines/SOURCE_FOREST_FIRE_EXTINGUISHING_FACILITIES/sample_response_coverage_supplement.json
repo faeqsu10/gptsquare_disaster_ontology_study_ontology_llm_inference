@@ -1,0 +1,28 @@
+{
+  "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+  "access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_COVERAGE_SUPPLEMENT",
+  "generated": true,
+  "sample_path": "data/mock/SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES/scenario_baseline/",
+  "row_count": 623,
+  "coverage_unit_count": 623,
+  "coverage_counts_by_sido": {
+    "광주광역시": 202,
+    "전라남도": 421
+  },
+  "time_key_fields": [
+    "valid_from",
+    "valid_to",
+    "mock_generated_at",
+    "installation_year"
+  ],
+  "space_key_fields": [
+    "facility_id",
+    "coverage_unit_id",
+    "longitude",
+    "latitude",
+    "geometry"
+  ],
+  "native_spatial_grain": "forest-fire extinguishing facility point supplement",
+  "native_crs": "EPSG:4326",
+  "record_origin": "mock_supplement"
+}

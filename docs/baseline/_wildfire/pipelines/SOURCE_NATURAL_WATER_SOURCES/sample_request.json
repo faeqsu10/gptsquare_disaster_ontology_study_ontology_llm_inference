@@ -1,0 +1,10 @@
+{
+  "source_id": "SOURCE_NATURAL_WATER_SOURCES",
+  "access_option_id": "ACCESS_NATURAL_WATER_SOURCES_PRIMARY",
+  "acquisition_method": "manual_download",
+  "source_page": "https://www.data.go.kr/data/15059910/fileData.do",
+  "institution_download_page": "http://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+  "target_feature_class": "수계",
+  "requested_snapshot_type": "full_or_poc_clip",
+  "notes": "Official metadata confirms selectable-area SHP/NGI download. Actual GIS package download requires login and was not executed."
+}

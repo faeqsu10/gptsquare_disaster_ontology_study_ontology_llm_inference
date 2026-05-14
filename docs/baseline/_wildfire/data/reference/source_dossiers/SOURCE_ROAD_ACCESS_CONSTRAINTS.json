@@ -1,0 +1,37 @@
+{
+  "source_id": "SOURCE_ROAD_ACCESS_CONSTRAINTS",
+  "selected_access_option_id": "ACCESS_ROAD_ACCESS_CONSTRAINTS_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_ROAD_ACCESS_CONSTRAINTS/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_ROAD_ACCESS_CONSTRAINTS/",
+  "raw_fields_observed": [
+    "road_segment_id",
+    "road_name",
+    "road_class",
+    "start_node_id",
+    "end_node_id",
+    "coverage_unit_id",
+    "geometry_wkt",
+    "road_width_m",
+    "slope_percent",
+    "firetruck_accessible",
+    "turnaround_available",
+    "narrow_road_flag",
+    "valid_from",
+    "valid_to",
+    "mock_generated_at",
+    "coverage_basis",
+    "code_match_status"
+  ],
+  "time_key_field": "scenario_time, valid_from, valid_to, mock_generated_at",
+  "time_parse_result": "pass",
+  "space_key_field": "road_segment_id, start_node_id, end_node_id, coverage_unit_id, geometry_wkt",
+  "space_validation_result": "pass",
+  "native_crs": "EPSG:4326",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept",
+  "open_issues": [
+    "Synthetic baseline must be propagated downstream as mock_input=true.",
+    "No travel time or real road-network join was computed."
+  ]
+}

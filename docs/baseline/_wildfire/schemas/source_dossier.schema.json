@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/wildfire/source_dossier.schema.json",
+  "title": "Gwangju-Jeonnam Wildfire Pre-Watering SourceDossier",
+  "description": "Evidence record for one Source after acquisition/generation and time-space key verification. Inventory is the catalog; dossier is the proof.",
+  "type": "object",
+  "required": [
+    "source_id",
+    "selected_access_option_id",
+    "verification_status",
+    "sample_path",
+    "pipeline_path",
+    "raw_fields_observed",
+    "time_key_field",
+    "time_parse_result",
+    "space_key_field",
+    "space_validation_result",
+    "native_crs",
+    "native_time_format",
+    "decision",
+    "open_issues"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "pattern": "^SOURCE_[A-Z0-9_]+$"
+    },
+    "selected_access_option_id": {
+      "type": "string"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "source_confirmed",
+        "api_tested",
+        "data_acquired",
+        "schema_validated",
+        "key_validated",
+        "coverage_verified"
+      ]
+    },
+    "sample_path": {
+      "type": "string"
+    },
+    "pipeline_path": {
+      "type": "string"
+    },
+    "raw_fields_observed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "time_key_field": {
+      "type": "string"
+    },
+    "time_parse_result": {
+      "type": "string",
+      "enum": ["pass", "fail", "not_applicable", "not_tested"]
+    },
+    "space_key_field": {
+      "type": "string"
+    },
+    "space_validation_result": {
+      "type": "string",
+      "enum": ["pass", "fail", "not_applicable", "not_tested"]
+    },
+    "native_crs": {
+      "type": "string"
+    },
+    "native_time_format": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["accept", "accept_with_gap", "fallback_required", "mock_required", "exclude", "pending"]
+    },
+    "open_issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

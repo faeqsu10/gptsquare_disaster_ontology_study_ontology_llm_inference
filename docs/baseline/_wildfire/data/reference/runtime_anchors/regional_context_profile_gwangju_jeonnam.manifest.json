@@ -1,0 +1,87 @@
+{
+  "artifact_id": "regional_context_profile_gwangju_jeonnam",
+  "coverage_summary": {
+    "coverage_scope": "광주광역시·전라남도",
+    "coverage_unit_grain": "current legal 읍면동 row",
+    "coverage_unit_count": 623,
+    "coverage_counts_by_sido": {
+      "광주광역시": 202,
+      "전라남도": 421
+    },
+    "sigungu_counts_by_sido": {
+      "광주광역시": 5,
+      "전라남도": 22
+    },
+    "code_match_counts": {
+      "active_legal_code_boundary_geometry_match": 619,
+      "active_legal_code_vworld_point_fallback": 1,
+      "active_legal_code_previous_boundary_geometry_fallback": 3
+    },
+    "coverage_unit_source": "data/raw/SOURCE_ADMIN_BOUNDARIES/snapshots/full/LP_AA_EMD_gwangju_jeonnam.csv",
+    "legal_code_reference": "data/raw/SOURCE_REGION_CODE_TABLE/snapshots/full/national_legal_dong_gwangju_jeonnam.csv",
+    "raw_phase_constraints": [
+      "no nearest-distance calculation",
+      "no road or Segment join",
+      "no CRS conversion"
+    ]
+  },
+  "row_count": 623,
+  "admin_unit_type_counts": {
+    "urban_dong": 394,
+    "town_eup": 33,
+    "rural_myeon": 196
+  },
+  "forest_type_counts": {
+    "urban_interface": 394,
+    "mixed_hillside": 13,
+    "coastal_open_mix": 60,
+    "forest_dominant": 89,
+    "mixed_rural": 67
+  },
+  "road_access_counts": {
+    "dense_road": 394,
+    "standard_road": 33,
+    "limited_road": 107,
+    "mountain_access": 89
+  },
+  "slope_counts": {
+    "low": 435,
+    "medium": 99,
+    "high": 89
+  },
+  "dryness_counts": {
+    "seasonal": 360,
+    "elevated": 192,
+    "moderated": 71
+  },
+  "settlement_interface_counts": {
+    "high": 394,
+    "medium": 33,
+    "low": 196
+  },
+  "notes": [
+    "This is a REAL-derived reference profile, not an operational measurement source.",
+    "Classification uses admin grain and representative-point geography only.",
+    "No road join, DEM join, or CRS conversion is performed in this phase."
+  ],
+  "fields": [
+    "region_code",
+    "region_name",
+    "sido_name",
+    "sigungu_code",
+    "sigungu_name",
+    "emd_name",
+    "representative_longitude",
+    "representative_latitude",
+    "admin_unit_type",
+    "forest_type_class",
+    "road_access_class",
+    "slope_class",
+    "dryness_class",
+    "settlement_interface_class",
+    "geometry_source",
+    "code_match_status",
+    "profile_generated_at",
+    "profile_basis"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+  "access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_SIGUNGU",
+  "captured_at": "2026-04-30",
+  "sample_status": "provider_data_response_captured",
+  "raw_response_path": "data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/sample_20260430/raw_response.json",
+  "schema_path": "data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/sample_20260430/official_openapi_swagger.json",
+  "http_status": 200,
+  "result_code": "00",
+  "result_msg": "NORMAL SERVICE.",
+  "total_count": 34,
+  "sample_row_count": 10,
+  "observed_response_fields_from_official_swagger": [
+    "resultCode",
+    "resultMsg",
+    "numOfRows",
+    "pageNo",
+    "totalCount",
+    "analdate",
+    "area",
+    "d1",
+    "d2",
+    "d3",
+    "d4",
+    "doname",
+    "maxi",
+    "meanavg",
+    "mini",
+    "regioncode",
+    "sigucode",
+    "sigun",
+    "std",
+    "upplocalcd"
+  ],
+  "sample_records": [],
+  "regional_snapshots": {
+    "gwangju_sigungu": "data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/sample_20260430_gwangju_sigungu/raw_response.json",
+    "jeonnam_sigungu": "data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/sample_20260430_jeonnam_sigungu/raw_response.json"
+  },
+  "notes": [
+    "Provider data response was captured using DATA_GO_KR_SERVICE_KEY from the local environment.",
+    "The current official API still exposes 시군구 keys, not 읍면동 keys.",
+    "Field list matches the official Swagger embedded in the data.go.kr page."
+  ]
+}

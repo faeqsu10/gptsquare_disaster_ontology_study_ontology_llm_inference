@@ -8,7 +8,7 @@
   GET /api/recordings/{demo_key}   녹화 메타데이터
 
 기동:
-    ./study/wildfire-poc/demo/run_demo.sh
+    ./code/demo/run_demo.sh
 """
 
 import asyncio
@@ -45,7 +45,7 @@ DEMOS: dict[str, dict] = {
     "demo1_inference": {
         "title": "시연 1 — 데이터에서 추론까지",
         "subtitle": "29건의 출처와 5건의 동네 정보를 그래프에 적재하고, 위험도를 계산해 다시 그래프에 기록합니다.",
-        "args": ["study/wildfire-poc/inference/run_inference_demo.py"],
+        "args": ["code/inference/run_inference_demo.py"],
         "preface": [
             "그래프 데이터베이스에서 동네 정보를 읽고,",
             "위험도 점수와 대응 단계를 계산해",
@@ -55,7 +55,7 @@ DEMOS: dict[str, dict] = {
     "demo2_policy": {
         "title": "시연 2 — 정책 한 줄만 바꿔보기",
         "subtitle": "코드는 그대로 두고 임계값(정책)만 v1→v2로 바꿉니다. 같은 동네의 대응 단계가 어떻게 달라지는지 보여줍니다.",
-        "args": ["study/wildfire-poc/tests/test_param_externalization.py"],
+        "args": ["code/tests/test_param_externalization.py"],
         "preface": [
             "정책(임계값)을 그래프 노드로 외부화해 두면",
             "코드 수정 없이 INSERT 한 줄로 시뮬레이션이 됩니다.",
@@ -64,7 +64,7 @@ DEMOS: dict[str, dict] = {
     "demo4_eval": {
         "title": "시연 4 — 14건의 질문을 자동 채점",
         "subtitle": "평가셋을 한 번에 돌려 직접 성공 / 자가 수정 / 거절을 카운트합니다.",
-        "args": ["study/wildfire-poc/llm/eval/run_eval.py"],
+        "args": ["code/llm/eval/run_eval.py"],
         "preface": [
             "AI가 한 번에 답한 것 / 다시 시도해서 답한 것 /",
             "데이터가 없어서 거절한 것을 자동으로 분류합니다.",
@@ -185,7 +185,7 @@ async def run_chat(req: ChatRequest) -> StreamingResponse:
     if req.mode == "playback":
         gen = stream_playback("demo3_chat")
     else:
-        args = ["study/wildfire-poc/demo/chat_oneshot.py", "--query", req.query]
+        args = ["code/demo/chat_oneshot.py", "--query", req.query]
         if req.case_id:
             args.extend(["--case-id", req.case_id])
         gen = stream_subprocess(args, demo_key="demo3_chat", record=True)

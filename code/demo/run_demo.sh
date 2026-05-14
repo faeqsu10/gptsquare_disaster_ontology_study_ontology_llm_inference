@@ -2,12 +2,13 @@
 # demo 웹 서버 기동 wrapper.
 #
 # 사용법:
-#   ./study/wildfire-poc/demo/run_demo.sh            # 기본 포트 8765
-#   DEMO_PORT=9000 ./study/wildfire-poc/demo/run_demo.sh
+#   ./code/demo/run_demo.sh            # 기본 포트 8765
+#   DEMO_PORT=9000 ./code/demo/run_demo.sh
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+# code/demo/ → repo root: parents[2]
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 PYTHON_LIB="${PYTHON_LIB:-$HOME/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib}"
 DEMO_PORT="${DEMO_PORT:-8765}"

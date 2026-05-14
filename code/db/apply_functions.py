@@ -3,7 +3,7 @@
 functions.tql을 wildfire DB schema에 적용. idempotent — 이미 정의된 fun이 있으면
 undefine 후 재정의.
 
-실행: ./study/wildfire-poc/run.sh study/wildfire-poc/db/apply_functions.py
+실행: ./code/run.sh code/db/apply_functions.py
 """
 
 from __future__ import annotations

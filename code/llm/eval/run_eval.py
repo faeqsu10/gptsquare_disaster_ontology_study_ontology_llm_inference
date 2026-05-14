@@ -1,7 +1,7 @@
 """5주차 발표 3 — 골든 평가셋 15건 자동 실행 + 통과율 리포트.
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/llm/eval/run_eval.py
+    ./code/run.sh code/llm/eval/run_eval.py
 """
 
 import json

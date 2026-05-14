@@ -4,7 +4,7 @@
 표준 출력은 server.py가 SSE로 그대로 흘려보낸다.
 
 사용법:
-    ./study/wildfire-poc/run.sh study/wildfire-poc/demo/chat_oneshot.py \
+    ./code/run.sh code/demo/chat_oneshot.py \
         --query "EMD_여수_상암동 위험도 알려줘"
 """
 

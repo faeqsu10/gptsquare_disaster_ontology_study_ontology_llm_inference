@@ -1,0 +1,38 @@
+{
+  "source_id": "SOURCE_KMA_OBSERVED_WEATHER",
+  "created_at": "2026-04-30T18:55:51.543060Z",
+  "station_master_path": "data/reference/runtime_anchors/kma_station_master_gwangju_jeonnam.csv",
+  "source_url": "https://data.kma.go.kr/tmeta/stn/selectStnList.do",
+  "source_categories": {
+    "ASOS": {
+      "code": "SFC01",
+      "label": "종관기상관측"
+    },
+    "AWS": {
+      "code": "SFC02",
+      "label": "방재기상관측"
+    }
+  },
+  "region_prefixes": [
+    "광주광역시",
+    "전라남도"
+  ],
+  "row_counts": {
+    "total_rows": 444,
+    "active_rows": 97,
+    "by_type": {
+      "ASOS": {
+        "rows": 23,
+        "active_rows": 14
+      },
+      "AWS": {
+        "rows": 421,
+        "active_rows": 83
+      }
+    }
+  },
+  "notes": [
+    "Rows include active and historical station records from KMA station metadata.",
+    "Observation acquisition uses active ASOS stations only because the selected catalog endpoint is kma_sfctm3.php."
+  ]
+}

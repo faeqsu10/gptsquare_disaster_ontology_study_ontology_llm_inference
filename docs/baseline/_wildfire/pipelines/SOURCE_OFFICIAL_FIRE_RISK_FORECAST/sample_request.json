@@ -1,0 +1,20 @@
+{
+  "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+  "access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_SIGUNGU",
+  "rejected_candidate_checked": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_EUPMYEONDONG",
+  "method": "GET",
+  "endpoint_or_layer": "https://apis.data.go.kr/1400377/forestPointV2/forestPointListSigunguSearchV2",
+  "query_params": {
+    "ServiceKey": "${DATA_GO_KR_SERVICE_KEY}",
+    "pageNo": "1",
+    "numOfRows": "10",
+    "_type": "json",
+    "upplocalcd": "29",
+    "excludeForecast": "0"
+  },
+  "notes": [
+    "Official Swagger exposes sigungu code parameter localAreas, not eupmyeondong.",
+    "No historical or forecast-valid-time query parameter is exposed in the verified Swagger.",
+    "Set DATA_GO_KR_SERVICE_KEY before running fetch.py."
+  ]
+}

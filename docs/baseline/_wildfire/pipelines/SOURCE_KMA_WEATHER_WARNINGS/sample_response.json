@@ -1,0 +1,12 @@
+{
+  "status": "ok",
+  "captured_at": "2026-04-30T11:48:42.510451Z",
+  "native_format": "text",
+  "stored_as": "sample_response.txt",
+  "row_count": 232,
+  "warning_area_reference": "warning_area_response.txt",
+  "poc_warning_area_code": "L1050100",
+  "poc_warning_area_name": "광주광역시",
+  "poc_response": "poc_gwangju_warning_response.txt",
+  "poc_row_count": 0
+}

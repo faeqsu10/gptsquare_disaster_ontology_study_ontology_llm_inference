@@ -1,0 +1,28 @@
+{
+  "source_id": "SOURCE_KMA_SHORT_TERM_FORECAST",
+  "selected_access_option_id": "ACCESS_KMA_SHORT_TERM_FORECAST_NXNY_GRID",
+  "verification_status": "api_tested",
+  "sample_path": "data/raw/SOURCE_KMA_SHORT_TERM_FORECAST/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_KMA_SHORT_TERM_FORECAST/",
+  "raw_fields_observed": [
+    "baseDate",
+    "baseTime",
+    "category",
+    "fcstDate",
+    "fcstTime",
+    "fcstValue",
+    "nx",
+    "ny"
+  ],
+  "time_key_field": "baseDate/baseTime, fcstDate/fcstTime",
+  "time_parse_result": "pass",
+  "space_key_field": "nx, ny",
+  "space_validation_result": "pass",
+  "native_crs": "KMA DFS nx/ny grid; 5km grid preserved as native key",
+  "native_time_format": "YYYYMMDD + HHMM KST",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "API key was read from the environment and the service responded, but KMA returned resultCode=10: 최근 3일 간의 자료만 제공합니다. The fixed PoC forecast window 2026-04-15 through 2026-04-21 is therefore not retrievable on 2026-04-30.",
+    "Representative-point-to-grid resolution is performed per request; downstream admin fan-out remains out of scope."
+  ]
+}

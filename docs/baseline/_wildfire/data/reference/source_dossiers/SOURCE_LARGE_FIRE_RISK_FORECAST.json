@@ -1,0 +1,28 @@
+{
+  "source_id": "SOURCE_LARGE_FIRE_RISK_FORECAST",
+  "selected_access_option_id": "ACCESS_LARGE_FIRE_RISK_FORECAST_EUPMYEONDONG",
+  "verification_status": "key_validated",
+  "sample_path": "data/raw/SOURCE_LARGE_FIRE_RISK_FORECAST/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_LARGE_FIRE_RISK_FORECAST/",
+  "raw_fields_observed": [
+    "예보일시",
+    "시도명",
+    "시군구명",
+    "읍면동명",
+    "실효습도",
+    "풍속",
+    "등급"
+  ],
+  "time_key_field": "예보일시",
+  "time_parse_result": "pass",
+  "space_key_field": "시도명,시군구명,읍면동명",
+  "space_validation_result": "pass",
+  "native_crs": "none; no geometry",
+  "native_time_format": "YYYY-MM-DD HH:MM",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "Exact PoC window has 0 rows because the latest published file is 20260331 and the downloaded rows end in 2026-03.",
+    "File has admin names only, not admin codes or geometry.",
+    "Alert-list row absence may mean no alert rather than no spatial coverage."
+  ]
+}

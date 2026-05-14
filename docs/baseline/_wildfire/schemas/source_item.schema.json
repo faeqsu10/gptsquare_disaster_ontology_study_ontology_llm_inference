@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/wildfire/source_item.schema.json",
+  "title": "Gwangju-Jeonnam Wildfire Pre-Watering SourceItem",
+  "description": "Source-centric schema describing one external data source feeding the wildfire pre-watering decision pipeline. A SourceItem is the origin point of the layer chain: Source -> AccessOption -> Raw Snapshot / Raw Field -> Derived Dataset -> Feature -> Signal -> State -> Decision -> Action -> Feedback.",
+  "type": "object",
+  "required": [
+    "source_id",
+    "name",
+    "domain",
+    "decision_relevance",
+    "availability_status",
+    "verification_status",
+    "source_owner",
+    "source_url",
+    "acquisition_method",
+    "auth_required",
+    "expected_format",
+    "storage_path",
+    "value_nature",
+    "temporal_semantics",
+    "temporal_resolution",
+    "spatial_semantics",
+    "spatial_resolution",
+    "freshness_class",
+    "confidence_class",
+    "raw_fields",
+    "derived_outputs",
+    "used_by_features",
+    "access_option_ids",
+    "candidate_access_option_ids",
+    "selected_access_option_id",
+    "fallback_access_option_ids",
+    "exclusion_or_mock_reason"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "pattern": "^SOURCE_[A-Z0-9_]+$",
+      "description": "Stable identifier for the source. Renamed from raw_data_id."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable Korean name of the source."
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "official_fire_risk",
+        "weather",
+        "forest_fuel",
+        "terrain",
+        "exposure_asset",
+        "access_water",
+        "fire_response_resource",
+        "history",
+        "operational_constraint",
+        "reference_region"
+      ],
+      "description": "Subject area the source belongs to. Orthogonal to value_nature."
+    },
+    "decision_relevance": {
+      "type": "string",
+      "description": "Why this source matters for the pre-watering decision."
+    },
+    "availability_status": {
+      "type": "string",
+      "enum": ["REAL", "MOCK", "EXCLUDE"],
+      "description": "Plan-level disposition. Renamed from `status`. REAL = will acquire from public source; MOCK = will synthesize for practice; EXCLUDE = will not acquire."
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "source_confirmed",
+        "api_tested",
+        "data_acquired",
+        "schema_validated",
+        "key_validated",
+        "coverage_verified"
+      ],
+      "description": "Actual proof-of-life ladder for this source. Distinct from availability_status: availability is the plan, verification is the evidence. Default `unverified` until field work proves otherwise."
+    },
+    "source_owner": {
+      "type": "string",
+      "description": "Organization that owns and publishes the source (e.g., 산림청 국립산림과학원, 기상청, 국토지리정보원)."
+    },
+    "source_url": {
+      "type": "string",
+      "description": "Canonical URL where the source is published, requested, or documented. Acquisition-ready REAL sources must use a concrete dataset/API/layer URL, not a generic homepage. May be empty string for MOCK/EXCLUDE entries with no public origin, or for REAL entries whose acquisition_method is to_be_verified."
+    },
+    "acquisition_method": {
+      "type": "string",
+      "enum": [
+        "openapi",
+        "file_download",
+        "wms_wfs",
+        "manual_download",
+        "manual_entry",
+        "generated_mock",
+        "excluded",
+        "to_be_verified"
+      ],
+      "description": "How a Raw Snapshot is taken from the source."
+    },
+    "auth_required": {
+      "type": "string",
+      "enum": [
+        "none",
+        "public_api_key",
+        "login",
+        "manual_request",
+        "agency_only",
+        "not_applicable",
+        "unknown"
+      ],
+      "description": "What authentication the source requires before a Raw Snapshot can be taken."
+    },
+    "expected_format": {
+      "type": "string",
+      "description": "Comma-separated list of formats the source emits (e.g., 'JSON, XML', 'SHP, GeoJSON')."
+    },
+    "storage_path": {
+      "type": "string",
+      "description": "Convention-bound path under data/ where Raw Snapshots from this source are stored. REAL sources must target data/raw/<SOURCE_ID>/snapshots/; MOCK sources data/mock/<SOURCE_ID>/scenario_baseline/. Empty string allowed for EXCLUDE."
+    },
+    "value_nature": {
+      "type": "string",
+      "enum": [
+        "observed",
+        "forecast",
+        "official_model_output",
+        "static_reference",
+        "geospatial_base_layer",
+        "administrative_registry",
+        "event_history",
+        "operational_status",
+        "manual_report",
+        "synthetic_mock"
+      ],
+      "description": "Kind of value the source carries. Orthogonal to domain. A weather source may be observed or forecast; a forest source may be a geospatial_base_layer or a static_reference."
+    },
+    "temporal_semantics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "observed_at",
+          "forecast_issued_at",
+          "forecast_valid_time",
+          "event_occurred_at",
+          "effective_period",
+          "registry_updated_at",
+          "static",
+          "scenario_time"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "What time semantics the source carries. Forecast sources carry both forecast_issued_at and forecast_valid_time; static reference layers carry `static`."
+    },
+    "temporal_resolution": {
+      "type": "string",
+      "description": "Free-text detail not captured by temporal_semantics or freshness_class. Examples: '3-hour interval, 72-hour horizon', '1일 8회 발표, 시간별 예보', 'minute/hour/day', 'scenario-defined'."
+    },
+    "spatial_semantics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "point",
+          "line",
+          "polygon",
+          "grid",
+          "raster",
+          "admin_area",
+          "address",
+          "segment",
+          "no_geometry"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Geometry types the source carries. A road network carries both line and point (intersections); a registry table may carry no_geometry."
+    },
+    "spatial_resolution": {
+      "type": "string",
+      "description": "Free-text detail not captured by spatial_semantics. Examples: '5km grid', '시군구 polygon', 'building polygon', 'station/center address'."
+    },
+    "freshness_class": {
+      "type": "string",
+      "enum": [
+        "real_time",
+        "near_real_time",
+        "hourly",
+        "daily",
+        "monthly",
+        "annual",
+        "static",
+        "scenario"
+      ],
+      "description": "How fresh data from this source typically is. Replaces the old free-text update_frequency field."
+    },
+    "confidence_class": {
+      "type": "string",
+      "enum": [
+        "official_primary",
+        "official_secondary",
+        "measured",
+        "modeled",
+        "estimated",
+        "manually_reported",
+        "mock",
+        "unknown"
+      ],
+      "description": "Trust class of values from this source. Drives downstream confidence propagation into Features/Signals."
+    },
+    "raw_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Field/column names a Raw Snapshot from this source is expected to contain. Korean field names allowed. Empty array permitted for sources whose schema is not yet inventoried."
+    },
+    "derived_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Derived Datasets and intermediate columns produced from this source. DERIVED_* IDs preserved unchanged."
+    },
+    "used_by_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Features that depend on this source (directly or via Derived Datasets). Feature names preserved unchanged."
+    },
+    "access_option_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ACCESS_[A-Z0-9_]+$"
+      },
+      "description": "All AccessOptions registered for this Source, including candidate, selected, fallback, and rejected options."
+    },
+    "candidate_access_option_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ACCESS_[A-Z0-9_]+$"
+      },
+      "description": "AccessOptions still under evaluation. Candidate options are not assumed usable until verified."
+    },
+    "selected_access_option_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ACCESS_[A-Z0-9_]+$",
+      "description": "Selected AccessOption for acquisition. Null until an option is selected after discovery/key verification."
+    },
+    "fallback_access_option_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ACCESS_[A-Z0-9_]+$"
+      },
+      "description": "AccessOptions that remain usable if the selected option fails or has insufficient coverage."
+    },
+    "exclusion_or_mock_reason": {
+      "type": "string",
+      "description": "Reason a source is MOCK or EXCLUDE. Empty string for REAL sources."
+    }
+  },
+  "additionalProperties": false
+}

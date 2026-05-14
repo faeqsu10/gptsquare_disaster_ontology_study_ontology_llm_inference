@@ -3,7 +3,7 @@ TypeDB 3.x — wildfire 데이터베이스 + 스키마 적용 스크립트.
 
 실행 방법:
     LD_LIBRARY_PATH=$PYTHON_LIB \
-    uv run python _workspace/study-poc/db/setup_schema.py
+    uv run python code/db/setup_schema.py
 """
 
 from pathlib import Path

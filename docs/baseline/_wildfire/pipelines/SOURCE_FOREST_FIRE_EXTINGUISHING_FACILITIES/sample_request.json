@@ -1,0 +1,13 @@
+{
+  "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+  "selected_access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_PRIMARY",
+  "fallback_access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_OPENAPI",
+  "file_source_page": "https://www.data.go.kr/data/15144785/fileData.do",
+  "openapi_source_page": "https://www.data.go.kr/data/15144785/fileData.do#tab-layer-openapi",
+  "requested_file_format": "CSV",
+  "fallback_api_formats": [
+    "JSON",
+    "XML"
+  ],
+  "notes": "This transaction stores source-page preview rows. Full CSV/OpenAPI acquisition was not executed."
+}

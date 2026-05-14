@@ -1,6 +1,6 @@
 # 산불 예비주수 PoC (4·5주차 스터디)
 
-> 3주차 baseline 자료(별도 비공개 — 그룹스터디 멤버 참조)를 기반으로,
+> 3주차 baseline 자료(`docs/baseline/_wildfire/` — 본 레포 포함, 가상 데이터)를 기반으로,
 > **TypeDB 3.x + Gemini 2.5 Flash**로 의사결정 시스템을 구현한 학습용 PoC.
 
 발표일: 2026-05-13 (5주차 발표 3)
@@ -51,9 +51,11 @@ code/
    ```
    GEMINI_API_KEY=<your_key>
    ```
-4. **baseline 데이터** (`code/db/load_sources.py`가 참조):
-   - 원자료 `source_inventory.json` 은 그룹스터디 내부 공유 자료. 본 레포에는 미포함.
-   - 동일 위치(`docs/study/w03/_wildfire_full/_wildfire/data/reference/source_inventory.json`)에 두거나 `load_sources.py` 안 `INVENTORY` 상수를 수정해 사용.
+4. **baseline 데이터** — `docs/baseline/_wildfire/` 에 포함 (가상 데이터, 215 파일):
+   - `data/reference/source_inventory.json` — 29건 source 명세 (load_sources.py가 참조)
+   - `data/reference/source_dossiers/*.json` — source별 상세 dossier
+   - `docs/01_architecture.md ~ 08_governance.md` — 설계 문서
+   - `schemas/*.json` — JSON Schema 3종
 
 ## 실행 흐름 (처음부터)
 
@@ -125,4 +127,4 @@ Fallback 사용:       0건
 
 - 통합 기술 reference: `docs/wildfire-study-reference.html` (레포 루트 기준)
 - 발표 공유본 5종(개요/데이터·엔티티/추론·LLM/시연/코드 안내): `docs/*.md` + `docs/pdf/*.pdf`
-- 3주차 baseline 자료(원자료 데이터 포함)는 그룹스터디 내부 공유 — 본 레포 비포함
+- 3주차 baseline 자료(설계 문서 + 가상 source_inventory) — `docs/baseline/_wildfire/`

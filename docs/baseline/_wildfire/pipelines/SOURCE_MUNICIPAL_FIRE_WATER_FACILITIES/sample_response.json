@@ -1,0 +1,27 @@
+{
+  "source_id": "SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES",
+  "access_option_id": "ACCESS_MUNICIPAL_FIRE_WATER_FACILITIES_BASELINE_SCENARIO",
+  "generated": true,
+  "sample_path": "data/mock/SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES/scenario_baseline/",
+  "row_count": 623,
+  "coverage_unit_count": 623,
+  "coverage_counts_by_sido": {
+    "광주광역시": 202,
+    "전라남도": 421
+  },
+  "time_key_fields": [
+    "scenario_time",
+    "valid_from",
+    "valid_to",
+    "mock_generated_at"
+  ],
+  "space_key_fields": [
+    "facility_id",
+    "coverage_unit_id",
+    "longitude",
+    "latitude",
+    "geometry_wkt"
+  ],
+  "native_spatial_grain": "water facility point",
+  "native_crs": "EPSG:4326"
+}

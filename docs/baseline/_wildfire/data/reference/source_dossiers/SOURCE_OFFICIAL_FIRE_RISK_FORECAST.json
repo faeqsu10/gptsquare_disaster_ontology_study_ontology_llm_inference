@@ -1,0 +1,41 @@
+{
+  "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+  "selected_access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_SIGUNGU",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_OFFICIAL_FIRE_RISK_FORECAST/",
+  "raw_fields_observed": [
+    "resultCode",
+    "resultMsg",
+    "numOfRows",
+    "pageNo",
+    "totalCount",
+    "analdate",
+    "area",
+    "d1",
+    "d2",
+    "d3",
+    "d4",
+    "doname",
+    "maxi",
+    "meanavg",
+    "mini",
+    "regioncode",
+    "sigucode",
+    "sigun",
+    "std",
+    "upplocalcd"
+  ],
+  "time_key_field": "analdate",
+  "time_parse_result": "pass",
+  "space_key_field": "upplocalcd,sigucode,regioncode,doname,sigun",
+  "space_validation_result": "pass",
+  "native_crs": "none; no geometry",
+  "native_time_format": "YYYY-MM-DD HH",
+  "decision": "fallback_required",
+  "open_issues": [
+    "Current official Swagger exposes no eupmyeondong endpoint or parameter.",
+    "Verified response exposes analdate as forecast target time but no separate forecast issue time field.",
+    "No historical time-window query parameter is exposed."
+  ]
+}

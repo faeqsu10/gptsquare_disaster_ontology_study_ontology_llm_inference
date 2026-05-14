@@ -1,0 +1,38 @@
+{
+  "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+  "selected_access_option_id": "ACCESS_SURFACE_FUEL_CONDITION_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_SURFACE_FUEL_CONDITION/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_SURFACE_FUEL_CONDITION/",
+  "raw_fields_observed": [
+    "mock_id",
+    "region_code",
+    "region_name",
+    "segment_id",
+    "valid_from",
+    "valid_to",
+    "scenario_time",
+    "surface_fuel_type",
+    "surface_fuel_load_class",
+    "wetting_response_class",
+    "field_verified",
+    "scenario_basis",
+    "geometry_wkt",
+    "native_crs",
+    "scenario_name",
+    "mock_seed",
+    "mock_generated_at",
+    "mock_reason"
+  ],
+  "time_key_field": "scenario_time",
+  "time_parse_result": "pass",
+  "space_key_field": "segment_id, geometry_wkt",
+  "space_validation_result": "pass",
+  "native_crs": "EPSG:4326; generated mock geometry",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "synthetic mock baseline이며 운영 데이터가 아니다.",
+    "segment_id와 geometry는 PoC mock 생성물이며 실제 PreWateringSegment와 spatial join하지 않았다."
+  ]
+}

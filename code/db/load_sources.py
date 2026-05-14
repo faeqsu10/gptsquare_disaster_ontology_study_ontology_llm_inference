@@ -3,7 +3,7 @@
 
 실행 방법:
     LD_LIBRARY_PATH=$PYTHON_LIB \
-    uv run python _workspace/study-poc/db/load_sources.py
+    uv run python code/db/load_sources.py
 """
 
 import json
@@ -12,7 +12,8 @@ from pathlib import Path
 from typedb.driver import Credentials, DriverOptions, TransactionType, TypeDB
 
 DB_NAME = "wildfire"
-INVENTORY = Path("docs/study/w03/_wildfire_full/_wildfire/data/reference/source_inventory.json")
+# repo root: code/db/load_sources.py → parents[2]
+INVENTORY = Path(__file__).resolve().parents[2] / "docs/baseline/_wildfire/data/reference/source_inventory.json"
 
 
 def escape(value: str) -> str:

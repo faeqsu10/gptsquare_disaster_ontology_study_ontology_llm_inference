@@ -8,7 +8,7 @@
 1) 5 segment × v1 임계값 → 두 엔진 결과 (s_priority, base_state, state, reason) 일치
 2) v1 → v2 임계값 변경 시에도 두 엔진 결과 일치 (fun이 동적 조회 보장)
 
-실행: ./study/wildfire-poc/run.sh study/wildfire-poc/tests/test_python_vs_fun.py
+실행: ./code/run.sh code/tests/test_python_vs_fun.py
 """
 
 from __future__ import annotations

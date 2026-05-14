@@ -1,0 +1,7 @@
+{
+  "source_id": "SOURCE_ADMIN_BOUNDARIES",
+  "access_option_id": "ACCESS_ADMIN_BOUNDARIES_ADMIN_CODE",
+  "captured_at": "2026-04-30T10:34:29.851961+00:00",
+  "raw_response_path": "data/raw/SOURCE_ADMIN_BOUNDARIES/snapshots/full/LP_AA_EMD.csv",
+  "notes": "metadata.json in the full snapshot directory records source headers, download URL, full feature count, 광주·전남 feature count, raw fields, and PoC coverage checks."
+}

@@ -1,0 +1,11 @@
+{
+  "source_id": "SOURCE_FIRE_STATION_CENTERS",
+  "access_option_id": "ACCESS_FIRE_STATION_CENTERS_PRIMARY",
+  "method": "GET",
+  "dataset_page_url": "https://www.data.go.kr/data/15065056/fileData.do",
+  "download_url": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003219123&fileDetailSn=1&insertDataPrcus=N",
+  "fallback_openapi_doc_url": "https://infuser.odcloud.kr/oas/docs?namespace=15065056/v1",
+  "auth_required": "none",
+  "expected_format": "CSV",
+  "captured_at": "2026-05-01T03:58:15+09:00"
+}

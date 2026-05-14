@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/wildfire/source_access_option.schema.json",
+  "title": "Gwangju-Jeonnam Wildfire Pre-Watering SourceAccessOption",
+  "description": "An AccessOption describes one concrete way to acquire data from a Source, including endpoint/layer, query conditions, native time and space keys, and PoC support. Source is the origin; AccessOption is the acquisition shape.",
+  "type": "object",
+  "required": [
+    "access_option_id",
+    "source_id",
+    "option_status",
+    "endpoint_or_layer",
+    "acquisition_method",
+    "query_params",
+    "auth_required",
+    "expected_format",
+    "native_spatial_grain",
+    "spatial_semantics",
+    "space_key_field",
+    "geometry_field",
+    "native_crs",
+    "region_filter_method",
+    "native_temporal_grain",
+    "temporal_semantics",
+    "time_key_field",
+    "forecast_issue_field",
+    "forecast_valid_field",
+    "supports_poc_region",
+    "supports_poc_time_window",
+    "expected_coverage",
+    "evaluation",
+    "rejection_reason"
+  ],
+  "properties": {
+    "access_option_id": {
+      "type": "string",
+      "pattern": "^ACCESS_[A-Z0-9_]+$"
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^SOURCE_[A-Z0-9_]+$"
+    },
+    "option_status": {
+      "type": "string",
+      "enum": ["CANDIDATE", "SELECTED", "FALLBACK", "REJECTED"]
+    },
+    "endpoint_or_layer": {
+      "type": "string"
+    },
+    "acquisition_method": {
+      "type": "string",
+      "enum": [
+        "openapi",
+        "file_download",
+        "wms_wfs",
+        "manual_download",
+        "manual_entry",
+        "generated_mock",
+        "excluded",
+        "to_be_verified"
+      ]
+    },
+    "query_params": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "auth_required": {
+      "type": "string",
+      "enum": [
+        "none",
+        "public_api_key",
+        "login",
+        "manual_request",
+        "agency_only",
+        "not_applicable",
+        "unknown"
+      ]
+    },
+    "expected_format": {
+      "type": "string"
+    },
+    "native_spatial_grain": {
+      "type": "string"
+    },
+    "spatial_semantics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "point",
+          "line",
+          "polygon",
+          "grid",
+          "raster",
+          "admin_area",
+          "address",
+          "segment",
+          "no_geometry"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "space_key_field": {
+      "type": "string"
+    },
+    "geometry_field": {
+      "type": "string"
+    },
+    "native_crs": {
+      "type": "string"
+    },
+    "region_filter_method": {
+      "type": "string"
+    },
+    "native_temporal_grain": {
+      "type": "string"
+    },
+    "temporal_semantics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "observed_at",
+          "forecast_issued_at",
+          "forecast_valid_time",
+          "event_occurred_at",
+          "effective_period",
+          "registry_updated_at",
+          "static",
+          "scenario_time"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "time_key_field": {
+      "type": "string"
+    },
+    "forecast_issue_field": {
+      "type": "string"
+    },
+    "forecast_valid_field": {
+      "type": "string"
+    },
+    "supports_poc_region": {
+      "type": "string",
+      "enum": ["yes", "no", "unknown"]
+    },
+    "supports_poc_time_window": {
+      "type": "string",
+      "enum": ["yes", "no", "unknown"]
+    },
+    "expected_coverage": {
+      "type": "string"
+    },
+    "evaluation": {
+      "type": "object",
+      "required": [
+        "spatial_fit",
+        "temporal_fit",
+        "coverage_fit",
+        "key_fit",
+        "reproducibility",
+        "decision_value",
+        "cost_complexity",
+        "notes"
+      ],
+      "properties": {
+        "spatial_fit": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "temporal_fit": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "coverage_fit": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "key_fit": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "reproducibility": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "decision_value": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "cost_complexity": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rejection_reason": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

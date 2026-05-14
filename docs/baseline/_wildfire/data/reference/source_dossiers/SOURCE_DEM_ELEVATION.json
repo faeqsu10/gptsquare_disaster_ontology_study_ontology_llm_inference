@@ -1,0 +1,24 @@
+{
+  "source_id": "SOURCE_DEM_ELEVATION",
+  "selected_access_option_id": "",
+  "verification_status": "source_confirmed",
+  "sample_path": "not_applicable_excluded",
+  "pipeline_path": "pipelines/SOURCE_DEM_ELEVATION/",
+  "raw_fields_observed": [
+    "elevation raster band",
+    "NoData value",
+    "geotransform",
+    "raster CRS metadata"
+  ],
+  "time_key_field": "registry_updated_at",
+  "time_parse_result": "not_applicable",
+  "space_key_field": "raster_tile",
+  "space_validation_result": "not_applicable",
+  "native_crs": "not_inspected_excluded",
+  "native_time_format": "not_applicable_excluded",
+  "decision": "exclude",
+  "open_issues": [
+    "DEM was excluded by user instruction on 2026-04-30.",
+    "No DEM IMG download, CRS inspection, pixel metadata inspection, slope calculation, or aspect calculation will be performed in TX04."
+  ]
+}

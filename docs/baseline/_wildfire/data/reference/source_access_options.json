@@ -1,0 +1,1487 @@
+[
+  {
+    "access_option_id": "ACCESS_CRITICAL_INFRASTRUCTURE_DETAIL_DETAILED_INTERNAL",
+    "source_id": "SOURCE_CRITICAL_INFRASTRUCTURE_DETAIL",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "전력·통신기관 (보안)",
+    "acquisition_method": "excluded",
+    "query_params": [],
+    "auth_required": "agency_only",
+    "expected_format": "not_applicable",
+    "native_spatial_grain": "facility point/line",
+    "spatial_semantics": [
+      "point",
+      "line"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "geometry",
+    "native_crs": "unknown; preserve native until Clean Zone phase",
+    "region_filter_method": "to be verified; preserve native grain and record filter method in dossier",
+    "native_temporal_grain": "irregular updates",
+    "temporal_semantics": [
+      "static"
+    ],
+    "time_key_field": "snapshot_metadata.snapshot_date",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "No acquisition coverage; excluded option.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "low",
+      "coverage_fit": "low",
+      "key_fit": "low",
+      "reproducibility": "low",
+      "decision_value": "medium",
+      "cost_complexity": "high",
+      "notes": "Excluded option; not used for acquisition."
+    },
+    "rejection_reason": "보안 민감도가 높고 초기 실습에서 문화재/공공시설로 대체 가능"
+  },
+  {
+    "access_option_id": "ACCESS_POPULATION_STATISTICS_PRIMARY",
+    "source_id": "SOURCE_POPULATION_STATISTICS",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://jumin.mois.go.kr/",
+    "acquisition_method": "file_download",
+    "query_params": [],
+    "auth_required": "none",
+    "expected_format": "CSV, XLSX",
+    "native_spatial_grain": "행정동",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "admin_code_or_name",
+    "geometry_field": "",
+    "native_crs": "not applicable; no geometry",
+    "region_filter_method": "n/a",
+    "native_temporal_grain": "monthly",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "registry_updated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Same underlying registry as data.go.kr file datasets.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "low",
+      "decision_value": "high",
+      "cost_complexity": "high",
+      "notes": "jumin.mois.go.kr web UI exports CSV/XLSX through dynamic JS handlers (#none anchors). Reproducibility is low compared to the data.go.kr direct fileDownload URL. data.go.kr file datasets carry the same registry data."
+    },
+    "rejection_reason": "Same registry data is available with stable direct download URLs at data.go.kr (15097972, 15097974). jumin.mois.go.kr is human-facing only and JS-protected for export; reproducibility is poor."
+  },
+  {
+    "access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_EUPMYEONDONG",
+    "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://apis.data.go.kr/1400377/forestPointV2",
+    "acquisition_method": "openapi",
+    "query_params": [],
+    "auth_required": "public_api_key",
+    "expected_format": "JSON, XML",
+    "native_spatial_grain": "not available in current official OpenAPI",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "",
+    "geometry_field": "",
+    "native_crs": "none; no geometry",
+    "region_filter_method": "not supported",
+    "native_temporal_grain": "not available for 읍면동 option",
+    "temporal_semantics": [
+      "forecast_issued_at"
+    ],
+    "time_key_field": "",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Rejected because official Swagger exposes nationwide/sido/sigungu only.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "low",
+      "coverage_fit": "low",
+      "key_fit": "low",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "low",
+      "notes": "No 읍면동 endpoint or query parameter found. Schema normalization: reproducibility normalized from 'high for rejection evidence'; decision_value normalized from 'high if it existed'; cost_complexity normalized from 'not applicable'."
+    },
+    "rejection_reason": "Current official data.go.kr Swagger only exposes forestPointListGeongugSearchV2, forestPointListSidoSearchV2, and forestPointListSigunguSearchV2."
+  },
+  {
+    "access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_IMAGE_OR_GRID",
+    "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15125648/fileData.do",
+    "acquisition_method": "file_download",
+    "query_params": [],
+    "auth_required": "none",
+    "expected_format": "PNG",
+    "native_spatial_grain": "image presentation",
+    "spatial_semantics": [
+      "raster"
+    ],
+    "space_key_field": "image_extent",
+    "geometry_field": "image_extent",
+    "native_crs": "unknown image extent",
+    "region_filter_method": "not suitable for admin-key extraction",
+    "native_temporal_grain": "hourly image, monthly file publication",
+    "temporal_semantics": [
+      "forecast_valid_time"
+    ],
+    "time_key_field": "image file timestamp if present",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "image file timestamp if present",
+    "expected_coverage": "Rejected because numeric raw fields and admin keys are unavailable without image processing.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "low",
+      "reproducibility": "medium",
+      "decision_value": "low",
+      "cost_complexity": "high",
+      "notes": "Image colors encode risk but do not expose row-level numeric/admin keys. Schema normalization: decision_value normalized from 'low for raw numeric feature input'."
+    },
+    "rejection_reason": "PNG/image data is unsuitable for this raw numeric/admin-key acquisition phase."
+  },
+  {
+    "access_option_id": "ACCESS_LARGE_FIRE_RISK_FORECAST_EUPMYEONDONG",
+    "source_id": "SOURCE_LARGE_FIRE_RISK_FORECAST",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003631149&fileDetailSn=1&insertDataPrcus=N",
+    "acquisition_method": "file_download",
+    "query_params": [],
+    "auth_required": "unknown",
+    "expected_format": "CSV",
+    "native_spatial_grain": "읍면동명 admin area",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "시도명,시군구명,읍면동명",
+    "geometry_field": "",
+    "native_crs": "none; no geometry",
+    "region_filter_method": "download file then filter raw rows by native admin names",
+    "native_temporal_grain": "hourly/event row time; monthly file publication",
+    "temporal_semantics": [
+      "forecast_valid_time",
+      "event_occurred_at"
+    ],
+    "time_key_field": "예보일시",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "예보일시",
+    "expected_coverage": "Monthly alert-list rows by 읍면동명 when alerts exist; direct CSV and ODCloud JSON both verified.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "low",
+      "notes": "Selected with PoC time gap; direct CSV and ODCloud JSON API verified. Absence of row may mean no alert. Schema normalization: coverage_fit normalized from 'partial'."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_OFFICIAL_FIRE_RISK_FORECAST_NIFOS_DETAIL_ADM_JSON",
+    "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+    "option_status": "CANDIDATE",
+    "endpoint_or_layer": "https://forestfire.nifos.go.kr/sys/gis/selectDtlAdmInfoList.do",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "admCd"
+    ],
+    "auth_required": "unknown",
+    "expected_format": "JSON",
+    "native_spatial_grain": "legal-dong-like lower admin area or sigungu depending on admCd",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "admInfo.admCd,admInfo.admNm",
+    "geometry_field": "",
+    "native_crs": "none; no geometry in verified JSON",
+    "region_filter_method": "select lower admin code from /cmm/selectEmdCodeList.do or query by coordinate via /sys/gis/selectDtlGeoLocationInfo.do",
+    "native_temporal_grain": "current forecast horizon, 3-hour forecast case rows",
+    "temporal_semantics": [
+      "forecast_issued_at",
+      "forecast_valid_time"
+    ],
+    "time_key_field": "fctDateMap.obsDt,fctDateMap.fctLastDt,admFfdIdxList[].forDate,admFfdIdxList[].fctCase",
+    "forecast_issue_field": "fctDateMap.fctLastDt",
+    "forecast_valid_field": "admFfdIdxList[].forDate",
+    "expected_coverage": "NIFoS web backend returns detailed current/forecast fire danger rows for lower admin codes.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Useful alternative found by research, but not a documented data.go.kr OpenAPI. Schema normalization: temporal_fit normalized from 'partial'; coverage_fit normalized from 'partial'; decision_value normalized from 'high if hidden web endpoint use is accepted'; cost_complexity normalized from 'medium: undocumented web backend endpoint; stability and terms need review'."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_LARGE_FIRE_RISK_FORECAST_NIFOS_CURRENT_JSON",
+    "source_id": "SOURCE_LARGE_FIRE_RISK_FORECAST",
+    "option_status": "CANDIDATE",
+    "endpoint_or_layer": "https://forestfire.nifos.go.kr/sys/gis/selectBffdForecastList.do",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "fctCase"
+    ],
+    "auth_required": "unknown",
+    "expected_format": "JSON",
+    "native_spatial_grain": "address/admin text when current warning rows exist",
+    "spatial_semantics": [
+      "address",
+      "admin_area"
+    ],
+    "space_key_field": "bfireForecastList[].addr",
+    "geometry_field": "",
+    "native_crs": "none; no geometry in verified JSON",
+    "region_filter_method": "fetch current warning list by forecast case then filter address text",
+    "native_temporal_grain": "current forecast case rows",
+    "temporal_semantics": [
+      "forecast_issued_at",
+      "forecast_valid_time"
+    ],
+    "time_key_field": "fctDateMap.obsDt,fctDateMap.fctLastDt,fctCase",
+    "forecast_issue_field": "fctDateMap.fctLastDt",
+    "forecast_valid_field": "fctCase plus fctDateMap.frcstDt*",
+    "expected_coverage": "When rows exist, client script displays addr, ehVal, wsVal, finalVal, danger.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "unknown",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "medium",
+      "cost_complexity": "medium",
+      "notes": "Current 2026-04-30 checks for fctCase=00 and fctCase=21 returned bfireForecastList count 0. Schema normalization: spatial_fit normalized from 'partial'; temporal_fit normalized from 'partial'; key_fit normalized from 'partial'; cost_complexity normalized from 'medium: undocumented web backend endpoint; current response can be empty'."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_KMA_SHORT_TERM_FORECAST_NXNY_GRID",
+    "source_id": "SOURCE_KMA_SHORT_TERM_FORECAST",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "serviceKey",
+      "pageNo",
+      "numOfRows",
+      "dataType",
+      "base_date",
+      "base_time",
+      "nx",
+      "ny"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "JSON, XML",
+    "native_spatial_grain": "5km nx/ny grid",
+    "spatial_semantics": [
+      "grid"
+    ],
+    "space_key_field": "nx, ny",
+    "geometry_field": "",
+    "native_crs": "KMA DFS nx/ny grid; preserve native grid",
+    "region_filter_method": "PoC representative point -> nx=60, ny=74; preserve nx/ny in raw",
+    "native_temporal_grain": "8 issuances/day, hourly forecast rows",
+    "temporal_semantics": [
+      "forecast_issued_at",
+      "forecast_valid_time"
+    ],
+    "time_key_field": "baseDate/baseTime, fcstDate/fcstTime",
+    "forecast_issue_field": "baseDate/baseTime",
+    "forecast_valid_field": "fcstDate/fcstTime",
+    "expected_coverage": "PoC grid nx=60, ny=74; sample issue base_date=20260415 base_time=0500. On 2026-04-30 this fixed forecast date is outside the endpoint's recent 3-day retention.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "high",
+      "coverage_fit": "medium",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Reads data.go.kr service key from environment. Fixed historical PoC forecast dates are not retrievable after the endpoint retention window; no admin fan-out in raw phase."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_KMA_OBSERVED_WEATHER_STATION",
+    "source_id": "SOURCE_KMA_OBSERVED_WEATHER",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://apihub.kma.go.kr/api/typ01/url/kma_sfctm3.php",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "authKey",
+      "tm1",
+      "tm2",
+      "stn",
+      "help"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "TEXT, CSV-like table",
+    "native_spatial_grain": "station point",
+    "spatial_semantics": [
+      "point"
+    ],
+    "space_key_field": "STN",
+    "geometry_field": "station metadata lon/lat",
+    "native_crs": "station metadata lon/lat; preserve STN in raw observations",
+    "region_filter_method": "Use KMA station metadata for addresses starting with 광주광역시 or 전라남도; fetch active ASOS station observations by STN; no interpolation to 읍면동 or Segment.",
+    "native_temporal_grain": "hourly observation period rows",
+    "temporal_semantics": [
+      "observed_at"
+    ],
+    "time_key_field": "TM",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Regional station master acquired: ASOS 23 rows/14 active, AWS 421 rows/83 active. Active ASOS regional snapshot acquired for tm1=202604150000 to tm2=202604212300: 14 stations x 168 hourly rows = 2352 rows. AWS observations require a separate access option.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Reads KMA APIHub authKey from environment. Utilization approval is active for this ASOS endpoint; station point is preserved. KMA station master is stored separately as a runtime anchor."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_KMA_WEATHER_WARNINGS_WARNING_AREA",
+    "source_id": "SOURCE_KMA_WEATHER_WARNINGS",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "authKey",
+      "reg",
+      "wrn",
+      "tmfc1",
+      "tmfc2",
+      "disp",
+      "help"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "TEXT",
+    "native_spatial_grain": "warning area/admin area",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "REG_ID",
+    "geometry_field": "",
+    "native_crs": "warning-area code table; geometry not emitted by selected API",
+    "region_filter_method": "Use reg=0 all areas for raw evidence and reg=L1050100 for PoC 광주광역시 check; preserve REG_ID",
+    "native_temporal_grain": "event-driven",
+    "temporal_semantics": [
+      "effective_period",
+      "event_occurred_at"
+    ],
+    "time_key_field": "TM_FC, TM_EF, TM_IN, CMD",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "PoC period tmfc1=202604150000 to tmfc2=202604212359; all-area warning rows captured, warning area table captured, PoC 광주광역시 REG_ID=L1050100 confirmed, PoC-specific rows=0.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Reads KMA APIHub authKey from environment. Utilization approval is active; preserve native REG_ID warning-area grain."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_SUN_EVENT_CALENDAR_AREA",
+    "source_id": "SOURCE_SUN_EVENT_CALENDAR",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "ServiceKey",
+      "locdate",
+      "location"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "XML",
+    "native_spatial_grain": "admin area representative location",
+    "spatial_semantics": [
+      "admin_area"
+    ],
+    "space_key_field": "location",
+    "geometry_field": "",
+    "native_crs": "not_applicable; service emits representative longitude/latitude fields",
+    "region_filter_method": "location=광주 if coordinate endpoint is unavailable",
+    "native_temporal_grain": "daily",
+    "temporal_semantics": [
+      "effective_period"
+    ],
+    "time_key_field": "locdate",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Daily requests for locdate 20260415 through 20260421 and location=광주; 7 XML responses captured.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "medium",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Selected for PoC because it preserves native KASI admin-area grain and returns 광주 rows."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FOREST_STAND_MAP_PRIMARY",
+    "source_id": "SOURCE_FOREST_STAND_MAP",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "FGIS layer: 대축척 임상도; https://map.forest.go.kr/forest/?systype=mapSearch&searchOption=stock",
+    "acquisition_method": "manual_download",
+    "query_params": [
+      "applicant_type=general_user",
+      "layer=대축척 임상도",
+      "request_area=광주광역시 and 전라남도 시도 extracts",
+      "format=SHP"
+    ],
+    "auth_required": "login",
+    "expected_format": "SHP",
+    "native_spatial_grain": "forest stand polygon",
+    "spatial_semantics": [
+      "polygon"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "source-native SHP geometry",
+    "native_crs": "Korea 2000 / Unified CS, EPSG:5179, confirmed from downloaded.prj/.shp.xml",
+    "region_filter_method": "FGIS map download application location selection; 광주광역시 and 전라남도 시도 selection",
+    "native_temporal_grain": "static layer with irregular source updates",
+    "temporal_semantics": [
+      "static",
+      "registry_updated_at"
+    ],
+    "time_key_field": "registry_updated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "광주광역시 and 전라남도 target-region extracts acquired; nationwide full source not acquired.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Selected because official metadata confirms SHP, UTM-K(EPSG:5179), stand polygon layer, and documented forest stand attributes. 광주광역시 and 전라남도 ZIP archives were acquired and inspected."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FOREST_ROAD_NETWORK_PRIMARY",
+    "source_id": "SOURCE_FOREST_ROAD_NETWORK",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "FGIS layer: 임도망도; https://map.forest.go.kr/forest/?systype=mapSearch&searchOption=imdo",
+    "acquisition_method": "manual_download",
+    "query_params": [
+      "applicant_type=general_or_public_research",
+      "layer=임도망도",
+      "request_area=전라남도 시도 extract",
+      "format=SHP"
+    ],
+    "auth_required": "manual_request",
+    "expected_format": "SHP",
+    "native_spatial_grain": "forest road line",
+    "spatial_semantics": [
+      "line"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "source-native SHP geometry",
+    "native_crs": "Korea 2000 / Unified CS, EPSG:5179, confirmed from downloaded 46.prj",
+    "region_filter_method": "FGIS map download application location selection; 전라남도 시도 selection",
+    "native_temporal_grain": "static layer with irregular source updates",
+    "temporal_semantics": [
+      "static",
+      "registry_updated_at"
+    ],
+    "time_key_field": "registry_updated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "전라남도 임도망도 extract acquired. 광주광역시 search returned no 임도망도(국유림) data.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "high",
+      "notes": "Selected with gap. Official pages confirm SHP, road-line semantics, and UTM-K(EPSG:5179). 전라남도 ZIP was acquired and inspected; 광주광역시 has no data in tested FGIS flow."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_DEM_ELEVATION_PRIMARY",
+    "source_id": "SOURCE_DEM_ELEVATION",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "data.go.kr dataset 15059920 and NGII map layer 공개DEM; http://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+    "acquisition_method": "excluded",
+    "query_params": [
+      "excluded_by_user_instruction=2026-04-30"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "IMG",
+    "native_spatial_grain": "raster tile",
+    "spatial_semantics": [
+      "raster"
+    ],
+    "space_key_field": "raster_tile",
+    "geometry_field": "raster geotransform and band grid",
+    "native_crs": "not_inspected_excluded",
+    "region_filter_method": "not_applicable_excluded",
+    "native_temporal_grain": "static layer with irregular / 수시 source updates",
+    "temporal_semantics": [
+      "static",
+      "registry_updated_at"
+    ],
+    "time_key_field": "registry_updated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Excluded by user instruction; no DEM IMG download or tile intersection will be performed.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "low",
+      "coverage_fit": "low",
+      "key_fit": "low",
+      "reproducibility": "medium",
+      "decision_value": "low",
+      "cost_complexity": "high",
+      "notes": "Rejected because DEM is excluded by user instruction on 2026-04-30. No IMG download, CRS inspection, slope, or aspect calculation will be performed."
+    },
+    "rejection_reason": "Excluded by user instruction on 2026-04-30."
+  },
+  {
+    "access_option_id": "ACCESS_BUILDING_FOOTPRINTS_BBOX_WFS",
+    "source_id": "SOURCE_BUILDING_FOOTPRINTS",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://api.vworld.kr/ned/wfs/getBldgisSpceWFS; typename=dt_d010",
+    "acquisition_method": "wms_wfs",
+    "query_params": [
+      "typename",
+      "bbox",
+      "maxFeatures",
+      "resultType",
+      "srsName",
+      "output",
+      "key",
+      "domain"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "WFS JSON, GML",
+    "native_spatial_grain": "building polygon",
+    "spatial_semantics": [
+      "polygon"
+    ],
+    "space_key_field": "ag_geom or gis_idntfc_no or pnu",
+    "geometry_field": "ag_geom",
+    "native_crs": "WFS supports srsName; PoC request uses EPSG:4326",
+    "region_filter_method": "Full 광주·전남 EMD bbox tiling from admin boundary snapshot; native pnu prefix used only to exclude adjacent bbox spillover; no Segment join.",
+    "native_temporal_grain": "irregular registry update",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "last_updt_dt",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Full 광주·전남 snapshot acquired: 622 admin EMD bboxes, 1,835,886 unique building features, 0 failed/overflow tiles.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "VWORLD_API_KEY loaded from shell; full snapshot saved as GeoJSONL with geometry, building id, PNU, and last update timestamp."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_HERITAGE_SPATIAL_FEATURESERVER_BBOX",
+    "source_id": "SOURCE_HERITAGE_SPATIAL",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://portal.esrikr.com/arcgis/rest/services/Hosted/KoreaHerritageSites/FeatureServer layers 1-6",
+    "acquisition_method": "wms_wfs",
+    "query_params": [
+      "f",
+      "where",
+      "outFields",
+      "returnGeometry",
+      "geometry",
+      "geometryType",
+      "inSR",
+      "spatialRel",
+      "outSR",
+      "resultRecordCount"
+    ],
+    "auth_required": "none",
+    "expected_format": "ArcGIS JSON, GeoJSON",
+    "native_spatial_grain": "heritage/protection polygon",
+    "spatial_semantics": [
+      "polygon"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "geometry",
+    "native_crs": "service native EPSG:5179 preserved in ArcGIS JSON sample; GeoJSON convenience copy requested outSR=EPSG:4326",
+    "region_filter_method": "ArcGIS REST where filter: 시도명 IN (광주광역시, 전라남도); native EPSG:5179 JSON preserved.",
+    "native_temporal_grain": "annual or irregular registry update",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "service_metadata_updated",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Full 광주·전남 query acquired 1,214 native ArcGIS features across layers 1-6.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "low",
+      "notes": "KHS-origin ArcGIS FeatureServer provides practical bbox GeoJSON acquisition with geometry and admin keys."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_HERITAGE_SPATIAL_OFFICIAL_WMS_WFS",
+    "source_id": "SOURCE_HERITAGE_SPATIAL",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "https://gis-heritage.go.kr/helpAPI.do; WMS checkKey.do; WFS openapi/xmlService/spca.do",
+    "acquisition_method": "wms_wfs",
+    "query_params": [
+      "WMS: domain",
+      "WMS: service",
+      "WMS: version",
+      "WMS: request",
+      "WMS: LAYERS",
+      "WMS: bBox",
+      "WMS: crs",
+      "WFS: ccbaMnm1",
+      "WFS: ccbaKdcd"
+    ],
+    "auth_required": "none",
+    "expected_format": "WMS image/png, WFS XML",
+    "native_spatial_grain": "heritage WMS layer or XML search result",
+    "spatial_semantics": [
+      "polygon"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "official WMS/WFS geometry fields to be confirmed",
+    "native_crs": "KHS helpAPI states UTM-K; WMS sample uses EPSG:9020203",
+    "region_filter_method": "WMS bbox is documented; WFS is name/category query and not selected for bbox raw feature sample",
+    "native_temporal_grain": "irregular registry update",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "snapshot_metadata.captured_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Official WMS/WFS availability confirmed; bbox feature extraction remains a gap.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Use as official fallback/reference while FeatureServer handles reproducible PoC GeoJSON."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_PUBLIC_FACILITIES_HIRA_HOSPITAL_API",
+    "source_id": "SOURCE_PUBLIC_FACILITIES",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "https://apis.data.go.kr/B551182/hospInfoServicev2/getHospBasisList",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "ServiceKey",
+      "pageNo",
+      "numOfRows",
+      "sidoCd",
+      "sgguCd",
+      "emdongNm",
+      "yadmNm",
+      "xPos",
+      "yPos",
+      "radius"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "XML",
+    "native_spatial_grain": "hospital point/address/admin",
+    "spatial_semantics": [
+      "point",
+      "address",
+      "admin_area"
+    ],
+    "space_key_field": "XPos, YPos or addr or sidoCd/sgguCd/emdongNm",
+    "geometry_field": "XPos, YPos",
+    "native_crs": "WGS84-like x/y coordinates as provided by HIRA",
+    "region_filter_method": "query by sidoCd/sgguCd/emdongNm or native xPos/yPos/radius; no geocoding",
+    "native_temporal_grain": "snapshot/static registry",
+    "temporal_semantics": [
+      "static"
+    ],
+    "time_key_field": "snapshot_metadata.captured_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Full pages acquired: 광주 sidoCd=240000 totalCount=2,329; 전남 sidoCd=360000 totalCount=2,627.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "DATA_GO_KR_SERVICE_KEY approved for HIRA hospital basis list; all pages fetched for 광주 and 전남."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_PUBLIC_FACILITIES_TBD",
+    "source_id": "SOURCE_PUBLIC_FACILITIES",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "replaced by concrete public health and hospital options; school option excluded from TX05",
+    "acquisition_method": "to_be_verified",
+    "query_params": [],
+    "auth_required": "unknown",
+    "expected_format": "unknown",
+    "native_spatial_grain": "unknown",
+    "spatial_semantics": [
+      "address"
+    ],
+    "space_key_field": "unknown",
+    "geometry_field": "",
+    "native_crs": "unknown",
+    "region_filter_method": "not applicable",
+    "native_temporal_grain": "unknown",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "unknown",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "No acquisition coverage; superseded option.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "low",
+      "coverage_fit": "low",
+      "key_fit": "low",
+      "reproducibility": "low",
+      "decision_value": "low",
+      "cost_complexity": "unknown",
+      "notes": "TBD option should be removed after integration of concrete options."
+    },
+    "rejection_reason": "Concrete source URLs have been identified."
+  },
+  {
+    "access_option_id": "ACCESS_VULNERABLE_FACILITIES_JN_ELDERLY_WELFARE_MOCK",
+    "source_id": "SOURCE_VULNERABLE_FACILITIES",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "data/mock/SOURCE_VULNERABLE_FACILITIES/scenario_baseline/",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "seed=20260501",
+      "scenario_id=scenario_baseline",
+      "scenario_time",
+      "valid_from",
+      "valid_to",
+      "source_region=전라남도"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "API-shaped JSON, CSV, GeoJSON",
+    "native_spatial_grain": "synthetic facility point within admin boundary; admin/address text",
+    "spatial_semantics": [
+      "point",
+      "admin_area",
+      "address"
+    ],
+    "space_key_field": "space_key, city, emd_code, location, posX, posY",
+    "geometry_field": "posX, posY; GeoJSON Point",
+    "native_crs": "EPSG:4326",
+    "region_filter_method": "Generated for all 22 Jeonnam sigungu from admin boundary/code snapshots; Gwangju real snapshot is detected and not mocked.",
+    "native_temporal_grain": "scenario-defined",
+    "temporal_semantics": [
+      "scenario_time"
+    ],
+    "time_key_field": "scenario_time, valid_from, valid_to",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "1,774 Jeonnam mock rows across five elderly-welfare API classes; Gwangju real senior/medical welfare rows retained and mock generation skipped.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Fallback for unavailable Jeonnam elderly welfare OpenAPI. Coordinates and addresses are synthetic and explicitly marked as not geocoded or official facility locations."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_VULNERABLE_FACILITIES_TBD",
+    "source_id": "SOURCE_VULNERABLE_FACILITIES",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "replaced by concrete Gwangju senior nursing CSV source",
+    "acquisition_method": "to_be_verified",
+    "query_params": [],
+    "auth_required": "unknown",
+    "expected_format": "unknown",
+    "native_spatial_grain": "unknown",
+    "spatial_semantics": [
+      "address"
+    ],
+    "space_key_field": "unknown",
+    "geometry_field": "",
+    "native_crs": "unknown",
+    "region_filter_method": "not applicable",
+    "native_temporal_grain": "unknown",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "unknown",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "No acquisition coverage; superseded option.",
+    "evaluation": {
+      "spatial_fit": "low",
+      "temporal_fit": "low",
+      "coverage_fit": "low",
+      "key_fit": "low",
+      "reproducibility": "low",
+      "decision_value": "low",
+      "cost_complexity": "unknown",
+      "notes": "TBD option should be removed after integration of concrete selected option."
+    },
+    "rejection_reason": "Replaced by concrete file URLs where available and a generated mock fallback for the Jeonnam elderly welfare API gap. The Jeonnam API returned HTTP 404 after the 2026-05-01 retry."
+  },
+  {
+    "access_option_id": "ACCESS_ROAD_NETWORK_PRIMARY",
+    "source_id": "SOURCE_ROAD_NETWORK",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15025526/fileData.do -> https://www.its.go.kr/nodelink/nodelinkRef",
+    "acquisition_method": "file_download",
+    "query_params": [],
+    "auth_required": "none",
+    "expected_format": "SHP, DBF, SHX, PRJ, CSV",
+    "native_spatial_grain": "MOCT_LINK polyline / MOCT_NODE point",
+    "spatial_semantics": [
+      "line",
+      "point"
+    ],
+    "space_key_field": "LINK_ID, NODE_ID, SHP geometry",
+    "geometry_field": "MOCT_LINK.shp geometry; MOCT_NODE.shp geometry",
+    "native_crs": "ITRF2000_Central_Belt_60 from PRJ; preserve native CRS",
+    "region_filter_method": "full national package acquired; 광주·전남 coverage assessed in data/raw/SOURCE_ROAD_NETWORK/snapshots/full/region_coverage_assessment.json; no raw-phase region clipping performed",
+    "native_temporal_grain": "per-feature UPDATEDATE plus package date 2026-01-13",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "UPDATEDATE; package_date",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Full national NODELINKDATA package acquired and assessed as covering 광주·전남 at raw source scope. MOCT_LINK=1,554,487 records; MOCT_NODE=1,177,983 records.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Full NODELINKDATA_20260113 zip was copied from /Users/presence/Downloads and schema was inspected. Region coverage assessment records 광주·전남 coverage without CRS conversion, routing, or joins."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_NATURAL_WATER_SOURCES_VWORLD_RIVER_NETWORK",
+    "source_id": "SOURCE_NATURAL_WATER_SOURCES",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://api.vworld.kr/req/data; data=LT_C_WKMSTRM",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "service",
+      "version",
+      "request",
+      "format",
+      "size",
+      "page",
+      "data",
+      "geomFilter",
+      "geometry",
+      "attribute",
+      "crs",
+      "key"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "JSON, XML; GeoJSON-like featureCollection in JSON response",
+    "native_spatial_grain": "river network polygon feature",
+    "spatial_semantics": [
+      "polygon"
+    ],
+    "space_key_field": "geometry, riv_nm, cat_nam",
+    "geometry_field": "response.result.featureCollection.features[].geometry",
+    "native_crs": "EPSG:4326 requested; preserve response CRS in raw phase",
+    "region_filter_method": "geomFilter BOX(minx,miny,maxx,maxy) with bbox tiling and paging",
+    "native_temporal_grain": "source metadata modified date; dataset time range 2023년 6월",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "metadata.modified; dataset_time_range",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Rejected/excluded by user decision. PoC bbox probe evidence was archived but will not feed the decision path.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "low",
+      "cost_complexity": "medium",
+      "notes": "VWorld river network API probe succeeded, but user decided to exclude natural water from this PoC path."
+    },
+    "rejection_reason": "Excluded by user decision; not used in the 광주·전남 full coverage baseline."
+  },
+  {
+    "access_option_id": "ACCESS_NATURAL_WATER_SOURCES_PRIMARY",
+    "source_id": "SOURCE_NATURAL_WATER_SOURCES",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15059910/fileData.do -> http://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+    "acquisition_method": "manual_download",
+    "query_params": [
+      "selected_area",
+      "target_feature_class=수계"
+    ],
+    "auth_required": "login",
+    "expected_format": "SHP, NGI",
+    "native_spatial_grain": "line/polygon",
+    "spatial_semantics": [
+      "line",
+      "polygon"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "SHP/NGI geometry",
+    "native_crs": "not inspected; preserve native SHP/NGI CRS",
+    "region_filter_method": "National Land Information Platform selected-area download",
+    "native_temporal_grain": "irregular metadata updates; static spatial base layer",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "metadata.modified",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Rejected. User observed 기본공간정보 production year 2015, which is too stale for the intended operational use.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "high",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "high",
+      "notes": "Rejected. User observed 기본공간정보 production year 2015."
+    },
+    "rejection_reason": "Observed production year 2015; not worth carrying as fallback for this PoC."
+  },
+  {
+    "access_option_id": "ACCESS_NATURAL_BARRIERS_PRIMARY",
+    "source_id": "SOURCE_NATURAL_BARRIERS",
+    "option_status": "REJECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15059910/fileData.do -> http://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+    "acquisition_method": "excluded",
+    "query_params": [
+      "selected_area",
+      "target_feature_class=수계|지형|교통"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "not_applicable",
+    "native_spatial_grain": "line/polygon",
+    "spatial_semantics": [
+      "line",
+      "polygon"
+    ],
+    "space_key_field": "geometry",
+    "geometry_field": "SHP/NGI geometry",
+    "native_crs": "not inspected; preserve native SHP/NGI CRS",
+    "region_filter_method": "National Land Information Platform selected-area download",
+    "native_temporal_grain": "irregular metadata updates; static spatial base layer",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "metadata.modified",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Excluded by user decision; no raw acquisition required.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "low",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "low",
+      "cost_complexity": "high",
+      "notes": "User decided to exclude SOURCE_NATURAL_BARRIERS from the PoC path."
+    },
+    "rejection_reason": "Excluded by user decision; natural barrier contribution will be unavailable/missing."
+  },
+  {
+    "access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_PRIMARY",
+    "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15144785/fileData.do#tab-layer-file",
+    "acquisition_method": "file_download",
+    "query_params": [],
+    "auth_required": "none",
+    "expected_format": "CSV",
+    "native_spatial_grain": "facility point/address",
+    "spatial_semantics": [
+      "point",
+      "address"
+    ],
+    "space_key_field": "경도, 위도, 설치위치, 관리기관1, 관리기관2",
+    "geometry_field": "경도, 위도",
+    "native_crs": "not declared; preserve published longitude/latitude values",
+    "region_filter_method": "filter full CSV by 관리기관1/관리기관2/설치위치 after acquisition",
+    "native_temporal_grain": "annual registry metadata",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "metadata.modified",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Official full 187-row CSV acquired. Gwangju rows=0, Jeonnam rows=13. 광주·전남 full baseline coverage is supplied by ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_COVERAGE_SUPPLEMENT.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "high",
+      "cost_complexity": "low",
+      "notes": "Direct data.go.kr CSV contentUrl was downloaded. Official CSV has 광주 0, 전남 13; synthetic supplement covers 623 광주·전남 current legal 읍면동 units for practice baseline."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_OPENAPI",
+    "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "https://www.data.go.kr/data/15144785/fileData.do#tab-layer-openapi",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "serviceKey",
+      "page",
+      "perPage",
+      "returnType"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "JSON, XML",
+    "native_spatial_grain": "facility point/address",
+    "spatial_semantics": [
+      "point",
+      "address"
+    ],
+    "space_key_field": "경도, 위도, 설치위치, 관리기관1, 관리기관2",
+    "geometry_field": "경도, 위도",
+    "native_crs": "not declared; preserve published longitude/latitude values",
+    "region_filter_method": "request full pages then filter raw response by 관리기관/주소 after acquisition",
+    "native_temporal_grain": "annual registry metadata",
+    "temporal_semantics": [
+      "registry_updated_at",
+      "static"
+    ],
+    "time_key_field": "metadata.modified",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Fallback only if CSV file download fails or machine API acquisition is preferred.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "medium",
+      "coverage_fit": "unknown",
+      "key_fit": "high",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "data.go.kr OpenAPI auto-conversion is advertised for XML/JSON and requires public API application/key."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_MUNICIPAL_FIRE_WATER_FACILITIES_BASELINE_SCENARIO",
+    "source_id": "SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "generated scenario_baseline",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name",
+      "coverage_unit_source",
+      "region_scope"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV, GeoJSON",
+    "native_spatial_grain": "one generated water facility point per SOURCE_REGION_CODE_TABLE current legal 읍면동 row",
+    "spatial_semantics": [
+      "point"
+    ],
+    "space_key_field": "facility_id, coverage_unit_id, longitude, latitude, geometry_wkt",
+    "geometry_field": "geometry_wkt",
+    "native_crs": "EPSG:4326",
+    "region_filter_method": "generated from SOURCE_REGION_CODE_TABLE 광주·전남 current legal 읍면동 coverage units with SOURCE_ADMIN_BOUNDARIES/VWorld representative coordinates; no road/water/segment join",
+    "native_temporal_grain": "scenario-defined",
+    "temporal_semantics": [
+      "scenario_time"
+    ],
+    "time_key_field": "scenario_time, valid_from, valid_to, mock_generated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Generated 623 facility points covering 광주·전남 SOURCE_REGION_CODE_TABLE current legal 읍면동 row 623개(광주 202, 전남 421), with valid time and space keys.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; coverage_unit_id plus facility_id and geometry_wkt are controlled by generator. Coverage basis is SOURCE_REGION_CODE_TABLE current legal 읍면동 units with representative coordinates."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_ROAD_ACCESS_CONSTRAINTS_BASELINE_SCENARIO",
+    "source_id": "SOURCE_ROAD_ACCESS_CONSTRAINTS",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "generated scenario_baseline",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name",
+      "coverage_unit_source",
+      "region_scope"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV, GeoJSON",
+    "native_spatial_grain": "one generated road access segment per SOURCE_REGION_CODE_TABLE current legal 읍면동 row",
+    "spatial_semantics": [
+      "segment"
+    ],
+    "space_key_field": "road_segment_id, start_node_id, end_node_id, coverage_unit_id, geometry_wkt",
+    "geometry_field": "geometry_wkt",
+    "native_crs": "EPSG:4326",
+    "region_filter_method": "generated from SOURCE_REGION_CODE_TABLE 광주·전남 current legal 읍면동 coverage units with SOURCE_ADMIN_BOUNDARIES/VWorld representative coordinates; no road/water/segment join",
+    "native_temporal_grain": "scenario-defined",
+    "temporal_semantics": [
+      "scenario_time"
+    ],
+    "time_key_field": "scenario_time, valid_from, valid_to, mock_generated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Generated 623 road access segment rows covering 광주·전남 SOURCE_REGION_CODE_TABLE current legal 읍면동 row 623개(광주 202, 전남 421), with explicit segment and road keys.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; road_segment_id, start/end node IDs, coverage_unit_id, and road_name are explicit. No travel time was computed."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_COVERAGE_SUPPLEMENT",
+    "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "generated coverage_supplement scenario_baseline",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "region_scope",
+      "coverage_unit_source",
+      "scenario_name"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV, GeoJSON",
+    "native_spatial_grain": "one generated forest-fire extinguishing facility point per SOURCE_REGION_CODE_TABLE current legal 읍면동 row",
+    "spatial_semantics": [
+      "point"
+    ],
+    "space_key_field": "facility_id, coverage_unit_id, longitude, latitude, geometry",
+    "geometry_field": "geometry",
+    "native_crs": "EPSG:4326",
+    "region_filter_method": "generated from SOURCE_REGION_CODE_TABLE 광주·전남 current legal 읍면동 coverage units with SOURCE_ADMIN_BOUNDARIES/VWorld representative coordinates; no nearest-distance calculation or Segment join",
+    "native_temporal_grain": "scenario-defined plus installation_year mock value",
+    "temporal_semantics": [
+      "scenario_time"
+    ],
+    "time_key_field": "valid_from, valid_to, mock_generated_at, installation_year",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Generated 623 supplement facility points covering 광주·전남 SOURCE_REGION_CODE_TABLE current legal 읍면동 row 623개(광주 202, 전남 421).",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Supplement exists only to cover official CSV regional gaps; rows carry record_origin=mock_supplement and mock_reason."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FIRE_STATION_CENTERS_AUTO_OPENAPI",
+    "source_id": "SOURCE_FIRE_STATION_CENTERS",
+    "option_status": "FALLBACK",
+    "endpoint_or_layer": "https://infuser.odcloud.kr/oas/docs?namespace=15065056/v1",
+    "acquisition_method": "openapi",
+    "query_params": [
+      "serviceKey",
+      "page",
+      "perPage",
+      "returnType"
+    ],
+    "auth_required": "public_api_key",
+    "expected_format": "JSON, XML",
+    "native_spatial_grain": "119안전센터 address row",
+    "spatial_semantics": [
+      "address"
+    ],
+    "space_key_field": "순번, 주소",
+    "geometry_field": "",
+    "native_crs": "not_applicable; no coordinate fields documented on dataset page",
+    "region_filter_method": "API page/perPage retrieval, then filter evidence by 시도본부/주소/소방서명",
+    "native_temporal_grain": "annual registry metadata",
+    "temporal_semantics": [
+      "registry_updated_at"
+    ],
+    "time_key_field": "registry_updated_at",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "Same dataset as file option; requires public data portal application/API key before use.",
+    "evaluation": {
+      "spatial_fit": "medium",
+      "temporal_fit": "medium",
+      "coverage_fit": "medium",
+      "key_fit": "medium",
+      "reproducibility": "medium",
+      "decision_value": "high",
+      "cost_complexity": "medium",
+      "notes": "Auto-converted OpenAPI exists for JSON/XML but was not selected because file download requires no key."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_FIRE_RESOURCE_AVAILABILITY_BASELINE_SCENARIO",
+    "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "소방기관 운영상태 PoC baseline mock",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV",
+    "native_spatial_grain": "station_id / station address",
+    "spatial_semantics": [
+      "address",
+      "no_geometry"
+    ],
+    "space_key_field": "station_id",
+    "geometry_field": "",
+    "native_crs": "not_applicable; no_geometry table",
+    "region_filter_method": "generated directly for PoC region",
+    "native_temporal_grain": "8-hour shift period",
+    "temporal_semantics": [
+      "effective_period",
+      "scenario_time"
+    ],
+    "time_key_field": "valid_from, valid_to",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "950 generated regional runtime rows for 2026-05-01T02:00:00+09:00 through 2026-05-04T02:00:00+09:00 across 광주·전남 fire station availability keys.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; values are raw scenario parameters, not Feature scores."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_PREWATERING_EQUIPMENT_CAPACITY_BASELINE_SCENARIO",
+    "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "예비주수 장비능력 PoC baseline mock",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV",
+    "native_spatial_grain": "station/equipment id",
+    "spatial_semantics": [
+      "no_geometry"
+    ],
+    "space_key_field": "station_id, equipment_id",
+    "geometry_field": "",
+    "native_crs": "not_applicable; no_geometry",
+    "region_filter_method": "generated directly for PoC region",
+    "native_temporal_grain": "scenario effective period",
+    "temporal_semantics": [
+      "scenario_time",
+      "effective_period"
+    ],
+    "time_key_field": "scenario_time, valid_from, valid_to",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "312 generated regional runtime equipment-capacity rows for 2026-05-01T02:00:00+09:00 through 2026-05-04T02:00:00+09:00.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; equipment capacity remains raw scenario input."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_SURFACE_FUEL_CONDITION_BASELINE_SCENARIO",
+    "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "지표연료 상태 PoC baseline mock",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV, GeoJSON",
+    "native_spatial_grain": "generated segment polygon",
+    "spatial_semantics": [
+      "segment",
+      "polygon"
+    ],
+    "space_key_field": "segment_id, geometry_wkt",
+    "geometry_field": "geometry_wkt, GeoJSON geometry",
+    "native_crs": "EPSG:4326; generated mock geometry",
+    "region_filter_method": "generated directly for PoC region",
+    "native_temporal_grain": "scenario-defined",
+    "temporal_semantics": [
+      "scenario_time"
+    ],
+    "time_key_field": "scenario_time",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "623 generated regional surface-fuel rows covering 광주·전남 current legal 읍면동 units for the 2026-05-01T02:00:00+09:00 freeze.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; segment_id and geometry are mock native keys until a real segment layer exists."
+    },
+    "rejection_reason": ""
+  },
+  {
+    "access_option_id": "ACCESS_WORKSITE_HAZARD_CONDITIONS_BASELINE_SCENARIO",
+    "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+    "option_status": "SELECTED",
+    "endpoint_or_layer": "작업장 위험조건 PoC baseline mock",
+    "acquisition_method": "generated_mock",
+    "query_params": [
+      "mock_seed",
+      "poc_region",
+      "poc_time_window",
+      "scenario_name"
+    ],
+    "auth_required": "not_applicable",
+    "expected_format": "CSV, GeoJSON",
+    "native_spatial_grain": "generated segment hazard point",
+    "spatial_semantics": [
+      "segment",
+      "point"
+    ],
+    "space_key_field": "segment_id, geometry_wkt",
+    "geometry_field": "geometry_wkt, GeoJSON geometry",
+    "native_crs": "EPSG:4326; generated mock geometry",
+    "region_filter_method": "generated directly for PoC region",
+    "native_temporal_grain": "scenario-defined effective period",
+    "temporal_semantics": [
+      "effective_period",
+      "scenario_time"
+    ],
+    "time_key_field": "valid_from, valid_to",
+    "forecast_issue_field": "",
+    "forecast_valid_field": "",
+    "expected_coverage": "623 generated regional worksite-hazard rows covering 광주·전남 current legal 읍면동 units for the 2026-05-01T02:00:00+09:00 freeze.",
+    "evaluation": {
+      "spatial_fit": "high",
+      "temporal_fit": "high",
+      "coverage_fit": "high",
+      "key_fit": "high",
+      "reproducibility": "high",
+      "decision_value": "medium",
+      "cost_complexity": "low",
+      "notes": "Generated mock option; hazard classes are raw scenario inputs, not WorkSafetyFeature scores."
+    },
+    "rejection_reason": ""
+  }
+]

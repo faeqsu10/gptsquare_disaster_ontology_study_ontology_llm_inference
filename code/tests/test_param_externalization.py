@@ -17,7 +17,7 @@ EMD_나주_봉황면 (S=0.350):
 - v2 임계로 → ReviewPreWatering (0.30≤S<0.50)  ← 격상
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/tests/test_param_externalization.py
+    ./code/run.sh code/tests/test_param_externalization.py
 """
 
 import sys

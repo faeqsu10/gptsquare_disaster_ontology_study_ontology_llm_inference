@@ -1,0 +1,27 @@
+{
+  "source_id": "SOURCE_PUBLIC_FACILITIES",
+  "selected_access_option_id": "ACCESS_PUBLIC_FACILITIES_GJ_PUBLIC_HEALTH_CSV",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_PUBLIC_FACILITIES/snapshots/regional_clip/",
+  "pipeline_path": "pipelines/SOURCE_PUBLIC_FACILITIES/",
+  "raw_fields_observed": [
+    "연번",
+    "구분",
+    "기관명",
+    "소재지도로명주소",
+    "전화번호 ",
+    "팩스번호",
+    "데이터기준일자"
+  ],
+  "time_key_field": "데이터기준일자",
+  "time_parse_result": "pass",
+  "space_key_field": "소재지도로명주소",
+  "space_validation_result": "pass",
+  "native_crs": "no_geometry; address only in selected CSV",
+  "native_time_format": "YYYY-MM-DD",
+  "decision": "accept",
+  "open_issues": [
+    "Full 광주·전남 snapshot saved under full_gwangju_jeonnam_20260430; HIRA all pages acquired for 광주 2,329 and 전남 2,627 rows.",
+    "School location API is excluded from TX05 by user decision after reproducible NODATA_ERROR for 광주광역시/전라남도 filters."
+  ]
+}

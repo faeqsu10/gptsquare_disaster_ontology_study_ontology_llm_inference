@@ -1,0 +1,27 @@
+{
+  "source_id": "SOURCE_ADMIN_BOUNDARIES",
+  "selected_access_option_id": "ACCESS_ADMIN_BOUNDARIES_ADMIN_CODE",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_ADMIN_BOUNDARIES/snapshots/full/",
+  "pipeline_path": "pipelines/SOURCE_ADMIN_BOUNDARIES/",
+  "raw_fields_observed": [
+    "공간정보일렬번호",
+    "읍면동코드",
+    "읍면동명",
+    "객체시군구코드",
+    "오브젝트아이디",
+    "공간정보"
+  ],
+  "time_key_field": "source_metadata.dateModified",
+  "time_parse_result": "pass",
+  "space_key_field": "읍면동코드, 객체시군구코드, 공간정보",
+  "space_validation_result": "pass",
+  "native_crs": "not declared in source metadata",
+  "native_time_format": "YYYY-MM-DD in data.go.kr metadata",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "Full NGII 읍면동 boundary source and 광주·전남 regional clip are acquired. The source contains legal 읍면동 polygons but does not contain administrative-dong polygons.",
+    "Administrative-dong coverage requires a separate administrative-dong boundary source or an explicit legal-dong-to-administrative-dong mapping in a later phase; no spatial join was performed in this transaction.",
+    "native_crs is not declared in the source metadata; WKB geometry was preserved without CRS conversion."
+  ]
+}

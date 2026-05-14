@@ -1,0 +1,36 @@
+{
+  "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+  "selected_access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_PRIMARY",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES/snapshots/full/; data/mock/SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES/",
+  "raw_fields_observed": [
+    "경도",
+    "위도",
+    "원격제어",
+    "관리기관1",
+    "관리기관2",
+    "설치위치",
+    "보호대상구분",
+    "보호대상물",
+    "설치년도",
+    "facility_id",
+    "coverage_unit_id",
+    "longitude",
+    "latitude",
+    "geometry",
+    "record_origin",
+    "mock_generated_at"
+  ],
+  "time_key_field": "metadata.modified; 설치년도; valid_from, valid_to, mock_generated_at in supplement",
+  "time_parse_result": "pass",
+  "space_key_field": "경도, 위도, 설치위치, 관리기관1, 관리기관2; supplement facility_id, coverage_unit_id, longitude, latitude, geometry",
+  "space_validation_result": "pass",
+  "native_crs": "not declared; longitude/latitude values preserved as published",
+  "native_time_format": "YYYY-MM-DD metadata modified date; YYYY installation year",
+  "decision": "accept",
+  "open_issues": [
+    "Official CSV alone remains partial: 187 rows total, Jeonnam 13 rows, Gwangju 0 rows.",
+    "광주·전남 full regional coverage is provided by synthetic coverage_supplement rows and must be propagated downstream as mock_input=true for those rows."
+  ]
+}

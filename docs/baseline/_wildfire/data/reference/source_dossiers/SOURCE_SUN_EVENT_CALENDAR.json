@@ -1,0 +1,32 @@
+{
+  "source_id": "SOURCE_SUN_EVENT_CALENDAR",
+  "selected_access_option_id": "ACCESS_SUN_EVENT_CALENDAR_AREA",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_SUN_EVENT_CALENDAR/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_SUN_EVENT_CALENDAR/",
+  "raw_fields_observed": [
+    "locdate",
+    "location",
+    "longitude",
+    "latitude",
+    "sunrise",
+    "suntransit",
+    "sunset",
+    "civilm",
+    "civile",
+    "nautm",
+    "naute",
+    "astm",
+    "aste"
+  ],
+  "time_key_field": "locdate",
+  "time_parse_result": "pass",
+  "space_key_field": "location",
+  "space_validation_result": "pass",
+  "native_crs": "admin area request; service returns representative longitude/latitude",
+  "native_time_format": "YYYYMMDD date plus HHMM event times in local civil time",
+  "decision": "accept",
+  "open_issues": [
+    "Admin-area request uses native KASI location=광주 (or 전남 시군 names). Coordinate endpoint was also tested but snaps representative points to the nearest service location, which may not match the requested 행정동."
+  ]
+}

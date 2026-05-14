@@ -1,0 +1,22 @@
+{
+  "source_id": "SOURCE_KMA_OBSERVED_WEATHER",
+  "access_option_id": "ACCESS_KMA_OBSERVED_WEATHER_STATION",
+  "captured_at": "2026-04-30T11:02:18.555262Z",
+  "method": "GET",
+  "endpoint": "https://apihub.kma.go.kr/api/typ01/url/kma_sfctm3.php",
+  "query_params": {
+    "tm1": "202604150000",
+    "tm2": "202604212300",
+    "stn": "156",
+    "help": "1",
+    "authKey": "<KMA_APIHUB_AUTH_KEY>"
+  },
+  "request_url": "https://apihub.kma.go.kr/api/typ01/url/kma_sfctm3.php?tm1=202604150000&tm2=202604212300&stn=156&help=1&authKey=%3CKMA_APIHUB_AUTH_KEY%3E",
+  "auth": {
+    "required": "public_api_key",
+    "env_vars": [
+      "KMA_APIHUB_AUTH_KEY",
+      "APIHUB_AUTH_KEY"
+    ]
+  }
+}

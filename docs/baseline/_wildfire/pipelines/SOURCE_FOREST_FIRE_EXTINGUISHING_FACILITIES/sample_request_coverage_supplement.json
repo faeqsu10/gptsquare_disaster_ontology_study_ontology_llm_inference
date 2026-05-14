@@ -1,0 +1,11 @@
+{
+  "source_id": "SOURCE_FOREST_FIRE_EXTINGUISHING_FACILITIES",
+  "access_option_id": "ACCESS_FOREST_FIRE_EXTINGUISHING_FACILITIES_COVERAGE_SUPPLEMENT",
+  "acquisition_method": "generated_mock",
+  "mock_seed": 20260501,
+  "scenario_name": "scenario_baseline",
+  "region_scope": "광주광역시·전라남도",
+  "coverage_unit_source": "data/raw/SOURCE_ADMIN_BOUNDARIES/snapshots/full/LP_AA_EMD_gwangju_jeonnam.csv",
+  "coverage_unit_grain": "current legal 읍면동 row",
+  "poc_time_window": "2026-05-01 02:00 ~ 2026-05-04 02:00"
+}

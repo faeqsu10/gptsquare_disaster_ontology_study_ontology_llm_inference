@@ -1,0 +1,36 @@
+{
+  "run_context": {
+    "run_context_id": "live_20260501T000000",
+    "mode": "live",
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "valid_from": "2026-05-01T00:00:00+09:00",
+    "valid_to": "2026-05-04T00:00:00+09:00",
+    "horizon_hours": 72,
+    "shift_hours": 8,
+    "scenario_name": "gwangju_jeonnam_runtime",
+    "seed": 20260501,
+    "mock_generated_at": "2026-05-01T02:05:51+09:00",
+    "temporal_alignment_policy": "shared_reference_time",
+    "temporal_alignment_status": "aligned",
+    "region_scope": "광주광역시·전라남도"
+  },
+  "generated_sources": [
+    {
+      "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+      "output_dir": "data/mock/SOURCE_FIRE_RESOURCE_AVAILABILITY/runs/live_20260501T000000"
+    },
+    {
+      "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+      "output_dir": "data/mock/SOURCE_PREWATERING_EQUIPMENT_CAPACITY/runs/live_20260501T000000"
+    },
+    {
+      "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+      "output_dir": "data/mock/SOURCE_SURFACE_FUEL_CONDITION/runs/live_20260501T000000"
+    },
+    {
+      "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+      "output_dir": "data/mock/SOURCE_WORKSITE_HAZARD_CONDITIONS/runs/live_20260501T000000"
+    }
+  ],
+  "live_fire_driver_status": "ok"
+}

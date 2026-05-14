@@ -1,0 +1,10 @@
+{
+  "source_id": "SOURCE_MUNICIPAL_FIRE_WATER_FACILITIES",
+  "access_option_id": "ACCESS_MUNICIPAL_FIRE_WATER_FACILITIES_BASELINE_SCENARIO",
+  "acquisition_method": "generated_mock",
+  "mock_seed": 20260430,
+  "scenario_name": "scenario_baseline",
+  "region_scope": "광주광역시·전라남도",
+  "coverage_unit_source": "data/raw/SOURCE_ADMIN_BOUNDARIES/snapshots/full/LP_AA_EMD_gwangju_jeonnam.csv",
+  "coverage_unit_grain": "current legal 읍면동 row"
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "source_id": "SOURCE_FIRE_STATION_CENTERS",
+    "lifecycle_class": "static_anchor",
+    "refresh_cycle": "annual or registry refresh",
+    "time_key_semantics": "registry_updated_at",
+    "runtime_role": "station master anchor",
+    "required_env_vars": [],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": false,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_FIRE_RESOURCE_AVAILABILITY",
+    "lifecycle_class": "runtime_mock_overlay",
+    "refresh_cycle": "recomputed per run_context and shift window",
+    "time_key_semantics": "valid_from / valid_to",
+    "runtime_role": "runtime overlay",
+    "required_env_vars": [],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": false,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_PREWATERING_EQUIPMENT_CAPACITY",
+    "lifecycle_class": "runtime_mock_overlay",
+    "refresh_cycle": "recomputed per run_context",
+    "time_key_semantics": "scenario_time / valid window",
+    "runtime_role": "runtime overlay",
+    "required_env_vars": [],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": false,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_SURFACE_FUEL_CONDITION",
+    "lifecycle_class": "runtime_mock_overlay",
+    "refresh_cycle": "recomputed per run_context with regional profile",
+    "time_key_semantics": "scenario_time / valid window",
+    "runtime_role": "runtime overlay",
+    "required_env_vars": [],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": false,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+    "lifecycle_class": "runtime_mock_overlay",
+    "refresh_cycle": "recomputed per run_context with live risk pressure",
+    "time_key_semantics": "scenario_time / valid window",
+    "runtime_role": "runtime overlay",
+    "required_env_vars": [],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": false,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_OFFICIAL_FIRE_RISK_FORECAST",
+    "lifecycle_class": "live_driver",
+    "refresh_cycle": "3-hour forecast horizon, 72 hours",
+    "time_key_semantics": "forecast_valid_time",
+    "runtime_role": "live pressure driver",
+    "required_env_vars": [
+      "DATA_GO_KR_SERVICE_KEY",
+      "SERVICE_KEY"
+    ],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": true,
+    "current_cycle_hint": {
+      "latest_analysis_cycle": "2026-04-30T23:00:00+09:00",
+      "selected_valid_cycle": "2026-05-01T00:00:00+09:00"
+    }
+  },
+  {
+    "source_id": "SOURCE_KMA_SHORT_TERM_FORECAST",
+    "lifecycle_class": "live_driver",
+    "refresh_cycle": "8 issuances/day, hourly forecast",
+    "time_key_semantics": "forecast_issued_at / forecast_valid_time",
+    "runtime_role": "future weather driver",
+    "required_env_vars": [
+      "KMA_DATA_GO_KR_SERVICE_KEY",
+      "DATA_GO_KR_SERVICE_KEY",
+      "SERVICE_KEY"
+    ],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": true,
+    "current_cycle_hint": {
+      "latest_base_cycle": "2026-04-30T23:00:00+09:00"
+    }
+  },
+  {
+    "source_id": "SOURCE_KMA_OBSERVED_WEATHER",
+    "lifecycle_class": "live_driver",
+    "refresh_cycle": "hourly",
+    "time_key_semantics": "observed_at",
+    "runtime_role": "observed weather driver",
+    "required_env_vars": [
+      "KMA_APIHUB_AUTH_KEY",
+      "APIHUB_AUTH_KEY"
+    ],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": true,
+    "current_cycle_hint": {
+      "latest_observation_hour": "2026-05-01T00:00:00+09:00"
+    }
+  },
+  {
+    "source_id": "SOURCE_KMA_WEATHER_WARNINGS",
+    "lifecycle_class": "live_driver",
+    "refresh_cycle": "event-driven",
+    "time_key_semantics": "effective_period / event_occurred_at",
+    "runtime_role": "warning driver",
+    "required_env_vars": [
+      "KMA_APIHUB_AUTH_KEY",
+      "APIHUB_AUTH_KEY"
+    ],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": true,
+    "current_cycle_hint": {}
+  },
+  {
+    "source_id": "SOURCE_SUN_EVENT_CALENDAR",
+    "lifecycle_class": "daily_reference",
+    "refresh_cycle": "daily",
+    "time_key_semantics": "effective_period",
+    "runtime_role": "daylight reference",
+    "required_env_vars": [
+      "KASI_SERVICE_KEY",
+      "DATA_GO_KR_SERVICE_KEY",
+      "SERVICE_KEY"
+    ],
+    "reference_time": "2026-05-01T00:29:42+09:00",
+    "env_ready": true,
+    "current_cycle_hint": {
+      "effective_date": "2026-05-01"
+    }
+  }
+]

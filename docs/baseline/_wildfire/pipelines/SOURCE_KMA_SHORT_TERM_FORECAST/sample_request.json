@@ -1,0 +1,26 @@
+{
+  "source_id": "SOURCE_KMA_SHORT_TERM_FORECAST",
+  "access_option_id": "ACCESS_KMA_SHORT_TERM_FORECAST_NXNY_GRID",
+  "captured_at": "2026-04-30T10:47:58.820497Z",
+  "method": "GET",
+  "endpoint": "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst",
+  "query_params": {
+    "serviceKey": "<KMA_DATA_GO_KR_SERVICE_KEY>",
+    "pageNo": "1",
+    "numOfRows": "1000",
+    "dataType": "JSON",
+    "base_date": "20260415",
+    "base_time": "0500",
+    "nx": "60",
+    "ny": "74"
+  },
+  "request_url": "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=%3CKMA_DATA_GO_KR_SERVICE_KEY%3E&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20260415&base_time=0500&nx=60&ny=74",
+  "auth": {
+    "required": "public_api_key",
+    "env_vars": [
+      "KMA_DATA_GO_KR_SERVICE_KEY",
+      "DATA_GO_KR_SERVICE_KEY",
+      "SERVICE_KEY"
+    ]
+  }
+}

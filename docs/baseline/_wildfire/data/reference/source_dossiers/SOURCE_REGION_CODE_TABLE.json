@@ -1,0 +1,42 @@
+{
+  "source_id": "SOURCE_REGION_CODE_TABLE",
+  "selected_access_option_id": "ACCESS_REGION_CODE_TABLE_ADMIN_CODE",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_REGION_CODE_TABLE/snapshots/full/",
+  "pipeline_path": "pipelines/SOURCE_REGION_CODE_TABLE/",
+  "raw_fields_observed": [
+    "법정동코드",
+    "시도명",
+    "시군구명",
+    "읍면동명",
+    "리명",
+    "순위",
+    "생성일자",
+    "삭제일자",
+    "과거법정동코드",
+    "행정동번호",
+    "개정일자",
+    "연결번호",
+    "행정동코드",
+    "행정동명",
+    "배경여부",
+    "최상위행정동코드",
+    "부모행정동코드",
+    "순번",
+    "동리명",
+    "말소일자"
+  ],
+  "time_key_field": "source_metadata.dateModified, 개정일자, 생성일자, 말소일자",
+  "time_parse_result": "pass",
+  "space_key_field": "법정동코드, 행정동코드, MOIS 행정기관코드",
+  "space_validation_result": "pass",
+  "native_crs": "not applicable; no geometry",
+  "native_time_format": "YYYY-MM-DD",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "The legal-dong table confirms 광주광역시 (sido `29`) and 전라남도 (sido `46`) coverage; administrative-dong names are not present in this table.",
+    "The KOSTAT administrative-dong table uses a separate code system (최상위행정동코드 etc.) that is not the same as the legal-dong code namespace.",
+    "MOIS KIKmix.20260325 raw mapping was added and provides 행정기관코드 ↔ 법정동코드 bridge for downstream namespace harmonization.",
+    "No downstream legal/admin code harmonization, area allocation, or spatial join was performed in this transaction."
+  ]
+}

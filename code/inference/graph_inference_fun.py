@@ -16,7 +16,7 @@
 5) resolve_state_v2(base, safety, alert) — 그래프 fun 호출 (이전엔 Python분기)
 6) Python이 그래프에 결과 write-back (이건 graph_inference.py와 동일)
 
-실행: ./study/wildfire-poc/run.sh study/wildfire-poc/inference/graph_inference_fun.py
+실행: ./code/run.sh code/inference/graph_inference_fun.py
 """
 
 from __future__ import annotations

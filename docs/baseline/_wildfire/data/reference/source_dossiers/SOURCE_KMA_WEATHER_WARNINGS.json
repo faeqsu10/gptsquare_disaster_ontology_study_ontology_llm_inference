@@ -1,0 +1,30 @@
+{
+  "source_id": "SOURCE_KMA_WEATHER_WARNINGS",
+  "selected_access_option_id": "ACCESS_KMA_WEATHER_WARNINGS_WARNING_AREA",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_KMA_WEATHER_WARNINGS/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_KMA_WEATHER_WARNINGS/",
+  "raw_fields_observed": [
+    "TM_FC",
+    "TM_EF",
+    "TM_IN",
+    "STN",
+    "REG_ID",
+    "WRN",
+    "LVL",
+    "CMD",
+    "GRD",
+    "CNT",
+    "RPT"
+  ],
+  "time_key_field": "TM_FC, TM_EF, TM_IN, CMD",
+  "time_parse_result": "pass",
+  "space_key_field": "REG_ID",
+  "space_validation_result": "pass",
+  "native_crs": "warning/admin area code; geometry not emitted by selected API",
+  "native_time_format": "YYYYMMDDHHMM KST",
+  "decision": "accept",
+  "open_issues": [
+    "PoC 광주광역시 warning area code is L1050100. PoC-specific query returned 0 rows, interpreted as no warning events for that area in the fixed PoC window."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "source_id": "SOURCE_KMA_OBSERVED_WEATHER",
+  "selected_access_option_id": "ACCESS_KMA_OBSERVED_WEATHER_STATION",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_KMA_OBSERVED_WEATHER/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_KMA_OBSERVED_WEATHER/",
+  "raw_fields_observed": [
+    "TM",
+    "STN",
+    "WD",
+    "WS",
+    "GST_WD",
+    "GST_WS",
+    "GST_TM",
+    "TA",
+    "HM",
+    "RN",
+    "RN_DAY",
+    "RN_INT"
+  ],
+  "time_key_field": "TM",
+  "time_parse_result": "pass",
+  "space_key_field": "STN",
+  "space_validation_result": "pass",
+  "native_crs": "station point lon/lat available from KMA station metadata; preserve station id as native key",
+  "native_time_format": "YYYYMMDDHHMM KST",
+  "decision": "accept",
+  "open_issues": [
+    "Station id 156 is treated as a native station point for 광주; no interpolation to administrative-dong grain is performed."
+  ]
+}

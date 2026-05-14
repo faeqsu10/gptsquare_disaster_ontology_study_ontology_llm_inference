@@ -410,7 +410,7 @@ SEGMENTS = [
 
 ### 7.4 라우터
 
-새 라우터: `study/wildfire-poc/demo/api/demo1.py` (FastAPI APIRouter).
+새 라우터: `code/demo/api/demo1.py` (FastAPI APIRouter).
 `server.py`에 `app.include_router(demo1.router, prefix="/api/demo1")` 추가.
 
 ---

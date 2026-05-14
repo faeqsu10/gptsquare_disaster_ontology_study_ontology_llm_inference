@@ -1,0 +1,46 @@
+{
+  "artifact_id": "station_master_gwangju_jeonnam",
+  "generated_from": "data/raw/SOURCE_FIRE_STATION_CENTERS/snapshots/full/source_fire_station_centers_20250701.csv",
+  "legal_code_reference": "data/raw/SOURCE_REGION_CODE_TABLE/snapshots/full/national_legal_dong_gwangju_jeonnam.csv",
+  "row_count": 95,
+  "counts_by_sido": {
+    "광주광역시": 27,
+    "전라남도": 68
+  },
+  "station_type_counts": {
+    "119_safety_center": 95
+  },
+  "match_status_counts": {
+    "legal_dong_match": 81,
+    "address_only": 14
+  },
+  "notes": [
+    "No geocoding was performed.",
+    "Official coordinates remain blank unless the source explicitly provides them.",
+    "Legal dong match uses native address text and the legal dong code table."
+  ],
+  "fields": [
+    "station_id",
+    "fire_station_id",
+    "station_type",
+    "sido_name",
+    "sigungu_name",
+    "sigungu_code",
+    "emd_name",
+    "region_code",
+    "legal_dong_code",
+    "hq_name",
+    "fire_station_name",
+    "station_name",
+    "station_address",
+    "station_phone",
+    "station_fax",
+    "registry_row_id",
+    "registry_updated_at",
+    "has_official_coordinate",
+    "longitude",
+    "latitude",
+    "coordinate_source",
+    "admin_match_status"
+  ]
+}

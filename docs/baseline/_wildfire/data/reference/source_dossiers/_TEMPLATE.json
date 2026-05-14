@@ -1,0 +1,17 @@
+{
+  "source_id": "SOURCE_ID",
+  "selected_access_option_id": "ACCESS_ID",
+  "verification_status": "unverified",
+  "sample_path": "",
+  "pipeline_path": "pipelines/SOURCE_ID/",
+  "raw_fields_observed": [],
+  "time_key_field": "",
+  "time_parse_result": "not_tested",
+  "space_key_field": "",
+  "space_validation_result": "not_tested",
+  "native_crs": "",
+  "native_time_format": "",
+  "decision": "pending",
+  "open_issues": []
+}
+

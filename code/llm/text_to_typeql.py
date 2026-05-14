@@ -8,7 +8,7 @@
   5) Fallback 사용 시 콘솔에 명시 + 결과에 warning 포함
 
 실행 방법 (단독 테스트):
-    ./_workspace/study-poc/run.sh _workspace/study-poc/llm/text_to_typeql.py
+    ./code/run.sh code/llm/text_to_typeql.py
 """
 
 import json
@@ -32,7 +32,18 @@ GEMINI_MODEL = "gemini-2.5-flash"
 MAX_RETRIES = 3
 GOLDEN_PATH = Path(__file__).parent / "eval" / "golden_qna.json"
 
-_client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+_GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+_client: genai.Client | None = None
+
+
+def _get_client() -> genai.Client:
+    global _client
+    if _client is None:
+        if not _GEMINI_API_KEY:
+            raise RuntimeError("GEMINI_API_KEY 환경변수가 설정되지 않았습니다. .env 파일을 확인하세요.")
+        _client = genai.Client(api_key=_GEMINI_API_KEY)
+    return _client
+
 
 with GOLDEN_PATH.open(encoding="utf-8") as f:
     GOLDEN_SET = {case["id"]: case for case in json.load(f)}
@@ -128,7 +139,7 @@ def _generate_typeql(question: str, last_error: str | None = None) -> str:
     if last_error:
         prompt += f"\n\n⚠️ 직전 시도가 실패했습니다. 에러:\n{last_error}\n수정해서 다시 작성하세요."
 
-    response = _client.models.generate_content(
+    response = _get_client().models.generate_content(
         model=GEMINI_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(

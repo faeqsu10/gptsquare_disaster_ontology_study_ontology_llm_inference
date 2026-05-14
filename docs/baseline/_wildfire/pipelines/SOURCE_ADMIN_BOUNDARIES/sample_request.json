@@ -1,0 +1,7 @@
+{
+  "source_id": "SOURCE_ADMIN_BOUNDARIES",
+  "access_option_id": "ACCESS_ADMIN_BOUNDARIES_ADMIN_CODE",
+  "endpoint_or_layer": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002819529&fileDetailSn=1&insertDataPrcus=N",
+  "query_params": {},
+  "notes": "File download source. Full file is stored as-is. 광주·전남 clip is produced locally by filtering original CSV rows where 객체시군구코드 starts with 29 or 46. Raw geometry is WKB hex text and is not transformed."
+}

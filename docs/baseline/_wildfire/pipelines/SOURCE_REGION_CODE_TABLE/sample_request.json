@@ -1,0 +1,10 @@
+{
+  "source_id": "SOURCE_REGION_CODE_TABLE",
+  "access_option_id": "ACCESS_REGION_CODE_TABLE_ADMIN_CODE",
+  "endpoint_or_layer": [
+    "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003207360&fileDetailSn=1&insertDataPrcus=N",
+    "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003181687&fileDetailSn=1&insertDataPrcus=N"
+  ],
+  "query_params": {},
+  "notes": "Full file downloads for legal-dong and administrative-dong code tables. 광주·전남 regional clips are produced locally from the full files. The second endpoint is proposed as an additional AccessOption for administrative-dong verification."
+}

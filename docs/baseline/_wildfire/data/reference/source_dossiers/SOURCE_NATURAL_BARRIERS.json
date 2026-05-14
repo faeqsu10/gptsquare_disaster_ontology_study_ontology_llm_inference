@@ -1,0 +1,18 @@
+{
+  "source_id": "SOURCE_NATURAL_BARRIERS",
+  "selected_access_option_id": "ACCESS_NATURAL_BARRIERS_PRIMARY",
+  "verification_status": "source_confirmed",
+  "sample_path": "data/raw/SOURCE_NATURAL_BARRIERS/snapshots/sample_20260430/",
+  "pipeline_path": "pipelines/SOURCE_NATURAL_BARRIERS/",
+  "raw_fields_observed": [],
+  "time_key_field": "not_applicable_excluded",
+  "time_parse_result": "not_applicable",
+  "space_key_field": "not_applicable_excluded",
+  "space_validation_result": "not_applicable",
+  "native_crs": "not_applicable_excluded",
+  "native_time_format": "not_applicable_excluded",
+  "decision": "exclude",
+  "open_issues": [
+    "Excluded by user decision. Natural barrier contribution will be unavailable/missing."
+  ]
+}

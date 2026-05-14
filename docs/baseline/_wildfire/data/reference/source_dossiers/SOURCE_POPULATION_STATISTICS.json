@@ -1,0 +1,43 @@
+{
+  "source_id": "SOURCE_POPULATION_STATISTICS",
+  "selected_access_option_id": "ACCESS_POPULATION_STATISTICS_DATAGOKR_AGE_GENDER",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_POPULATION_STATISTICS/snapshots/full_gwangju_jeonnam_20260331/; data/raw/SOURCE_POPULATION_STATISTICS/snapshots/full_20260331/",
+  "pipeline_path": "pipelines/SOURCE_POPULATION_STATISTICS/",
+  "raw_fields_observed": [
+    "행정기관코드",
+    "기준연월",
+    "시도명",
+    "시군구명",
+    "읍면동명",
+    "계",
+    "남자",
+    "여자",
+    "0세남자 ~ 100세이상남자 (101 columns)",
+    "0세여자 ~ 100세이상여자 (101 columns)",
+    "전체세대수",
+    "1인세대",
+    "2인세대",
+    "3인세대",
+    "4인세대",
+    "5인세대",
+    "6인세대",
+    "7인세대",
+    "8인세대",
+    "9인세대",
+    "10인이상세대"
+  ],
+  "time_key_field": "기준연월",
+  "time_parse_result": "pass",
+  "space_key_field": "행정기관코드",
+  "space_validation_result": "pass",
+  "native_crs": "not applicable; no geometry; admin_area code only",
+  "native_time_format": "YYYY-MM-DD (row value example: 2026-03-31); monthly registry update",
+  "decision": "accept",
+  "open_issues": [
+    "고령자 수 field는 단일 column으로 제공되지 않음. 65세이상 남녀 합계로 derive 필요 (다음 phase).",
+    "본 source에 행정동 polygon 없음. 필요한 경우 SOURCE_ADMIN_BOUNDARIES의 법정동 합집합으로 derived dataset 단계에서 생성.",
+    "갱신 주기는 월별. PoC phase는 2026-03-31 기준 정적 snapshot 1개로 진행. 다음 정기 발표가 나와도 자동 fetch는 하지 않으며, 필요 시 README §4 절차에 따라 manual로 새 timestamp 디렉토리에 추가한다.",
+    "jumin.mois.go.kr web UI는 동일 데이터의 human-facing 발행 채널이지만 JS 동적 export로 자동화 부적합 -> ACCESS_POPULATION_STATISTICS_PRIMARY는 REJECTED로 재분류."
+  ]
+}

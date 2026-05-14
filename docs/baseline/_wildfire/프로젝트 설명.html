@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>예비주수 우선순위 결정 시스템</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #0b0d10;
+    --ink-2: #2b313a;
+    --muted: #6b7280;
+    --faint: #9aa0a6;
+    --line: #e6e8ec;
+    --line-2: #d1d5db;
+    --soft: #f5f6f8;
+    --soft-2: #fafbfc;
+    --accent: #c2410c;
+    --accent-soft: #fff5ee;
+    --accent-2: #b45309;
+    --green: #15803d;
+    --green-soft: #f0fdf4;
+    --blue: #1d4ed8;
+    --blue-soft: #eff6ff;
+    --amber: #b45309;
+    --amber-soft: #fffbeb;
+    --red: #b91c1c;
+    --red-soft: #fef2f2;
+    --violet: #6d28d9;
+    --violet-soft: #f5f3ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Segoe UI", "Helvetica Neue", sans-serif;
+    font-feature-settings: "tnum" 1, "ss01" 1, "ss02" 1, "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 60px 96px 88px;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+
+  /* header */
+  .slide-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .slide-head .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .slide-head .badge::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .slide-head .num {
+    font-variant-numeric: tabular-nums;
+    color: var(--faint);
+  }
+
+  /* common typography */
+  h1 { font-size: 52px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+  h2 { font-size: 38px; font-weight: 700; letter-spacing: -0.022em; line-height: 1.15; }
+  h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .subtitle { font-size: 18px; color: var(--muted); line-height: 1.65; max-width: 920px; font-weight: 400; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--muted); }
+
+  /* footer / nav */
+  .progress {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    z-index: 50;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 260ms ease;
+  }
+  .corner {
+    position: fixed;
+    bottom: 22px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--faint);
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    z-index: 40;
+  }
+  .corner.left { left: 32px; }
+  .corner.right { right: 32px; }
+
+  /* =================== Slide 1: Originating Report =================== */
+  .origin {
+    padding-left: 110px;
+    padding-right: 110px;
+  }
+  .origin-tag-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+  .origin-tag-line::before {
+    content: "";
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .origin-quote {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.028em;
+    line-height: 1.12;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .origin-quote .em { color: var(--accent); }
+  .origin-quote-sub {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink-2);
+    margin-bottom: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .origin-meta {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .origin-meta b { color: var(--ink); font-weight: 600; letter-spacing: 0; }
+  .origin-meta .sep { color: var(--faint); margin: 0 10px; }
+
+  .origin-body {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 52px;
+    flex: 1;
+    align-items: start;
+    min-height: 0;
+  }
+  .origin-blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 24px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .origin-blockquote p { margin-bottom: 14px; }
+  .origin-blockquote p:last-child { margin-bottom: 0; }
+  .origin-blockquote em {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 1px 6px;
+    font-style: normal;
+    font-weight: 600;
+    border-radius: 3px;
+  }
+  .origin-blockquote b { color: var(--ink); font-weight: 700; }
+
+  .origin-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .origin-fact {
+    padding: 18px 20px;
+    background: var(--soft-2);
+    border-radius: 10px;
+    border-left: 3px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .origin-fact-tag {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .origin-fact-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+  }
+  .origin-fact-detail {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  .origin-bridge {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 14.5px;
+    color: var(--ink-2);
+    line-height: 1.65;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .origin-bridge b { color: var(--ink); font-weight: 700; }
+  .origin-bridge-arrow {
+    color: var(--accent);
+    font-size: 22px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* =================== Slide 2: Cover =================== */
+  .cover {
+    justify-content: center;
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+  .cover-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    font-weight: 700;
+  }
+  .cover-tag::before {
+    content: "";
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .cover h1 { font-size: 68px; margin-bottom: 18px; line-height: 1.1; }
+  .cover h1 .em { color: var(--accent); }
+  .cover .lede { font-size: 23px; color: var(--ink-2); max-width: 800px; line-height: 1.45; margin-bottom: 20px; font-weight: 400; }
+  .cover .desc { font-size: 17px; color: var(--muted); max-width: 780px; margin-bottom: 60px; line-height: 1.65; }
+
+  .cover-stats {
+    display: flex;
+    gap: 64px;
+    border-top: 1px solid var(--line);
+    padding-top: 32px;
+  }
+  .cover-stat-num {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .cover-stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  /* =================== Slide 2: Pipeline =================== */
+  .pipeline-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 0;
+  }
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+  }
+  .pp-node {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 180ms ease;
+    position: relative;
+    min-height: 0;
+    min-width: 0;
+  }
+  .pp-node:hover, .pp-node.active {
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px -12px rgba(194,65,12,0.25);
+    transform: translateY(-2px);
+  }
+  .pp-arrow {
+    flex: 0 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--line-2);
+    font-size: 18px;
+    font-weight: 300;
+  }
+  .pp-step {
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .pp-name {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.015em;
+  }
+  .pp-name-en {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .pp-count {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .pp-count-label {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .pp-detail {
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.55;
+    border-top: 1px solid var(--line);
+  }
+
+  .pipeline-info {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 1200px;
+  }
+  .pipeline-info b { color: var(--ink); font-weight: 600; }
+
+  /* =================== Slide 3: 5 Signals =================== */
+  .signals-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+  }
+  .sig-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    background: var(--soft-2);
+    transition: all 180ms ease;
+  }
+  .sig-card:hover {
+    background: white;
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px -12px rgba(0,0,0,0.08);
+  }
+  .sig-weight {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 100px;
+    width: fit-content;
+  }
+  .sig-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.015em;
+  }
+  .sig-name-en {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 22px;
+    font-weight: 600;
+  }
+  .sig-question {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 22px;
+    font-weight: 500;
+  }
+  .sig-features {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .sig-feat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sig-feat-name { color: var(--ink-2); font-weight: 500; }
+  .sig-feat-w { color: var(--faint); }
+
+  /* =================== Slide 4: 17 Features =================== */
+  .feat-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 22px;
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .feat-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feat-legend-swatch {
+    width: 4px;
+    height: 14px;
+    border-radius: 1px;
+  }
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+  }
+  .feat-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+  .feat-col-head {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--ink);
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 6px;
+  }
+  .feat-col-head .w {
+    color: var(--faint);
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  .feat-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: white;
+    position: relative;
+    border-left-width: 4px;
+    transition: all 150ms ease;
+  }
+  .feat-card:hover {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+  .feat-card.cf-high { border-left-color: #15803d; }
+  .feat-card.cf-medium-high { border-left-color: #65a30d; }
+  .feat-card.cf-medium { border-left-color: #ca8a04; }
+  .feat-card.cf-medium-low { border-left-color: #ea580c; }
+  .feat-card.cf-low { border-left-color: #b91c1c; }
+  .feat-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+  }
+  .feat-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .feat-conf {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .feat-mock {
+    font-size: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  /* =================== Slide 5: Mock + Confidence =================== */
+  .mock-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    flex: 1;
+    min-height: 0;
+  }
+  .mock-col {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+  }
+  .mock-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .mock-col h3 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .mock-col-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 26px;
+    line-height: 1.6;
+  }
+
+  .mock-bin {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .mock-bin-side {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mock-bin-side.true { background: var(--red-soft); border-color: #fecaca; }
+  .mock-bin-side.false { background: var(--green-soft); border-color: #bbf7d0; }
+  .mock-bin-flag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .mock-bin-side.true .mock-bin-flag { color: var(--red); }
+  .mock-bin-side.false .mock-bin-flag { color: var(--green); }
+  .mock-bin-desc {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+
+  .conf-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .conf-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 60px;
+    gap: 16px;
+    align-items: center;
+  }
+  .conf-row-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .conf-row-track {
+    height: 9px;
+    background: var(--soft);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .conf-row-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 100px;
+  }
+  .conf-row-val {
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .mock-aha {
+    margin-top: auto;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+  .mock-aha b { color: var(--ink); font-weight: 700; }
+
+  /* =================== Slide 6: Live Calculator =================== */
+  .calc {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    flex: 1;
+    min-height: 0;
+  }
+  .calc-presets {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .calc-presets-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-right: 10px;
+    font-weight: 600;
+  }
+  .calc-preset {
+    font-size: 13px;
+    padding: 8px 16px;
+    border: 1px solid var(--line-2);
+    border-radius: 100px;
+    background: white;
+    cursor: pointer;
+    transition: all 150ms ease;
+    color: var(--ink-2);
+    font-weight: 500;
+    font-family: inherit;
+  }
+  .calc-preset:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .calc-preset.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .calc-signals {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .calc-sig {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px 14px;
+    background: white;
+  }
+  .calc-sig-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .calc-sig-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .calc-sig-w {
+    font-size: 11px;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-sig-score {
+    font-size: 32px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin-bottom: 10px;
+    transition: color 250ms ease;
+  }
+  .calc-sig-bar {
+    height: 5px;
+    background: var(--soft);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .calc-sig-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 280ms ease;
+    border-radius: 100px;
+  }
+  .calc-feats {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .calc-feat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .calc-feat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+  }
+  .calc-feat-name {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .calc-feat-name.mock::after {
+    content: "M";
+    margin-left: 5px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    vertical-align: 1px;
+  }
+  .calc-feat-val {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .calc-feat input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: var(--soft);
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+  }
+  .calc-feat input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 100ms;
+  }
+  .calc-feat input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  .calc-feat input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .calc-result {
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 2fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .calc-priority {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .calc-result-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .calc-priority-num {
+    font-size: 68px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--accent);
+    transition: color 250ms ease;
+  }
+  .calc-priority-formula {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+  .calc-state {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .calc-state-badge {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 19px;
+    font-weight: 700;
+    background: var(--soft);
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    transition: background 250ms ease, color 250ms ease;
+    width: fit-content;
+  }
+  .calc-state-badge.s-general { background: var(--green-soft); color: var(--green); }
+  .calc-state-badge.s-monitoring { background: var(--blue-soft); color: var(--blue); }
+  .calc-state-badge.s-review { background: var(--amber-soft); color: var(--amber); }
+  .calc-state-badge.s-priority { background: #fff1e6; color: var(--accent); }
+  .calc-state-badge.s-immediate { background: var(--red-soft); color: var(--red); }
+  .calc-state-badge.s-not { background: var(--violet-soft); color: var(--violet); }
+  .calc-state-badge.s-deferred { background: var(--violet-soft); color: var(--violet); }
+  .calc-state-badge.s-monitor-only { background: var(--blue-soft); color: var(--blue); }
+  .calc-override-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--violet);
+    font-weight: 600;
+  }
+  .calc-override-tag::before {
+    content: "▲";
+    font-size: 10px;
+  }
+  .calc-override-tag.hidden { display: none; }
+  .calc-state-default {
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .calc-action {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .calc-action-decision {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .calc-action-list {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .calc-action-gate {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: 11.5px;
+    color: var(--accent);
+    line-height: 1.55;
+    font-style: italic;
+  }
+  .calc-action-gate.hidden { display: none; }
+
+  /* =================== Slide 7: State Logic =================== */
+  .states {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 36px;
+    flex: 1;
+    min-height: 0;
+  }
+  .states-col h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .state-bar {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 20px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .state-bar-range {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .state-bar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .state-bar-name {
+    font-size: 15.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .state-bar-meaning {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .overrides-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .override-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 32px 180px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 13px;
+    transition: all 150ms;
+  }
+  .override-row:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .override-row.gate {
+    border-left-width: 3px;
+  }
+  .override-row.gate-hazard { border-left-color: var(--red); }
+  .override-row.gate-access { border-left-color: var(--violet); }
+  .override-row.gate-rain { border-left-color: var(--blue); }
+  .override-row.gate-lifecycle { border-left-color: var(--faint); }
+  .override-row.gate-escalate { border-left-color: var(--accent); }
+  .override-num {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 13.5px;
+  }
+  .override-cond {
+    color: var(--ink-2);
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .override-arrow {
+    color: var(--faint);
+    text-align: center;
+    font-size: 14px;
+  }
+  .override-result {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .override-result.replace { color: var(--violet); }
+  .override-result.escalate { color: var(--accent); }
+
+  .override-legend {
+    display: flex;
+    gap: 22px;
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .override-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .override-legend-swatch {
+    width: 3px;
+    height: 14px;
+    border-radius: 1px;
+  }
+
+  /* =================== Slide 8: Decisions / Actions =================== */
+  .decisions-wrap {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 36px;
+    flex: 1;
+    min-height: 0;
+  }
+  .dec-col h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .dec-table { width: 100%; border-collapse: collapse; }
+  .dec-table th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 16px;
+    border-bottom: 1.5px solid var(--ink);
+    font-weight: 600;
+  }
+  .dec-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .dec-table .dec-name {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 14px;
+    letter-spacing: -0.005em;
+  }
+  .dec-trigger {
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .dec-gate {
+    font-size: 11.5px;
+    color: var(--accent);
+    margin-top: 5px;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .action-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 13px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .action-row .a-state {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .action-row .a-state.s-immediate { color: var(--red); }
+  .action-row .a-state.s-priority { color: var(--accent); }
+  .action-row .a-state.s-review { color: var(--amber); }
+  .action-row .a-state.s-monitoring { color: var(--blue); }
+  .action-row .a-state.s-general { color: var(--green); }
+  .action-row .a-state.s-special { color: var(--violet); }
+  .action-row .a-acts {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+
+  /* =================== Slide 9: Scenario =================== */
+  .scenario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+  }
+  .sc-context {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 26px;
+    background: var(--soft-2);
+  }
+  .sc-context-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-right: 18px;
+    border-right: 1px solid var(--line);
+  }
+  .sc-context-item:last-child { border-right: none; }
+  .sc-context-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .sc-context-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .sc-context-detail {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .sc-flow {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+  }
+  .sc-step {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    transition: all 250ms ease;
+    cursor: pointer;
+    background: white;
+    min-width: 0;
+  }
+  .sc-step.active {
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px -10px rgba(194,65,12,0.25);
+  }
+  .sc-step-num {
+    font-size: 10.5px;
+    color: var(--faint);
+    letter-spacing: 0.16em;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .sc-step-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    letter-spacing: -0.015em;
+  }
+  .sc-step-sub {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .sc-step-content {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .sc-step-content .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+    gap: 6px;
+  }
+  .sc-step-content .row .v {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .sc-step-value {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .sc-step-tag {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.45;
+  }
+  .sc-result-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 18px 26px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--accent-soft);
+  }
+  .sc-result-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .sc-result-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+  .sc-result-arrow {
+    color: var(--faint);
+    margin: 0 4px;
+    font-size: 14px;
+  }
+  .sc-result-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* helpers */
+  .hint {
+    position: fixed;
+    top: 24px;
+    right: 96px;
+    font-size: 12px;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+    z-index: 40;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- ============ SLIDE 1: Originating Report ============ -->
+  <section class="slide origin" data-slide="1">
+    <div class="slide-head">
+      <span class="badge">Originating Report · 시스템의 출발점</span>
+      <span class="num">01 / 09</span>
+    </div>
+    <div class="origin-tag-line">지방 소방본부 보도자료</div>
+    <div class="origin-quote">"산불, 타기 전에 <span class="em">적신다</span>"</div>
+    <div class="origin-quote-sub">건조특보 속 '선제 예비주수' 총력</div>
+    <div class="origin-meta">
+      <b>지방 소방본부</b> · 대응예방과<span class="sep">|</span>2026-02-26<span class="sep">|</span>본부장 (실명 비공개)
+    </div>
+
+    <div class="origin-body">
+      <div class="origin-blockquote">
+        <p><em>"불이 나면 끈다"는 수동적 대응에서 벗어나, "불이 붙을 환경을 미리 없앤다"</em>는 역발상적 접근이다. 강풍이 부는 건조한 기후 특성상 초기 진압이 어렵다는 점을 고려해, 화재의 길목이 될 수 있는 <b>가연물 밀집 구간을 미리 적셔 천연 방화벽을 구축</b>하는 것이 핵심이다.</p>
+        <p>전남 도내 22개 소방서는 산림 인접 주택가와 주요 문화재를 중심으로 소방차를 동원해 살수 작업을 벌이고, 마을 단위 비상소화장치를 활용해 주민들과 함께 예비주수를 실시한다. 119종합상황실은 실시간 기상 분석을 통해 유관기관과 공조 체계를 유지하고, 건조특보 해제 시까지 산불 예방 순찰 노선을 평시보다 대폭 강화한다.</p>
+      </div>
+
+      <div class="origin-facts">
+        <div class="origin-fact">
+          <div class="origin-fact-tag">When · 트리거</div>
+          <div class="origin-fact-value">건조특보 + 강풍 발령</div>
+          <div class="origin-fact-detail">기상 조건이 동시에 충족된 시점</div>
+        </div>
+        <div class="origin-fact">
+          <div class="origin-fact-tag">Where · 대상지</div>
+          <div class="origin-fact-value">산림 인접지 · 문화재</div>
+          <div class="origin-fact-detail">취약 주택가와 주요 보호 자산 우선</div>
+        </div>
+        <div class="origin-fact">
+          <div class="origin-fact-tag">Who · 동원</div>
+          <div class="origin-fact-value">22개 소방서 + 주민</div>
+          <div class="origin-fact-detail">전남 도내 전역, 마을 단위 협업</div>
+        </div>
+        <div class="origin-fact">
+          <div class="origin-fact-tag">How · 수단</div>
+          <div class="origin-fact-value">소방차 살수 + 비상소화장치</div>
+          <div class="origin-fact-detail">119종합상황실의 실시간 기상 공조</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="origin-bridge">
+      <span class="origin-bridge-arrow">↓</span>
+      <span>이 보도자료가 본 프로젝트의 출발점이다. <b>"어디에 먼저, 언제, 어떤 자원으로"</b> 예비주수를 할지의 결정 — 그 근거를 segment 단위로 자동화하는 <b>의사결정 시스템</b>을 다음 페이지부터 정의한다.</span>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: Cover ============ -->
+  <section class="slide cover" data-slide="2">
+    <div class="slide-head">
+      <span class="badge">예비주수 우선순위 결정 시스템</span>
+      <span class="num">02 / 09</span>
+    </div>
+    <div class="cover-tag">Pre-Watering Priority for Wildfire Prevention</div>
+    <h1>산불이 나기 전,<br/><span class="em">어디에 먼저 물을 댈 것인가?</span></h1>
+    <p class="lede">광주·전남 영역의 segment별 위험·노출·확산·작업가능성·시간압박을 점수로 환산해 단일 우선순위로 수렴시키고, 거기서 State와 Action을 결정하는 의사결정 파이프라인.</p>
+    <p class="desc">5개 Signal · 17개 Feature · 25+개 Source. mock과 confidence는 score와 분리된 트랙으로 흐르며, hazard·접근·강수 같은 override는 임계점이 아니라 별도 gate로 작동한다.</p>
+    <div class="cover-stats">
+      <div>
+        <div class="cover-stat-num">7</div>
+        <div class="cover-stat-label">Pipeline Stages</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">5</div>
+        <div class="cover-stat-label">Signals</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">17</div>
+        <div class="cover-stat-label">Features</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">9</div>
+        <div class="cover-stat-label">State Overrides</div>
+      </div>
+      <div>
+        <div class="cover-stat-num">5</div>
+        <div class="cover-stat-label">Decision Gates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: Pipeline ============ -->
+  <section class="slide" data-slide="2">
+    <div class="slide-head">
+      <span class="badge">Pipeline · 데이터 흐름</span>
+      <span class="num">03 / 09</span>
+    </div>
+    <h2>Source에서 Action까지, 단일 깔때기</h2>
+    <p class="subtitle" style="margin-bottom: 36px;">25+개의 raw source가 stage를 거치며 좁아진다. 각 단계는 독립적으로 검증 가능하고, 점수와 confidence는 분리된 트랙으로 흐른다.</p>
+
+    <div class="pipeline-wrap">
+      <div class="pipeline">
+        <div class="pp-node" data-pp="1">
+          <div class="pp-step">STAGE 01</div>
+          <div class="pp-name">Source</div>
+          <div class="pp-name-en">Raw datasets</div>
+          <div class="pp-count">25+</div>
+          <div class="pp-count-label">CSV / GIS / API</div>
+          <div class="pp-detail">기상청 단기예보, 산림청 산불위험예보, 행정구역, 임상도, 건물, 도로, 시설</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="2">
+          <div class="pp-step">STAGE 02</div>
+          <div class="pp-name">Derived</div>
+          <div class="pp-name-en">Derived datasets</div>
+          <div class="pp-count">19</div>
+          <div class="pp-count-label">중간 자료</div>
+          <div class="pp-detail">code 정렬, geocoding, CRS 통일, segment 후보 추출, station mapping</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="3">
+          <div class="pp-step">STAGE 03</div>
+          <div class="pp-name">Feature</div>
+          <div class="pp-name-en">17 features</div>
+          <div class="pp-count">17</div>
+          <div class="pp-count-label">{ score, class, mock, conf }</div>
+          <div class="pp-detail">정규화·룩업·가중합. mock과 confidence는 별도 트랙으로 전파</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="4">
+          <div class="pp-step">STAGE 04</div>
+          <div class="pp-name">Signal</div>
+          <div class="pp-name-en">5 signals</div>
+          <div class="pp-count">5</div>
+          <div class="pp-count-label">Official · Exposure · Spread · Action · Time</div>
+          <div class="pp-detail">동일 의미의 Feature를 묶고 가중평균. 한 축이 무엇을 말하는지 명확</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="5">
+          <div class="pp-step">STAGE 05</div>
+          <div class="pp-name">Priority</div>
+          <div class="pp-name-en">S_priority</div>
+          <div class="pp-count">1</div>
+          <div class="pp-count-label">단일 [0,1] 점수</div>
+          <div class="pp-detail">5 Signal의 가중합. 모든 segment를 같은 axis로 비교</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="6">
+          <div class="pp-step">STAGE 06</div>
+          <div class="pp-name">State</div>
+          <div class="pp-name-en">5 default + 4 override</div>
+          <div class="pp-count">9</div>
+          <div class="pp-count-label">상태</div>
+          <div class="pp-detail">priority 임계 5단계 + hazard·access·rain·alert/grade override</div>
+        </div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-node" data-pp="7">
+          <div class="pp-step">STAGE 07</div>
+          <div class="pp-name">Decision · Action</div>
+          <div class="pp-name-en">5 gates → action plan</div>
+          <div class="pp-count">5</div>
+          <div class="pp-count-label">Decision gate</div>
+          <div class="pp-detail">SelectSegment · Schedule · AssignResource · DeferOrMonitor · ManualReview</div>
+        </div>
+      </div>
+      <p class="pipeline-info"><b>핵심.</b> 각 stage는 입력의 의미를 좁힌다 — Source는 <i>raw 정보</i>, Derived는 <i>한 segment에 결합된 사실</i>, Feature는 <i>그 사실이 위험성에 얼마나 기여하는지</i>, Signal은 <i>어느 한 축에서 무엇을 말하는지</i>, Priority는 <i>전체 위험도</i>, State는 <i>운영 모드</i>, Action은 <i>실제로 무엇을 할지</i>.</p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3: 5 Signals ============ -->
+  <section class="slide" data-slide="3">
+    <div class="slide-head">
+      <span class="badge">Signals · 5개 축</span>
+      <span class="num">04 / 09</span>
+    </div>
+    <h2>5개의 Signal이 던지는 5개의 질문</h2>
+    <p class="subtitle" style="margin-bottom: 32px;">우선순위는 한 점이 아니라 <b>다섯 축의 합</b>이다. 각 Signal은 서로 다른 종류의 질문에 답한다 — 위험도가 얼마나 높은지, 가까이 있는 자산이 얼마나 큰지, 불이 자산쪽으로 갈 가능성, 현장에서 작업이 가능한지, 시간이 얼마나 촉박한지.</p>
+
+    <div class="signals-grid">
+      <div class="sig-card">
+        <span class="sig-weight">w 0.20</span>
+        <div class="sig-name">공식 위험도</div>
+        <div class="sig-name-en">OFFICIAL RISK</div>
+        <div class="sig-question">"산림청·기상청이 발표한 위험 등급이 얼마나 높은가?"</div>
+        <div class="sig-features">
+          <div class="sig-feat"><span class="sig-feat-name">FireRiskLevel</span><span class="sig-feat-w">0.40</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">FireRiskTrend</span><span class="sig-feat-w">0.20</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">LargeFireAlert</span><span class="sig-feat-w">0.40</span></div>
+        </div>
+      </div>
+
+      <div class="sig-card">
+        <span class="sig-weight">w 0.25</span>
+        <div class="sig-name">노출 자산</div>
+        <div class="sig-name-en">EXPOSURE</div>
+        <div class="sig-question">"가까이 보호해야 할 사람·문화재·시설이 있는가?"</div>
+        <div class="sig-features">
+          <div class="sig-feat"><span class="sig-feat-name">Residential</span><span class="sig-feat-w">0.40</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">CriticalAsset</span><span class="sig-feat-w">0.35</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">ForestInterface</span><span class="sig-feat-w">0.25</span></div>
+        </div>
+      </div>
+
+      <div class="sig-card">
+        <span class="sig-weight">w 0.20</span>
+        <div class="sig-name">확산 방향</div>
+        <div class="sig-name-en">SPREAD TO ASSET</div>
+        <div class="sig-question">"바람·지형·연료를 따라 불이 자산쪽으로 번질 가능성이 있는가?"</div>
+        <div class="sig-features">
+          <div class="sig-feat"><span class="sig-feat-name">WindToward</span><span class="sig-feat-w">0.40</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">TerrainToward</span><span class="sig-feat-w">0.25</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">FuelContinuity</span><span class="sig-feat-w">0.35</span></div>
+        </div>
+      </div>
+
+      <div class="sig-card">
+        <span class="sig-weight">w 0.20</span>
+        <div class="sig-name">주수 가능성</div>
+        <div class="sig-name-en">ACTIONABILITY</div>
+        <div class="sig-question">"현장에서 차량이 들어가고, 물이 있고, 작업이 안전한가?"</div>
+        <div class="sig-features">
+          <div class="sig-feat"><span class="sig-feat-name">VehicleAccess</span><span class="sig-feat-w">0.30</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">WaterSource</span><span class="sig-feat-w">0.30</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">WettableBarrier</span><span class="sig-feat-w">0.15</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">WorkSafety</span><span class="sig-feat-w">0.25</span></div>
+        </div>
+      </div>
+
+      <div class="sig-card">
+        <span class="sig-weight">w 0.15</span>
+        <div class="sig-name">시간 압박</div>
+        <div class="sig-name-en">TIME URGENCY</div>
+        <div class="sig-question">"고위험 window가 얼마나 임박했고, 도달·작업 시간이 얼마나 빡빡한가?"</div>
+        <div class="sig-features">
+          <div class="sig-feat"><span class="sig-feat-name">HighRiskWindow</span><span class="sig-feat-w">0.35</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">DispatchLeadTime</span><span class="sig-feat-w">0.25</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">WateringDuration</span><span class="sig-feat-w">0.20</span></div>
+          <div class="sig-feat"><span class="sig-feat-name">RainOffset (inv)</span><span class="sig-feat-w">0.20</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4: 17 Features ============ -->
+  <section class="slide" data-slide="4">
+    <div class="slide-head">
+      <span class="badge">Features · 17개 입력</span>
+      <span class="num">05 / 09</span>
+    </div>
+    <h2>17개 Feature, 신뢰도와 mock으로 채색</h2>
+    <p class="subtitle" style="margin-bottom: 22px;">Feature는 항상 <span class="mono">{ score, class, mock_input, confidence }</span>를 출력한다. mock과 confidence는 score에 곱해지지 않고 <b>별도 트랙으로</b> 흘러 Decision 단계의 hard gate에만 영향한다. 좌측 컬러는 confidence 등급, <span style="background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:0.05em">M</span> 표시는 mock-dominant.</p>
+
+    <div class="feat-legend">
+      <span class="feat-legend-item"><span class="feat-legend-swatch" style="background:#15803d"></span>high · 1.00</span>
+      <span class="feat-legend-item"><span class="feat-legend-swatch" style="background:#65a30d"></span>medium-high · 0.92</span>
+      <span class="feat-legend-item"><span class="feat-legend-swatch" style="background:#ca8a04"></span>medium · 0.85</span>
+      <span class="feat-legend-item"><span class="feat-legend-swatch" style="background:#ea580c"></span>medium-low · 0.70</span>
+      <span class="feat-legend-item"><span class="feat-legend-swatch" style="background:#b91c1c"></span>low · 0.50</span>
+      <span class="feat-legend-item"><span style="background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:0.05em">M</span>mock-dominant</span>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-col">
+        <div class="feat-col-head">Official Risk <span class="w">w 0.20</span></div>
+        <div class="feat-card cf-high"><div class="feat-name">FireRiskLevelFeature</div><div class="feat-meta"><span class="feat-conf">high</span></div></div>
+        <div class="feat-card cf-high"><div class="feat-name">FireRiskTrendFeature</div><div class="feat-meta"><span class="feat-conf">high</span></div></div>
+        <div class="feat-card cf-high"><div class="feat-name">LargeFireRiskAlertFeature</div><div class="feat-meta"><span class="feat-conf">high · fallback m-h</span></div></div>
+      </div>
+
+      <div class="feat-col">
+        <div class="feat-col-head">Exposure <span class="w">w 0.25</span></div>
+        <div class="feat-card cf-medium-high"><div class="feat-name">ResidentialExposureFeature</div><div class="feat-meta"><span class="feat-conf">medium-high</span></div></div>
+        <div class="feat-card cf-medium-high"><div class="feat-name">CriticalAssetFeature</div><div class="feat-meta"><span class="feat-conf">medium-high</span></div></div>
+        <div class="feat-card cf-medium"><div class="feat-name">ForestInterfaceFeature</div><div class="feat-meta"><span class="feat-conf">medium</span></div></div>
+      </div>
+
+      <div class="feat-col">
+        <div class="feat-col-head">Spread <span class="w">w 0.20</span></div>
+        <div class="feat-card cf-medium"><div class="feat-name">WindTowardAssetFeature</div><div class="feat-meta"><span class="feat-conf">medium</span></div></div>
+        <div class="feat-card cf-medium-low"><div class="feat-name">TerrainTowardAssetFeature</div><div class="feat-meta"><span class="feat-conf">medium-low · DEM exclude</span></div></div>
+        <div class="feat-card cf-medium-high"><div class="feat-name">FuelContinuityFeature</div><div class="feat-meta"><span class="feat-conf">medium-high</span></div></div>
+      </div>
+
+      <div class="feat-col">
+        <div class="feat-col-head">Actionability <span class="w">w 0.20</span></div>
+        <div class="feat-card cf-low"><div class="feat-name">VehicleAccessFeature <span class="feat-mock" style="margin-left:4px">M</span></div><div class="feat-meta"><span class="feat-conf">low</span></div></div>
+        <div class="feat-card cf-low"><div class="feat-name">WaterSourceFeature <span class="feat-mock" style="margin-left:4px">M</span></div><div class="feat-meta"><span class="feat-conf">low</span></div></div>
+        <div class="feat-card cf-low"><div class="feat-name">WettableBarrierFeature <span class="feat-mock" style="margin-left:4px">M</span></div><div class="feat-meta"><span class="feat-conf">low</span></div></div>
+        <div class="feat-card cf-medium-low"><div class="feat-name">WorkSafetyFeature <span class="feat-mock" style="margin-left:4px">M</span></div><div class="feat-meta"><span class="feat-conf">medium-low</span></div></div>
+      </div>
+
+      <div class="feat-col">
+        <div class="feat-col-head">Time Urgency <span class="w">w 0.15</span></div>
+        <div class="feat-card cf-medium"><div class="feat-name">HighRiskTimeWindowFeature</div><div class="feat-meta"><span class="feat-conf">medium</span></div></div>
+        <div class="feat-card cf-medium-low"><div class="feat-name">DispatchLeadTimeFeature</div><div class="feat-meta"><span class="feat-conf">medium-low</span></div></div>
+        <div class="feat-card cf-low"><div class="feat-name">WateringDurationFeature <span class="feat-mock" style="margin-left:4px">M</span></div><div class="feat-meta"><span class="feat-conf">low</span></div></div>
+        <div class="feat-card cf-medium"><div class="feat-name">RainOffsetFeature</div><div class="feat-meta"><span class="feat-conf">medium</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 5: Live Calculator ============ -->
+  <section class="slide" data-slide="6">
+    <div class="slide-head">
+      <span class="badge">Live Calculator · 실시간 계산</span>
+      <span class="num">06 / 09</span>
+    </div>
+    <h2 style="margin-bottom: 6px;">슬라이더를 움직이면 Priority와 State가 즉시 바뀐다</h2>
+    <p class="subtitle" style="margin-bottom: 18px;">17개 Feature score를 직접 조정하면 Signal, S_priority, State, Action이 한꺼번에 다시 계산된다. 프리셋으로 4가지 운영 시나리오를 한 번에 본다.</p>
+
+    <div class="calc">
+      <div class="calc-presets">
+        <span class="calc-presets-label">Preset</span>
+        <button class="calc-preset active" data-preset="baseline">Baseline</button>
+        <button class="calc-preset" data-preset="critical">Critical Fire</button>
+        <button class="calc-preset" data-preset="rain">Rain Coming</button>
+        <button class="calc-preset" data-preset="hazard">Hazardous Site</button>
+        <button class="calc-preset" data-preset="inaccessible">Inaccessible</button>
+      </div>
+
+      <div class="calc-signals" id="calc-signals">
+        <!-- generated by JS -->
+      </div>
+
+      <div class="calc-result">
+        <div class="calc-priority">
+          <div class="calc-result-label">S_priority</div>
+          <div class="calc-priority-num" id="priority-num">0.00</div>
+          <div class="calc-priority-formula">0.20·Of + 0.25·Ex + 0.20·Sp + 0.20·Ac + 0.15·Ti</div>
+        </div>
+        <div class="calc-state">
+          <div class="calc-result-label">State</div>
+          <div class="calc-state-badge" id="state-badge">—</div>
+          <div class="calc-override-tag hidden" id="override-tag">override 적용</div>
+          <div class="calc-state-default" id="state-default">기본 상태: —</div>
+        </div>
+        <div class="calc-action">
+          <div class="calc-result-label">Decision · Action</div>
+          <div class="calc-action-decision" id="decision-name">—</div>
+          <div class="calc-action-list" id="action-list">—</div>
+          <div class="calc-action-gate hidden" id="action-gate">—</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7: State Logic ============ -->
+  <section class="slide" data-slide="7">
+    <div class="slide-head">
+      <span class="badge">State Logic · 임계와 Override</span>
+      <span class="num">07 / 09</span>
+    </div>
+    <h2>5단계 임계 위에 9개 Override가 겹친다</h2>
+    <p class="subtitle" style="margin-bottom: 28px;">기본 상태는 <span class="mono">S_priority</span> 임계로 결정된다. 그 위에 hazard·access·rain 같은 <b>대체 override</b>(1–3)와 alert·grade <b>격상 override</b>(6–9)가 우선순위 순으로 적용된다.</p>
+
+    <div class="states">
+      <div class="states-col">
+        <h3>Default · S_priority 임계</h3>
+        <div class="state-bar" style="border-left: 3px solid #15803d">
+          <div class="state-bar-range">&lt; 0.20</div>
+          <div class="state-bar-body">
+            <div class="state-bar-name">GeneralManagement</div>
+            <div class="state-bar-meaning">평상 관리. 별도 액션 없음</div>
+          </div>
+        </div>
+        <div class="state-bar" style="border-left: 3px solid #1d4ed8">
+          <div class="state-bar-range">0.20–0.40</div>
+          <div class="state-bar-body">
+            <div class="state-bar-name">EnhancedMonitoring</div>
+            <div class="state-bar-meaning">하루 2회 정도 재점검 스케줄</div>
+          </div>
+        </div>
+        <div class="state-bar" style="border-left: 3px solid #b45309">
+          <div class="state-bar-range">0.40–0.60</div>
+          <div class="state-bar-body">
+            <div class="state-bar-name">ReviewPreWatering</div>
+            <div class="state-bar-meaning">관할 통보, 일일 재점검</div>
+          </div>
+        </div>
+        <div class="state-bar" style="border-left: 3px solid #c2410c">
+          <div class="state-bar-range">0.60–0.80</div>
+          <div class="state-bar-body">
+            <div class="state-bar-name">PriorityPreWatering</div>
+            <div class="state-bar-meaning">예약 출동, 자원 할당</div>
+          </div>
+        </div>
+        <div class="state-bar" style="border-left: 3px solid #b91c1c">
+          <div class="state-bar-range">≥ 0.80</div>
+          <div class="state-bar-body">
+            <div class="state-bar-name">ImmediatePreWatering</div>
+            <div class="state-bar-meaning">즉시 출동, 주수, 완료 기록</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="states-col">
+        <h3>Override · 우선순위 1 → 9</h3>
+        <div class="overrides-flow">
+          <div class="override-row gate gate-hazard">
+            <div class="override-num">1</div>
+            <div class="override-cond">F_action_safety = 작업 불가</div>
+            <div class="override-arrow">→</div>
+            <div class="override-result replace">NotActionable</div>
+          </div>
+          <div class="override-row gate gate-access">
+            <div class="override-num">2</div>
+            <div class="override-cond">infeasible_dispatch ∨ F_action_vehicle = 불가</div>
+            <div class="override-arrow">→</div>
+            <div class="override-result replace">Deferred</div>
+          </div>
+          <div class="override-row gate gate-rain">
+            <div class="override-num">3</div>
+            <div class="override-cond">F_time_rain &gt; 0.6</div>
+            <div class="override-arrow">→</div>
+            <div class="override-result replace">MonitorOnly</div>
+          </div>
+          <div class="override-row gate gate-lifecycle">
+            <div class="override-num">4</div>
+            <div class="override-cond">prev Completed + new high-risk window</div>
+            <div class="override-arrow">→</div>
+            <div class="override-result replace">Recheck</div>
+          </div>
+          <div class="override-row gate gate-lifecycle">
+            <div class="override-num">5</div>
+            <div class="override-cond">prev Completed + no trigger</div>
+            <div class="override-arrow">→</div>
+            <div class="override-result replace">Completed</div>
+          </div>
+          <div class="override-row gate gate-escalate">
+            <div class="override-num">6</div>
+            <div class="override-cond">F_official_alert = 경보</div>
+            <div class="override-arrow">↑</div>
+            <div class="override-result escalate">≥ Priority</div>
+          </div>
+          <div class="override-row gate gate-escalate">
+            <div class="override-num">7</div>
+            <div class="override-cond">alert = 주의보 ∧ S_exposure ≥ 0.5</div>
+            <div class="override-arrow">↑</div>
+            <div class="override-result escalate">≥ Review</div>
+          </div>
+          <div class="override-row gate gate-escalate">
+            <div class="override-num">8</div>
+            <div class="override-cond">risk_grade = 매우높음 ∨ index ≥ 86</div>
+            <div class="override-arrow">↑</div>
+            <div class="override-result escalate">≥ Priority</div>
+          </div>
+          <div class="override-row gate gate-escalate">
+            <div class="override-num">9</div>
+            <div class="override-cond">risk_grade = 높음 ∨ index ≥ 66</div>
+            <div class="override-arrow">↑</div>
+            <div class="override-result escalate">≥ Review</div>
+          </div>
+        </div>
+        <div class="override-legend">
+          <span class="override-legend-item"><span class="override-legend-swatch" style="background:var(--red)"></span>hazard gate</span>
+          <span class="override-legend-item"><span class="override-legend-swatch" style="background:var(--violet)"></span>access gate</span>
+          <span class="override-legend-item"><span class="override-legend-swatch" style="background:var(--blue)"></span>rain dominant</span>
+          <span class="override-legend-item"><span class="override-legend-swatch" style="background:var(--faint)"></span>lifecycle</span>
+          <span class="override-legend-item"><span class="override-legend-swatch" style="background:var(--accent)"></span>escalate (격상)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8: Decisions × Actions ============ -->
+  <section class="slide" data-slide="8">
+    <div class="slide-head">
+      <span class="badge">Decision · Action · 운영 매핑</span>
+      <span class="num">08 / 09</span>
+    </div>
+    <h2>State는 5개의 Decision Gate로 분기되고, 각 State에는 정해진 Action이 붙는다</h2>
+    <p class="subtitle" style="margin-bottom: 28px;">mock-aware gate가 자동 실행을 한 번 더 거른다 — 둘 이상의 mock-dominant Feature가 low면 자원 배정은 RequestManualReview로 강제 분기한다.</p>
+
+    <div class="decisions-wrap">
+      <div class="dec-col">
+        <h3>Decision Gate</h3>
+        <table class="dec-table">
+          <thead>
+            <tr><th>Decision</th><th>Trigger</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="dec-name">SelectPreWateringSegment</div>
+                <div class="dec-gate">항상 advisory list 출력</div>
+              </td>
+              <td class="dec-trigger">State ≥ ReviewPreWatering</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="dec-name">SchedulePreWatering</div>
+                <div class="dec-gate">F_time_lead 또는 F_time_duration low → advisory_only</div>
+              </td>
+              <td class="dec-trigger">segment selected + S_time</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="dec-name">AssignResourcePackage</div>
+                <div class="dec-gate">vehicle/water/duration 중 둘 이상 low → RequestManualReview</div>
+              </td>
+              <td class="dec-trigger">schedule 완료 + actionability 입력</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="dec-name">DeferOrMonitor</div>
+                <div class="dec-gate">safety/vehicle low면 자동 defer 금지</div>
+              </td>
+              <td class="dec-trigger">MonitorOnly · NotActionable · Deferred</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="dec-name">RequestManualReview</div>
+                <div class="dec-gate">항상 허용</div>
+              </td>
+              <td class="dec-trigger">mock dominant · exclude 의존 · join/geocode 실패</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dec-col">
+        <h3>State → Action</h3>
+        <div class="action-list">
+          <div class="action-row">
+            <div class="a-state s-immediate">ImmediatePreWatering</div>
+            <div class="a-acts">즉시 출동 · 수원 사용 · 지표연료 wetting · 완료 기록 · recheck 예약</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-priority">PriorityPreWatering</div>
+            <div class="a-acts">예약 출동 · 수원 사용 · 지표연료 wetting · 완료 기록</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-review">ReviewPreWatering</div>
+            <div class="a-acts">관할 통보 · 일일 재점검 예약</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-monitoring">EnhancedMonitoring</div>
+            <div class="a-acts">하루 2회 재점검 예약</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-general">GeneralManagement</div>
+            <div class="a-acts">별도 액션 없음</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-special">MonitorOnly</div>
+            <div class="a-acts">강수 종료 후 재점검 예약</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-special">NotActionable</div>
+            <div class="a-acts">위험 통보 · hazard 해소 후 재점검</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-special">Deferred</div>
+            <div class="a-acts">접근 불가 통보 · 접근 회복 후 재점검</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-special">Completed</div>
+            <div class="a-acts">위험 window 이후 재점검 예약</div>
+          </div>
+          <div class="action-row">
+            <div class="a-state s-special">Recheck</div>
+            <div class="a-acts">재점검 출동 또는 현장 완료 기록</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9: End-to-end Scenario ============ -->
+  <section class="slide" data-slide="9">
+    <div class="slide-head">
+      <span class="badge">End-to-end · 한 segment 따라가기</span>
+      <span class="num">09 / 09</span>
+    </div>
+    <h2>광주 북구 forest interface segment의 하루</h2>
+    <p class="subtitle" style="margin-bottom: 24px;">한 시점의 한 segment가 Source부터 Action까지 어떻게 흐르는지 예시. 점선으로 진행된 stage를 클릭하면 해당 데이터를 확인할 수 있다.</p>
+
+    <div class="scenario">
+      <div class="sc-context">
+        <div class="sc-context-item">
+          <div class="sc-context-label">Segment</div>
+          <div class="sc-context-value">광주 북구 임도-주거 interface</div>
+          <div class="sc-context-detail">법정동 3개에 걸침, 임도 0건 (광주 임도 미존재)</div>
+        </div>
+        <div class="sc-context-item">
+          <div class="sc-context-label">Forecast Time</div>
+          <div class="sc-context-value">2026-05-01 오전 11:00</div>
+          <div class="sc-context-detail">D+1 horizon, 향후 6시간이 peak window</div>
+        </div>
+        <div class="sc-context-item">
+          <div class="sc-context-label">Officials</div>
+          <div class="sc-context-value">위험지수 72 · 등급 높음</div>
+          <div class="sc-context-detail">large-fire alert: 주의보 (실효습도 38, 풍속 8 m/s)</div>
+        </div>
+        <div class="sc-context-item">
+          <div class="sc-context-label">Context</div>
+          <div class="sc-context-value">주민 8,200명 · 노인요양 1</div>
+          <div class="sc-context-detail">forest-residence 거리 280m, 임도 부재로 차량 진입 우회</div>
+        </div>
+      </div>
+
+      <div class="sc-flow">
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 01 · SOURCE</div>
+          <div class="sc-step-title">Raw 입력 수집</div>
+          <div class="sc-step-sub">25+ datasets</div>
+          <div class="sc-step-content">
+            기상청 단기예보 (VEC, WSD, REH), 산림청 산불위험예보 (sigucode 기준), 임상도 (DNST_NM, FRTP_CD), 건물·주민·도로·시설 layer.
+          </div>
+          <div class="sc-step-tag">REAL ─ no mock yet</div>
+        </div>
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 02 · DERIVED</div>
+          <div class="sc-step-title">Segment에 결합</div>
+          <div class="sc-step-sub">19 derived datasets</div>
+          <div class="sc-step-content">
+            <div class="row"><span>code 정렬</span><span class="v">동→리</span></div>
+            <div class="row"><span>nearest station</span><span class="v">광주(156)</span></div>
+            <div class="row"><span>segment geometry</span><span class="v">길이 1.8km</span></div>
+            <div class="row"><span>대형산불 fallback</span><span class="v">주의보</span></div>
+          </div>
+          <div class="sc-step-tag">name-join + geocoding</div>
+        </div>
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 03 · FEATURE</div>
+          <div class="sc-step-title">17 features 산출</div>
+          <div class="sc-step-sub">{score, mock, conf}</div>
+          <div class="sc-step-content">
+            <div class="row"><span>F_official_level</span><span class="v">0.62</span></div>
+            <div class="row"><span>F_exposure_residential</span><span class="v">0.55</span></div>
+            <div class="row"><span>F_spread_wind</span><span class="v">0.48</span></div>
+            <div class="row"><span>F_action_vehicle (M)</span><span class="v">0.45</span></div>
+            <div class="row"><span>F_time_window</span><span class="v">0.70</span></div>
+          </div>
+          <div class="sc-step-tag">5개 feature mock-dominant</div>
+        </div>
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 04 · SIGNAL</div>
+          <div class="sc-step-title">5 signals 가중평균</div>
+          <div class="sc-step-sub">축별 점수</div>
+          <div class="sc-step-content">
+            <div class="row"><span>S_official</span><span class="v">0.55</span></div>
+            <div class="row"><span>S_exposure</span><span class="v">0.51</span></div>
+            <div class="row"><span>S_spread</span><span class="v">0.45</span></div>
+            <div class="row"><span>S_action</span><span class="v">0.48</span></div>
+            <div class="row"><span>S_time</span><span class="v">0.58</span></div>
+          </div>
+          <div class="sc-step-tag">conf factor 평균 0.79 → medium</div>
+        </div>
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 05 · PRIORITY · STATE</div>
+          <div class="sc-step-title">단일 점수 + 격상</div>
+          <div class="sc-step-sub">S_priority + override</div>
+          <div class="sc-step-content">
+            <div class="row"><span>S_priority 계산</span><span class="v">0.51</span></div>
+            <div class="row"><span>임계 매핑</span><span class="v">Review</span></div>
+            <div class="row"><span>override #7</span><span class="v">주의보+exp≥0.5</span></div>
+            <div class="row"><span>override #9</span><span class="v">grade=높음</span></div>
+          </div>
+          <div class="sc-step-value">ReviewPreWatering</div>
+          <div class="sc-step-tag">격상 적용됨</div>
+        </div>
+        <div class="sc-step">
+          <div class="sc-step-num">STEP 06 · DECISION · ACTION</div>
+          <div class="sc-step-title">실행 계획</div>
+          <div class="sc-step-sub">final action</div>
+          <div class="sc-step-content">
+            <div class="row"><span>SelectSegment</span><span class="v">✓</span></div>
+            <div class="row"><span>Schedule</span><span class="v">advisory</span></div>
+            <div class="row"><span>AssignResource</span><span class="v">manual review</span></div>
+          </div>
+          <div class="sc-step-tag" style="color:var(--accent)">vehicle·water·duration 중 둘이 low → manual review로 분기</div>
+        </div>
+      </div>
+
+      <div class="sc-result-bar">
+        <span class="sc-result-label">Final</span>
+        <span class="sc-result-value">ReviewPreWatering</span>
+        <span class="sc-result-arrow">→</span>
+        <span class="sc-result-value">관할 통보 · 일일 재점검 예약</span>
+        <span class="sc-result-arrow">·</span>
+        <span class="sc-result-note">자원 배정은 mock-dominant Feature 때문에 사람의 판단을 거친다</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="hint" id="hint">← → 이동 · SPACE 다음</div>
+<div class="corner left" id="counter">01 / 09</div>
+<div class="corner right">PRE-WATERING · GWANGJU·JEONNAM</div>
+<div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+
+<script>
+// ===================== Slide nav =====================
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+const counter = document.getElementById('counter');
+const progressFill = document.getElementById('progress-fill');
+let current = 0;
+
+function show(i) {
+  if (i < 0 || i >= total) return;
+  slides[current].classList.remove('active');
+  current = i;
+  slides[current].classList.add('active');
+  counter.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  progressFill.style.width = ((i + 1) / total * 100) + '%';
+}
+show(0);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    show(Math.min(current + 1, total - 1));
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    show(Math.max(current - 1, 0));
+  } else if (e.key === 'Home') {
+    show(0);
+  } else if (e.key === 'End') {
+    show(total - 1);
+  } else if (/^[1-9]$/.test(e.key)) {
+    show(parseInt(e.key, 10) - 1);
+  }
+});
+
+// click to advance on cover only
+slides[0].addEventListener('click', () => show(1));
+
+// ===================== Live Calculator =====================
+const features = [
+  { id: 'official_level',    name: 'Risk Level',         signal: 'official', mock: false, def: 0.50, formula: '5단계 등급 또는 risk_index → 0~1' },
+  { id: 'official_trend',    name: 'Risk Trend',         signal: 'official', mock: false, def: 0.50, formula: 'd1..d4 등급 추세' },
+  { id: 'official_alert',    name: 'Large Fire Alert',   signal: 'official', mock: false, def: 0.00, formula: '없음 0 / 주의보 0.6 / 경보 1.0' },
+  { id: 'exposure_residential', name: 'Residential',     signal: 'exposure', mock: false, def: 0.40, formula: '인구·세대·건물 + 거리역수' },
+  { id: 'exposure_critical',    name: 'Critical Asset',  signal: 'exposure', mock: false, def: 0.30, formula: 'class mix + count + 거리역수' },
+  { id: 'exposure_interface',   name: 'Forest Interface', signal: 'exposure', mock: false, def: 0.50, formula: '거리역수 + 접점길이' },
+  { id: 'spread_wind',     name: 'Wind Toward',     signal: 'spread', mock: false, def: 0.40, formula: 'WSD·toward flag·gust' },
+  { id: 'spread_terrain',  name: 'Terrain Toward',  signal: 'spread', mock: false, def: 0.40, formula: '정면/사면-가까움/사면-먼/외면' },
+  { id: 'spread_fuel',     name: 'Fuel Continuity', signal: 'spread', mock: false, def: 0.50, formula: '연속성 + 단절수 + 밀도' },
+  { id: 'action_vehicle',  name: 'Vehicle Access',  signal: 'action', mock: true,  def: 0.60, formula: 'access + 폭 + turnaround' },
+  { id: 'action_water',    name: 'Water Source',    signal: 'action', mock: true,  def: 0.50, formula: '거리역수 + capacity + type' },
+  { id: 'action_barrier',  name: 'Wettable Barrier', signal: 'action', mock: true,  def: 0.50, formula: 'wetting class + fuel type' },
+  { id: 'action_safety',   name: 'Work Safety',     signal: 'action', mock: true,  def: 0.70, formula: '1 - hazard_max - night_penalty' },
+  { id: 'time_window',     name: 'Risk Window',     signal: 'time', mock: false, def: 0.50, formula: 'danger × imminence(hours)' },
+  { id: 'time_lead',       name: 'Dispatch Lead',   signal: 'time', mock: false, def: 0.40, formula: 'travel / window_remaining' },
+  { id: 'time_duration',   name: 'Watering Duration', signal: 'time', mock: true, def: 0.40, formula: 'norm(min, [30, 240])' },
+  { id: 'time_rain',       name: 'Rain Offset',     signal: 'time', mock: false, def: 0.10, formula: '강수×확률×duration · inv() in S_time' }
+];
+
+const signalDef = {
+  official: { name: 'Official Risk', short: 'Of', weight: 0.20, color: '#c2410c', features: [
+    { id: 'official_level', w: 0.40 },
+    { id: 'official_trend', w: 0.20 },
+    { id: 'official_alert', w: 0.40 }
+  ]},
+  exposure: { name: 'Exposure', short: 'Ex', weight: 0.25, color: '#c2410c', features: [
+    { id: 'exposure_residential', w: 0.40 },
+    { id: 'exposure_critical', w: 0.35 },
+    { id: 'exposure_interface', w: 0.25 }
+  ]},
+  spread: { name: 'Spread', short: 'Sp', weight: 0.20, color: '#c2410c', features: [
+    { id: 'spread_wind', w: 0.40 },
+    { id: 'spread_terrain', w: 0.25 },
+    { id: 'spread_fuel', w: 0.35 }
+  ]},
+  action: { name: 'Actionability', short: 'Ac', weight: 0.20, color: '#c2410c', features: [
+    { id: 'action_vehicle', w: 0.30 },
+    { id: 'action_water', w: 0.30 },
+    { id: 'action_barrier', w: 0.15 },
+    { id: 'action_safety', w: 0.25 }
+  ]},
+  time: { name: 'Time Urgency', short: 'Ti', weight: 0.15, color: '#c2410c', features: [
+    { id: 'time_window', w: 0.35 },
+    { id: 'time_lead', w: 0.25 },
+    { id: 'time_duration', w: 0.20 },
+    { id: 'time_rain', w: 0.20, invert: true }
+  ]}
+};
+
+const presets = {
+  baseline: {
+    label: '평상시 모의',
+    values: { official_level: 0.50, official_trend: 0.50, official_alert: 0.00,
+              exposure_residential: 0.40, exposure_critical: 0.30, exposure_interface: 0.50,
+              spread_wind: 0.40, spread_terrain: 0.40, spread_fuel: 0.50,
+              action_vehicle: 0.60, action_water: 0.50, action_barrier: 0.50, action_safety: 0.70,
+              time_window: 0.50, time_lead: 0.40, time_duration: 0.40, time_rain: 0.10 }
+  },
+  critical: {
+    label: '대형산불 임박',
+    values: { official_level: 1.00, official_trend: 0.75, official_alert: 1.00,
+              exposure_residential: 0.80, exposure_critical: 0.70, exposure_interface: 0.80,
+              spread_wind: 0.80, spread_terrain: 0.65, spread_fuel: 0.90,
+              action_vehicle: 0.70, action_water: 0.65, action_barrier: 0.55, action_safety: 0.80,
+              time_window: 0.95, time_lead: 0.80, time_duration: 0.55, time_rain: 0.00 }
+  },
+  rain: {
+    label: '강수 우세',
+    values: { official_level: 0.55, official_trend: 0.40, official_alert: 0.00,
+              exposure_residential: 0.45, exposure_critical: 0.35, exposure_interface: 0.50,
+              spread_wind: 0.30, spread_terrain: 0.40, spread_fuel: 0.45,
+              action_vehicle: 0.50, action_water: 0.55, action_barrier: 0.55, action_safety: 0.65,
+              time_window: 0.50, time_lead: 0.40, time_duration: 0.40, time_rain: 0.85 }
+  },
+  hazard: {
+    label: '안전 위험 (낙석·강풍)',
+    values: { official_level: 0.65, official_trend: 0.55, official_alert: 0.60,
+              exposure_residential: 0.50, exposure_critical: 0.40, exposure_interface: 0.60,
+              spread_wind: 0.75, spread_terrain: 0.55, spread_fuel: 0.65,
+              action_vehicle: 0.45, action_water: 0.40, action_barrier: 0.35, action_safety: 0.10,
+              time_window: 0.70, time_lead: 0.60, time_duration: 0.50, time_rain: 0.05 }
+  },
+  inaccessible: {
+    label: '접근 불가',
+    values: { official_level: 0.65, official_trend: 0.55, official_alert: 0.60,
+              exposure_residential: 0.50, exposure_critical: 0.40, exposure_interface: 0.55,
+              spread_wind: 0.55, spread_terrain: 0.45, spread_fuel: 0.55,
+              action_vehicle: 0.10, action_water: 0.30, action_barrier: 0.40, action_safety: 0.60,
+              time_window: 0.65, time_lead: 0.85, time_duration: 0.60, time_rain: 0.05 }
+  }
+};
+
+const stateRanks = {
+  GeneralManagement: 0, EnhancedMonitoring: 1, ReviewPreWatering: 2,
+  PriorityPreWatering: 3, ImmediatePreWatering: 4
+};
+const stateClass = {
+  GeneralManagement: 's-general', EnhancedMonitoring: 's-monitoring',
+  ReviewPreWatering: 's-review', PriorityPreWatering: 's-priority',
+  ImmediatePreWatering: 's-immediate', NotActionable: 's-not',
+  Deferred: 's-deferred', MonitorOnly: 's-monitor-only'
+};
+const stateLabel = {
+  GeneralManagement: 'GeneralManagement', EnhancedMonitoring: 'EnhancedMonitoring',
+  ReviewPreWatering: 'ReviewPreWatering', PriorityPreWatering: 'PriorityPreWatering',
+  ImmediatePreWatering: 'ImmediatePreWatering', NotActionable: 'NotActionable',
+  Deferred: 'Deferred', MonitorOnly: 'MonitorOnly'
+};
+const actionByState = {
+  ImmediatePreWatering: ['즉시 출동', '수원 사용', '지표연료 wetting', '완료 기록', 'recheck 예약'],
+  PriorityPreWatering: ['예약 출동', '수원 사용', '지표연료 wetting', '완료 기록'],
+  ReviewPreWatering: ['관할 통보', '일일 재점검 예약'],
+  EnhancedMonitoring: ['하루 2회 재점검 예약'],
+  GeneralManagement: ['별도 액션 없음'],
+  MonitorOnly: ['강수 종료 후 재점검 예약'],
+  NotActionable: ['위험 통보', 'hazard 해소 후 재점검'],
+  Deferred: ['접근 회복 후 재점검']
+};
+const decisionByState = {
+  ImmediatePreWatering: 'AssignResourcePackage → Dispatch',
+  PriorityPreWatering: 'AssignResourcePackage',
+  ReviewPreWatering: 'SelectPreWateringSegment',
+  EnhancedMonitoring: 'SelectPreWateringSegment (advisory)',
+  GeneralManagement: '— (no decision)',
+  MonitorOnly: 'DeferOrMonitor',
+  NotActionable: 'DeferOrMonitor',
+  Deferred: 'DeferOrMonitor'
+};
+
+// build sliders
+const calcSignals = document.getElementById('calc-signals');
+const featureValues = {};
+features.forEach(f => featureValues[f.id] = f.def);
+
+function buildCalc() {
+  calcSignals.innerHTML = '';
+  Object.entries(signalDef).forEach(([sigId, sig]) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'calc-sig';
+    wrap.innerHTML = `
+      <div class="calc-sig-head">
+        <span class="calc-sig-name">${sig.name}</span>
+        <span class="calc-sig-w">w ${sig.weight.toFixed(2)}</span>
+      </div>
+      <div class="calc-sig-score" id="sig-score-${sigId}">0.00</div>
+      <div class="calc-sig-bar"><div class="calc-sig-bar-fill" id="sig-bar-${sigId}"></div></div>
+      <div class="calc-feats" id="sig-feats-${sigId}"></div>
+    `;
+    calcSignals.appendChild(wrap);
+
+    const featsWrap = wrap.querySelector('#sig-feats-' + sigId);
+    sig.features.forEach(featRef => {
+      const f = features.find(ff => ff.id === featRef.id);
+      const row = document.createElement('div');
+      row.className = 'calc-feat';
+      const invertNote = featRef.invert ? ' <span class="muted">(inv)</span>' : '';
+      row.innerHTML = `
+        <div class="calc-feat-row">
+          <span class="calc-feat-name${f.mock ? ' mock' : ''}">${f.name}${invertNote}</span>
+          <span class="calc-feat-val" id="feat-val-${f.id}">${f.def.toFixed(2)}</span>
+        </div>
+        <input type="range" min="0" max="1" step="0.01" value="${f.def}" id="feat-${f.id}">
+      `;
+      featsWrap.appendChild(row);
+      const inp = row.querySelector('input');
+      inp.addEventListener('input', (e) => {
+        featureValues[f.id] = parseFloat(e.target.value);
+        document.getElementById('feat-val-' + f.id).textContent = featureValues[f.id].toFixed(2);
+        // user manually adjusted → no preset highlight
+        document.querySelectorAll('.calc-preset').forEach(b => b.classList.remove('active'));
+        recompute();
+      });
+    });
+  });
+}
+
+function recompute() {
+  const sigScores = {};
+  Object.entries(signalDef).forEach(([sigId, sig]) => {
+    let s = 0;
+    sig.features.forEach(fr => {
+      const v = featureValues[fr.id];
+      const eff = fr.invert ? (1 - v) : v;
+      s += fr.w * eff;
+    });
+    s = Math.max(0, Math.min(1, s));
+    sigScores[sigId] = s;
+    document.getElementById('sig-score-' + sigId).textContent = s.toFixed(2);
+    document.getElementById('sig-bar-' + sigId).style.width = (s * 100) + '%';
+  });
+  // priority
+  let pri = 0;
+  Object.entries(signalDef).forEach(([sigId, sig]) => {
+    pri += sig.weight * sigScores[sigId];
+  });
+  pri = Math.max(0, Math.min(1, pri));
+  document.getElementById('priority-num').textContent = pri.toFixed(2);
+
+  // default state from priority
+  let defaultState;
+  if (pri < 0.20) defaultState = 'GeneralManagement';
+  else if (pri < 0.40) defaultState = 'EnhancedMonitoring';
+  else if (pri < 0.60) defaultState = 'ReviewPreWatering';
+  else if (pri < 0.80) defaultState = 'PriorityPreWatering';
+  else defaultState = 'ImmediatePreWatering';
+
+  let finalState = defaultState;
+  let overrideMsg = '';
+
+  // Override priority order
+  // 1) hazard
+  if (featureValues.action_safety < 0.20) {
+    finalState = 'NotActionable';
+    overrideMsg = 'override #1 · hazard gate (safety<0.20)';
+  // 2) access
+  } else if (featureValues.action_vehicle < 0.20) {
+    finalState = 'Deferred';
+    overrideMsg = 'override #2 · access gate (vehicle<0.20)';
+  // 3) rain
+  } else if (featureValues.time_rain > 0.60) {
+    finalState = 'MonitorOnly';
+    overrideMsg = 'override #3 · rain dominant (rain>0.60)';
+  } else {
+    // 6/7/8/9 escalations
+    let minRank = stateRanks[defaultState];
+    let minState = defaultState;
+    let escTag = '';
+    // 6) alert=경보 → ≥ Priority
+    if (featureValues.official_alert >= 0.95) {
+      if (stateRanks.PriorityPreWatering > minRank) {
+        minRank = stateRanks.PriorityPreWatering;
+        minState = 'PriorityPreWatering';
+        escTag = 'override #6 · alert=경보 → ≥ Priority';
+      }
+    } else if (featureValues.official_alert >= 0.55 && sigScores.exposure >= 0.50) {
+      // 7) alert=주의보 + exp≥0.5 → ≥ Review
+      if (stateRanks.ReviewPreWatering > minRank) {
+        minRank = stateRanks.ReviewPreWatering;
+        minState = 'ReviewPreWatering';
+        escTag = 'override #7 · 주의보+exp≥0.5 → ≥ Review';
+      }
+    }
+    // 8) grade 매우높음 → ≥ Priority (assume official_level >= 0.95 ≈ 매우높음)
+    if (featureValues.official_level >= 0.95) {
+      if (stateRanks.PriorityPreWatering > minRank) {
+        minRank = stateRanks.PriorityPreWatering;
+        minState = 'PriorityPreWatering';
+        escTag = 'override #8 · grade=매우높음 → ≥ Priority';
+      }
+    } else if (featureValues.official_level >= 0.66) {
+      // 9) grade 높음 → ≥ Review
+      if (stateRanks.ReviewPreWatering > minRank) {
+        minRank = stateRanks.ReviewPreWatering;
+        minState = 'ReviewPreWatering';
+        escTag = 'override #9 · grade=높음 → ≥ Review';
+      }
+    }
+    finalState = minState;
+    overrideMsg = escTag;
+  }
+
+  // mock-aware advisory
+  let actionGate = '';
+  const lowMock = ['action_vehicle', 'action_water', 'time_duration'].filter(id => featureValues[id] < 0.30).length;
+  if (lowMock >= 2) actionGate = 'mock-aware: vehicle/water/duration 중 둘 이상 low → AssignResource는 RequestManualReview';
+  if (featureValues.action_safety < 0.30 && featureValues.action_safety >= 0.20) actionGate = 'safety low → 자동 defer 금지, advisory_only';
+
+  // render state
+  const badge = document.getElementById('state-badge');
+  badge.textContent = stateLabel[finalState];
+  badge.className = 'calc-state-badge ' + (stateClass[finalState] || '');
+  const tag = document.getElementById('override-tag');
+  if (overrideMsg) {
+    tag.textContent = overrideMsg;
+    tag.classList.remove('hidden');
+  } else {
+    tag.classList.add('hidden');
+  }
+  document.getElementById('state-default').textContent =
+    `기본 상태: ${stateLabel[defaultState]} (S_priority=${pri.toFixed(2)})`;
+
+  // decision/action
+  document.getElementById('decision-name').textContent = decisionByState[finalState] || '—';
+  document.getElementById('action-list').textContent = (actionByState[finalState] || ['—']).join(' · ');
+  const gateEl = document.getElementById('action-gate');
+  if (actionGate) {
+    gateEl.textContent = actionGate;
+    gateEl.classList.remove('hidden');
+  } else {
+    gateEl.classList.add('hidden');
+  }
+
+  // accent priority color
+  const priNum = document.getElementById('priority-num');
+  if (pri >= 0.80) priNum.style.color = 'var(--red)';
+  else if (pri >= 0.60) priNum.style.color = 'var(--accent)';
+  else if (pri >= 0.40) priNum.style.color = 'var(--amber)';
+  else if (pri >= 0.20) priNum.style.color = 'var(--blue)';
+  else priNum.style.color = 'var(--green)';
+}
+
+function applyPreset(name) {
+  const p = presets[name];
+  if (!p) return;
+  Object.entries(p.values).forEach(([id, v]) => {
+    featureValues[id] = v;
+    const inp = document.getElementById('feat-' + id);
+    if (inp) inp.value = v;
+    const valEl = document.getElementById('feat-val-' + id);
+    if (valEl) valEl.textContent = v.toFixed(2);
+  });
+  document.querySelectorAll('.calc-preset').forEach(b => {
+    b.classList.toggle('active', b.dataset.preset === name);
+  });
+  recompute();
+}
+
+document.querySelectorAll('.calc-preset').forEach(btn => {
+  btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
+});
+
+buildCalc();
+recompute();
+
+// pipeline interaction
+document.querySelectorAll('.pp-node').forEach(n => {
+  n.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.pp-node').forEach(o => o.classList.remove('active'));
+    n.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

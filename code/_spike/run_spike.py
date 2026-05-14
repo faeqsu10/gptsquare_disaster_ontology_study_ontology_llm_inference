@@ -3,7 +3,7 @@
 각 단계는 schema에 fun 정의(SCHEMA tx) → 호출(READ tx)로 분리.
 실패해도 다음 단계 진행.
 
-실행: ./study/wildfire-poc/run.sh study/wildfire-poc/_spike/run_spike.py
+실행: ./code/run.sh code/_spike/run_spike.py
 """
 
 from __future__ import annotations

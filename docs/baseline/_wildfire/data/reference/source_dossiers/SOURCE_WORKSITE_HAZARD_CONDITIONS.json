@@ -1,0 +1,37 @@
+{
+  "source_id": "SOURCE_WORKSITE_HAZARD_CONDITIONS",
+  "selected_access_option_id": "ACCESS_WORKSITE_HAZARD_CONDITIONS_BASELINE_SCENARIO",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/mock/SOURCE_WORKSITE_HAZARD_CONDITIONS/scenario_baseline/",
+  "pipeline_path": "pipelines/SOURCE_WORKSITE_HAZARD_CONDITIONS/",
+  "raw_fields_observed": [
+    "mock_id",
+    "region_code",
+    "region_name",
+    "segment_id",
+    "valid_from",
+    "valid_to",
+    "scenario_time",
+    "rockfall_risk_flag",
+    "smoke_exposure_possible",
+    "hazard_severity",
+    "scenario_basis",
+    "geometry_wkt",
+    "native_crs",
+    "scenario_name",
+    "mock_seed",
+    "mock_generated_at",
+    "mock_reason"
+  ],
+  "time_key_field": "valid_from, valid_to",
+  "time_parse_result": "pass",
+  "space_key_field": "segment_id, geometry_wkt",
+  "space_validation_result": "pass",
+  "native_crs": "EPSG:4326; generated mock geometry",
+  "native_time_format": "ISO-8601 with +09:00 offset",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "synthetic mock baseline이며 운영 데이터가 아니다.",
+    "hazard_severity는 mock raw class이며 WorkSafetyFeature score로 변환하지 않았다."
+  ]
+}

@@ -6,7 +6,7 @@
   3) Fallback 사용 시 사용자에게도 명시
 
 실행 방법:
-    ./_workspace/study-poc/run.sh _workspace/study-poc/llm/chat.py
+    ./code/run.sh code/llm/chat.py
 """
 
 import json
@@ -25,7 +25,18 @@ from text_to_typeql import query_with_self_correction
 load_dotenv()
 GEMINI_MODEL = "gemini-2.5-flash"
 
-_client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+_GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+_client: genai.Client | None = None
+
+
+def _get_client() -> genai.Client:
+    global _client
+    if _client is None:
+        if not _GEMINI_API_KEY:
+            raise RuntimeError("GEMINI_API_KEY 환경변수가 설정되지 않았습니다. .env 파일을 확인하세요.")
+        _client = genai.Client(api_key=_GEMINI_API_KEY)
+    return _client
+
 
 ANSWER_SYSTEM = (
     "당신은 광주·전남 산불 예비주수 의사결정 시스템의 도우미입니다.\n"
@@ -65,7 +76,7 @@ def chat(user_query: str, case_id: str | None = None) -> None:
             print(query_result["warning"])
             print()
 
-        response = _client.models.generate_content(
+        response = _get_client().models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(

@@ -1,0 +1,18 @@
+{
+  "source_id": "SOURCE_ROAD_NETWORK",
+  "access_option_id": "ACCESS_ROAD_NETWORK_PRIMARY",
+  "captured_at": "2026-04-30T00:00:00+09:00",
+  "metadata_observed": {
+    "title": "국토교통부_표준노드링크_20210713",
+    "format": "SHP",
+    "modified": "2025-06-24",
+    "provider": "국토교통부",
+    "provided_by": "기관자체에서 다운로드(제공데이터URL기재)",
+    "download_page": "https://www.its.go.kr/nodelink/nodelinkRef",
+    "native_spatial_grain": "road link/node"
+  },
+  "sample_path": "data/raw/SOURCE_ROAD_NETWORK/snapshots/sample_20260430/",
+  "raw_file_downloaded": false,
+  "blocked_by": "Manual institution download flow not executed; SHP internal fields not inspected."
+}
+

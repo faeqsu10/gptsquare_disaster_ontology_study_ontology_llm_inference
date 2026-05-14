@@ -5,7 +5,7 @@
 SEGMENTS는 ``demo/api/segments_catalog.py``의 단일 진실 원천에서 import.
 
 실행 방법:
-    ./study/wildfire-poc/run.sh study/wildfire-poc/db/load_segments.py
+    ./code/run.sh code/db/load_segments.py
 """
 
 import sys

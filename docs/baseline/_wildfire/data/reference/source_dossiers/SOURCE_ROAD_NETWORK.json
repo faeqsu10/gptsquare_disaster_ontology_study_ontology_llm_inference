@@ -1,0 +1,33 @@
+{
+  "source_id": "SOURCE_ROAD_NETWORK",
+  "selected_access_option_id": "ACCESS_ROAD_NETWORK_PRIMARY",
+  "verification_status": "coverage_verified",
+  "sample_path": "data/raw/SOURCE_ROAD_NETWORK/snapshots/full/",
+  "pipeline_path": "pipelines/SOURCE_ROAD_NETWORK/",
+  "raw_fields_observed": [
+    "MOCT_LINK.LINK_ID",
+    "MOCT_LINK.F_NODE",
+    "MOCT_LINK.T_NODE",
+    "MOCT_LINK.LANES",
+    "MOCT_LINK.ROAD_RANK",
+    "MOCT_LINK.ROAD_TYPE",
+    "MOCT_LINK.ROAD_NAME",
+    "MOCT_LINK.LENGTH",
+    "MOCT_LINK.UPDATEDATE",
+    "MOCT_NODE.NODE_ID",
+    "MOCT_NODE.NODE_TYPE",
+    "MOCT_NODE.NODE_NAME",
+    "MOCT_NODE.UPDATEDATE",
+    "SHP geometry"
+  ],
+  "time_key_field": "UPDATEDATE; package_date",
+  "time_parse_result": "pass",
+  "space_key_field": "LINK_ID, NODE_ID, SHP geometry",
+  "space_validation_result": "pass",
+  "native_crs": "ITRF2000_Central_Belt_60 from PRJ; preserve native CRS",
+  "native_time_format": "YYYYMMDD-like UPDATEDATE values; package date 2026-01-13",
+  "decision": "accept",
+  "open_issues": [
+    "Full national package covers 광주·전남 at raw source scope; no 광주·전남 clip, routing, travel time, or Segment join was performed in Source phase."
+  ]
+}

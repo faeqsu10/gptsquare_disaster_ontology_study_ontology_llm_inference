@@ -10,7 +10,7 @@
 기본 입력 attribute(risk-grade, alert-level, population, ...)는 건드리지 않는다.
 
 실행 방법:
-    ./study/wildfire-poc/run.sh study/wildfire-poc/scripts/reset_demo1_writeback.py
+    ./code/run.sh code/scripts/reset_demo1_writeback.py
 """
 
 import sys

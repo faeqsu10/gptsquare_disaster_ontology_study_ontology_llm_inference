@@ -1,0 +1,41 @@
+{
+  "source_id": "SOURCE_FOREST_ROAD_NETWORK",
+  "selected_access_option_id": "ACCESS_FOREST_ROAD_NETWORK_PRIMARY",
+  "verification_status": "data_acquired",
+  "sample_path": "data/raw/SOURCE_FOREST_ROAD_NETWORK/snapshots/regional_clip/jeonnam_sido/",
+  "pipeline_path": "pipelines/SOURCE_FOREST_ROAD_NETWORK/",
+  "raw_fields_observed": [
+    "HSTR_MNNMB",
+    "ETC_PCMTT",
+    "FRRD_NM",
+    "FRRD_FCLTD",
+    "FRRD_ESTBL",
+    "FRRD_FCLTW",
+    "FRRD_DV_I",
+    "FRRD_DV_B",
+    "FRRD_INSTT",
+    "FRRD_MGC",
+    "FRRD_RGSNO",
+    "RBP_X",
+    "RBP_Y",
+    "REP_X",
+    "REP_Y",
+    "MAP_LABEL",
+    "FR_TH_DV",
+    "FR_TH_YR",
+    "FRRD_THM",
+    "Shape_Leng"
+  ],
+  "time_key_field": "registry_updated_at",
+  "time_parse_result": "not_applicable",
+  "space_key_field": "geometry",
+  "space_validation_result": "pass",
+  "native_crs": "Korea 2000 / Unified CS, EPSG:5179, confirmed from downloaded 46.prj",
+  "native_time_format": "static geospatial layer; no per-feature time observed before download",
+  "decision": "accept_with_gap",
+  "open_issues": [
+    "전라남도 임도망도(국유림) extract has been acquired; 광주광역시 search returned no data for this layer.",
+    "Coverage is partial because the source provides Jeonnam road data only and 광주광역시 area is reported as no-data on FGIS.",
+    "Feature-level line intersection was not performed."
+  ]
+}
